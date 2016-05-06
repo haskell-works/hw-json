@@ -1,0 +1,30 @@
+machine:
+  post:
+    - curl https://nixos.org/nix/install | sh
+
+dependencies:
+  cache_directories:
+    - "~/.cabal"
+    - "~/.ghc"
+  pre:
+    - cp ./scripts/* ~/bin/
+  override:
+    - nox when deps nix-mk
+    - nox when deps nix-deps
+
+test:
+  override:
+    - nox when build nix-build
+
+deployment:
+  release_branch:
+    owner: haskell-works
+    branch: /v.*/
+    commands:
+      - nox when tag autotag
+
+  hackage:
+    owner: haskell-works
+    tag: /v.*/
+    commands:
+      - nox when deploy publish
