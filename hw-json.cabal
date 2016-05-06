@@ -1,0 +1,118 @@
+name:                   hw-json
+version:                0.0.0.1
+synopsis:               Conduits for tokenizing streams.
+description:            Please see README.md
+homepage:               http://github.com/haskell-works/hw-json#readme
+license:                BSD3
+license-file:           LICENSE
+author:                 John Ky
+maintainer:             newhoggy@gmail.com
+copyright:              2016 John Ky
+category:               Data, Conduit
+build-type:             Simple
+extra-source-files:     README.md
+cabal-version:          >= 1.10
+data-files:             test/data/sample.json
+
+executable hw-json-example
+  hs-source-dirs:       app
+  main-is:              Main.hs
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N -O2 -Wall -msse4.2
+  build-depends:        base            >= 4
+                      , bytestring
+                      , conduit
+                      , criterion
+                      , hw-bits
+                      , hw-conduit
+                      , hw-diagnostics
+                      , hw-json
+                      , hw-prim
+                      , hw-rankselect
+                      , mmap
+                      , resourcet
+                      , vector
+  default-language:     Haskell2010
+
+library
+  hs-source-dirs:       src
+  exposed-modules:      HaskellWorks.Data.Json
+                      , HaskellWorks.Data.Json.Extract
+                      , HaskellWorks.Data.Json.Succinct
+                      , HaskellWorks.Data.Json.Succinct.Cursor
+                      , HaskellWorks.Data.Json.Succinct.Cursor.BalancedParens
+                      , HaskellWorks.Data.Json.Succinct.Cursor.BlankedJson
+                      , HaskellWorks.Data.Json.Succinct.Cursor.CursorType
+                      , HaskellWorks.Data.Json.Succinct.Cursor.FromJsonCursor
+                      , HaskellWorks.Data.Json.Succinct.Cursor.InterestBits
+                      , HaskellWorks.Data.Json.Succinct.Cursor.Internal
+                      , HaskellWorks.Data.Json.Succinct.Cursor.Token
+                      , HaskellWorks.Data.Json.Token.Tokenize
+                      , HaskellWorks.Data.Json.Token.Types
+                      , HaskellWorks.Data.Json.Token
+                      , HaskellWorks.Data.Json.Type
+                      , HaskellWorks.Data.Json.Value
+  build-depends:        base                            >= 4.7  && < 5
+                      , attoparsec
+                      , bytestring
+                      , conduit
+                      , containers
+                      , hw-bits
+                      , hw-conduit
+                      , hw-parser
+                      , hw-prim
+                      , hw-rankselect
+                      , mono-traversable
+                      , text
+                      , vector
+                      , word8
+
+  default-language:     Haskell2010
+  ghc-options:          -rtsopts -with-rtsopts=-N -Wall -O2 -Wall -msse4.2
+
+test-suite hw-json-test
+  type:                 exitcode-stdio-1.0
+  hs-source-dirs:       test
+  main-is:              Spec.hs
+  other-modules:        HaskellWorks.Data.Json.Token.TokenizeSpec
+                      , HaskellWorks.Data.Json.Succinct.CursorSpec
+                      , HaskellWorks.Data.Json.Succinct.Cursor.InterestBitsSpec
+  build-depends:        base
+                      , attoparsec
+                      , bytestring
+                      , conduit
+                      , hspec
+                      , hw-bits
+                      , hw-conduit
+                      , hw-json
+                      , hw-prim
+                      , hw-rankselect
+                      , mmap
+                      , parsec
+                      , QuickCheck
+                      , resourcet
+                      , transformers
+                      , vector
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N -Wall
+  default-language:     Haskell2010
+
+source-repository head
+  type:     git
+  location: https://github.com/haskell-works/hw-json
+
+benchmark bench
+    Type: exitcode-stdio-1.0
+    HS-Source-Dirs: bench
+    Main-Is: Main.hs
+    GHC-Options: -O2 -Wall -msse4.2
+    Default-Language: Haskell2010
+    Build-Depends:      base            >= 4       && < 5
+                      , bytestring
+                      , conduit
+                      , criterion
+                      , hw-bits
+                      , hw-json
+                      , hw-prim
+                      , hw-rankselect
+                      , mmap
+                      , resourcet
+                      , vector
