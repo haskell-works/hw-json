@@ -6,7 +6,7 @@ module HaskellWorks.Data.Json.Extract
 
 import qualified Data.ByteString as BS
 import           Data.Word8
-import           HaskellWorks.Data.Conduit.Json.Words
+import           HaskellWorks.Data.Json.Conduit.Words
 import           HaskellWorks.Data.Json.Type
 
 data ExtractJsonState

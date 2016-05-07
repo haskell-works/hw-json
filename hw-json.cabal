@@ -36,6 +36,9 @@ executable hw-json-example
 library
   hs-source-dirs:       src
   exposed-modules:      HaskellWorks.Data.Json
+                      , HaskellWorks.Data.Json.Conduit
+                      , HaskellWorks.Data.Json.Conduit.Blank
+                      , HaskellWorks.Data.Json.Conduit.Words
                       , HaskellWorks.Data.Json.Extract
                       , HaskellWorks.Data.Json.Succinct
                       , HaskellWorks.Data.Json.Succinct.Cursor
@@ -52,6 +55,7 @@ library
                       , HaskellWorks.Data.Json.Type
                       , HaskellWorks.Data.Json.Value
   build-depends:        base                            >= 4.7  && < 5
+                      , array
                       , attoparsec
                       , bytestring
                       , conduit
@@ -62,6 +66,7 @@ library
                       , hw-prim
                       , hw-rankselect
                       , mono-traversable
+                      , resourcet
                       , text
                       , vector
                       , word8
@@ -110,6 +115,7 @@ benchmark bench
                       , conduit
                       , criterion
                       , hw-bits
+                      , hw-conduit
                       , hw-json
                       , hw-prim
                       , hw-rankselect

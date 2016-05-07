@@ -13,8 +13,8 @@ import qualified Data.ByteString                                    as BS
 import           Data.Conduit
 import qualified Data.Vector.Storable                               as DVS
 import           Data.Word
-import           HaskellWorks.Data.Conduit.Json
 import           HaskellWorks.Data.Conduit.List
+import           HaskellWorks.Data.Json.Conduit
 import           HaskellWorks.Data.Json.Succinct.Cursor.BlankedJson
 import           HaskellWorks.Data.Succinct.BalancedParens          as BP
 

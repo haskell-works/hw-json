@@ -7,9 +7,9 @@ module HaskellWorks.Data.Json.Succinct.Cursor.BlankedJson
 
 import qualified Data.ByteString                      as BS
 import           HaskellWorks.Data.ByteString
-import           HaskellWorks.Data.Conduit.Json.Blank
 import           HaskellWorks.Data.Conduit.List
 import           HaskellWorks.Data.FromByteString
+import           HaskellWorks.Data.Json.Conduit.Blank
 
 newtype BlankedJson = BlankedJson [BS.ByteString] deriving (Eq, Show)
 
