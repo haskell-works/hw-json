@@ -84,6 +84,7 @@ test-suite hw-json-test
   build-depends:        base
                       , attoparsec
                       , bytestring
+                      , containers
                       , conduit
                       , hspec
                       , hw-bits

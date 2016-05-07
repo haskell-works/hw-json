@@ -33,7 +33,7 @@ spec = describe "HaskellWorks.Data.Json.ExtractSpec" $ do
       extractJsonSnippet "1.0e-2" `shouldBe` Just (JsonTypeNumber, "1.0e-2")
     it "should work for number followed by space" $
       extractJsonSnippet "-123.02e+2 " `shouldBe` Just (JsonTypeNumber, "-123.02e+2")
-    it "should work for number followed by space" $
+    it "should work for array" $
       extractJsonSnippet "[1, 2, 3] " `shouldBe` Just (JsonTypeArray, "[")
-    it "should work for number followed by space" $
+    it "should work for object" $
       extractJsonSnippet "{\"field\": 1}" `shouldBe` Just (JsonTypeObject, "{")

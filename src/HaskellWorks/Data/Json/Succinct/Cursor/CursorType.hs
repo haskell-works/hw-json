@@ -27,29 +27,29 @@ data JsonCursorType
   deriving (Eq, Show)
 
 class HasJsonCursorType k where
-  jsonCursorType :: k -> JsonCursorType
+  jsonCursorType :: k -> Maybe JsonCursorType
 
-jsonCursorType' :: Char -> JsonCursorType
+jsonCursorType' :: Char -> Maybe JsonCursorType
 jsonCursorType' c = case c of
-  '[' -> JsonCursorArray
-  't' -> JsonCursorBool
-  'f' -> JsonCursorBool
-  '0' -> JsonCursorNumber
-  '1' -> JsonCursorNumber
-  '2' -> JsonCursorNumber
-  '3' -> JsonCursorNumber
-  '4' -> JsonCursorNumber
-  '5' -> JsonCursorNumber
-  '6' -> JsonCursorNumber
-  '7' -> JsonCursorNumber
-  '8' -> JsonCursorNumber
-  '9' -> JsonCursorNumber
-  '+' -> JsonCursorNumber
-  '-' -> JsonCursorNumber
-  'n' -> JsonCursorNull
-  '{' -> JsonCursorObject
-  '"' -> JsonCursorString
-  _   -> error "Invalid JsonCursor cursorRank"
+  '[' -> Just JsonCursorArray
+  't' -> Just JsonCursorBool
+  'f' -> Just JsonCursorBool
+  '0' -> Just JsonCursorNumber
+  '1' -> Just JsonCursorNumber
+  '2' -> Just JsonCursorNumber
+  '3' -> Just JsonCursorNumber
+  '4' -> Just JsonCursorNumber
+  '5' -> Just JsonCursorNumber
+  '6' -> Just JsonCursorNumber
+  '7' -> Just JsonCursorNumber
+  '8' -> Just JsonCursorNumber
+  '9' -> Just JsonCursorNumber
+  '+' -> Just JsonCursorNumber
+  '-' -> Just JsonCursorNumber
+  'n' -> Just JsonCursorNull
+  '{' -> Just JsonCursorObject
+  '"' -> Just JsonCursorString
+  _   -> Nothing
 
 jsonCursorPos :: (Rank1 w, Select1 v, VectorLike s) => JsonCursor s v w -> Position
 jsonCursorPos k = toPosition (select1 ik (rank1 bpk (cursorRank k)) - 1)
