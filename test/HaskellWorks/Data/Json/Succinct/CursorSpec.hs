@@ -23,6 +23,7 @@ import           HaskellWorks.Data.Bits.BitWise
 import           HaskellWorks.Data.FromForeignRegion
 import           HaskellWorks.Data.Json.Succinct.Cursor                     as C
 import           HaskellWorks.Data.Json.Token
+import           HaskellWorks.Data.Json.Type
 import           HaskellWorks.Data.Json.Value
 import           HaskellWorks.Data.Succinct.BalancedParens.Internal
 import           HaskellWorks.Data.Succinct.BalancedParens.Simple
@@ -51,40 +52,40 @@ spec = describe "HaskellWorks.Data.Json.Succinct.CursorSpec" $ do
   describe "Cursor for [Bool]" $ do
     it "initialises to beginning of empty object" $ do
       let cursor = "{}" :: JsonCursor String (BitShown [Bool]) (SimpleBalancedParens [Bool])
-      jsonCursorType cursor `shouldBe` Just JsonCursorObject
+      jsonTypeAt cursor `shouldBe` Just JsonTypeObject
     it "initialises to beginning of empty object preceded by spaces" $ do
       let cursor = " {}" :: JsonCursor String (BitShown [Bool]) (SimpleBalancedParens [Bool])
-      jsonCursorType cursor `shouldBe` Just JsonCursorObject
+      jsonTypeAt cursor `shouldBe` Just JsonTypeObject
     it "initialises to beginning of number" $ do
       let cursor = "1234" :: JsonCursor String (BitShown [Bool]) (SimpleBalancedParens [Bool])
-      jsonCursorType cursor `shouldBe` Just JsonCursorNumber
+      jsonTypeAt cursor `shouldBe` Just JsonTypeNumber
     it "initialises to beginning of string" $ do
       let cursor = "\"Hello\"" :: JsonCursor String (BitShown [Bool]) (SimpleBalancedParens [Bool])
-      jsonCursorType cursor `shouldBe` Just JsonCursorString
+      jsonTypeAt cursor `shouldBe` Just JsonTypeString
     it "initialises to beginning of array" $ do
       let cursor = "[]" :: JsonCursor String (BitShown [Bool]) (SimpleBalancedParens [Bool])
-      jsonCursorType cursor `shouldBe` Just JsonCursorArray
+      jsonTypeAt cursor `shouldBe` Just JsonTypeArray
     it "initialises to beginning of boolean true" $ do
       let cursor = "true" :: JsonCursor String (BitShown [Bool]) (SimpleBalancedParens [Bool])
-      jsonCursorType cursor `shouldBe` Just JsonCursorBool
+      jsonTypeAt cursor `shouldBe` Just JsonTypeBool
     it "initialises to beginning of boolean false" $ do
       let cursor = "false" :: JsonCursor String (BitShown [Bool]) (SimpleBalancedParens [Bool])
-      jsonCursorType cursor `shouldBe` Just JsonCursorBool
+      jsonTypeAt cursor `shouldBe` Just JsonTypeBool
     it "initialises to beginning of null" $ do
       let cursor = "null" :: JsonCursor String (BitShown [Bool]) (SimpleBalancedParens [Bool])
-      jsonCursorType cursor `shouldBe` Just JsonCursorNull
+      jsonTypeAt cursor `shouldBe` Just JsonTypeNull
     it "cursor can navigate to first child of array" $ do
       let cursor = "[null]" :: JsonCursor String (BitShown [Bool]) (SimpleBalancedParens [Bool])
-      (fc >=> jsonCursorType) cursor `shouldBe` Just JsonCursorNull
+      (fc >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeNull
     it "cursor can navigate to second child of array" $ do
       let cursor = "[null, {\"field\": 1}]" :: JsonCursor String (BitShown [Bool]) (SimpleBalancedParens [Bool])
-      (fc >=> ns >=> jsonCursorType) cursor `shouldBe` Just JsonCursorObject
+      (fc >=> ns >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeObject
     it "cursor can navigate to first child of object at second child of array" $ do
       let cursor = "[null, {\"field\": 1}]" :: JsonCursor String (BitShown [Bool]) (SimpleBalancedParens [Bool])
-      (fc >=> ns >=> fc >=> jsonCursorType) cursor `shouldBe` Just JsonCursorString
+      (fc >=> ns >=> fc >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeString
     it "cursor can navigate to first child of object at second child of array" $ do
       let cursor = "[null, {\"field\": 1}]" :: JsonCursor String (BitShown [Bool]) (SimpleBalancedParens [Bool])
-      (fc >=> ns >=> fc >=> ns >=> jsonCursorType) cursor `shouldBe` Just JsonCursorNumber
+      (fc >=> ns >=> fc >=> ns >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeNumber
     it "depth at top" $ do
       let cursor = "[null]" :: JsonCursor String (BitShown [Bool]) (SimpleBalancedParens [Bool])
       cd cursor `shouldBe` 1
@@ -143,52 +144,52 @@ genSpec t _ = do
   describe ("Cursor for (" ++ t ++ ")") $ do
     it "initialises to beginning of empty object" $ do
       let cursor = "{}" :: JsonCursor BS.ByteString t u
-      jsonCursorType cursor `shouldBe` Just JsonCursorObject
+      jsonTypeAt cursor `shouldBe` Just JsonTypeObject
       jsonValueAt cursor `shouldBe` Just (JsonObject M.empty :: JsonValue)
     it "initialises to beginning of empty object preceded by spaces" $ do
       let cursor = " {}" :: JsonCursor BS.ByteString t u
-      jsonCursorType cursor `shouldBe` Just JsonCursorObject
+      jsonTypeAt cursor `shouldBe` Just JsonTypeObject
       jsonValueAt cursor `shouldBe` Just (JsonObject M.empty :: JsonValue)
     it "initialises to beginning of number" $ do
       let cursor = "1234" :: JsonCursor BS.ByteString t u
-      jsonCursorType cursor `shouldBe` Just JsonCursorNumber
+      jsonTypeAt cursor `shouldBe` Just JsonTypeNumber
       jsonValueAt cursor `shouldBe` Just (JsonNumber "1234" :: JsonValue)
     it "initialises to beginning of string" $ do
       let cursor = "\"Hello\"" :: JsonCursor BS.ByteString t u
-      jsonCursorType cursor `shouldBe` Just JsonCursorString
+      jsonTypeAt cursor `shouldBe` Just JsonTypeString
       jsonValueAt cursor `shouldBe` Just (JsonString "\"Hello\"" :: JsonValue)
     it "initialises to beginning of array" $ do
       let cursor = "[]" :: JsonCursor BS.ByteString t u
-      jsonCursorType cursor `shouldBe` Just JsonCursorArray
+      jsonTypeAt cursor `shouldBe` Just JsonTypeArray
       jsonValueAt cursor `shouldBe` Just (JsonArray [] :: JsonValue)
     it "initialises to beginning of boolean true" $ do
       let cursor = "true" :: JsonCursor BS.ByteString t u
-      jsonCursorType cursor `shouldBe` Just JsonCursorBool
+      jsonTypeAt cursor `shouldBe` Just JsonTypeBool
       jsonValueAt cursor `shouldBe` Just (JsonBool True :: JsonValue)
     it "initialises to beginning of boolean false" $ do
       let cursor = "false" :: JsonCursor BS.ByteString t u
-      jsonCursorType cursor `shouldBe` Just JsonCursorBool
+      jsonTypeAt cursor `shouldBe` Just JsonTypeBool
       jsonValueAt cursor `shouldBe` Just (JsonBool False :: JsonValue)
     it "initialises to beginning of null" $ do
       let cursor = "null" :: JsonCursor BS.ByteString t u
-      jsonCursorType cursor `shouldBe` Just JsonCursorNull
+      jsonTypeAt cursor `shouldBe` Just JsonTypeNull
       jsonValueAt cursor `shouldBe` Just (JsonNull :: JsonValue)
     it "cursor can navigate to first child of array" $ do
       let cursor = "[null]" :: JsonCursor BS.ByteString t u
-      (fc >=> jsonCursorType) cursor `shouldBe` Just JsonCursorNull
+      (fc >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeNull
       jsonValueAt cursor `shouldBe` Just (JsonArray [JsonNull] :: JsonValue)
       ((fc >=> jsonValueAt) cursor) `shouldBe` Just (JsonNull :: JsonValue)
     it "cursor can navigate to second child of array" $ do
       let cursor = "[null, {\"field\": 1}]" :: JsonCursor BS.ByteString t u
-      (fc >=> ns >=> jsonCursorType) cursor `shouldBe` Just JsonCursorObject
+      (fc >=> ns >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeObject
       ((fc >=> ns >=> jsonValueAt) cursor) `shouldBe` Just (JsonObject (M.fromList [("\"field\"", JsonNumber "1")]) :: JsonValue)
       jsonValueAt cursor `shouldBe` Just (JsonArray [JsonNull, JsonObject (M.fromList [("\"field\"", JsonNumber "1")])] :: JsonValue)
     it "cursor can navigate to first child of object at second child of array" $ do
       let cursor = "[null, {\"field\": 1}]" :: JsonCursor BS.ByteString t u
-      (fc >=> ns >=> fc >=> jsonCursorType) cursor `shouldBe` Just JsonCursorString
+      (fc >=> ns >=> fc >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeString
     it "cursor can navigate to first child of object at second child of array" $ do
       let cursor = "[null, {\"field\": 1}]" :: JsonCursor BS.ByteString t u
-      (fc >=> ns >=> fc >=> ns >=> jsonCursorType) cursor `shouldBe` Just JsonCursorNumber
+      (fc >=> ns >=> fc >=> ns >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeNumber
     it "depth at top" $ do
       let cursor = "[null]" :: JsonCursor BS.ByteString t u
       cd cursor `shouldBe` 1
@@ -207,19 +208,19 @@ genSpec t _ = do
     it "can navigate down and forwards" $ do
       (fptr, offset, size) <- mmapFileForeignPtr "test/data/sample.json" ReadOnly Nothing
       let cursor = fromForeignRegion (fptr, offset, size) :: JsonCursor BS.ByteString t u
-      (jsonCursorType                                                                                    ) cursor `shouldBe` Just JsonCursorObject
-      (fc                                                                              >=> jsonCursorType) cursor `shouldBe` Just JsonCursorString
-      (fc >=> ns                                                                       >=> jsonCursorType) cursor `shouldBe` Just JsonCursorObject
-      (fc >=> ns >=> fc                                                                >=> jsonCursorType) cursor `shouldBe` Just JsonCursorString
-      (fc >=> ns >=> fc >=> ns                                                         >=> jsonCursorType) cursor `shouldBe` Just JsonCursorString
-      (fc >=> ns >=> fc >=> ns >=> ns                                                  >=> jsonCursorType) cursor `shouldBe` Just JsonCursorString
-      (fc >=> ns >=> fc >=> ns >=> ns >=> ns                                           >=> jsonCursorType) cursor `shouldBe` Just JsonCursorObject
-      (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc                                    >=> jsonCursorType) cursor `shouldBe` Just JsonCursorString
-      (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns                             >=> jsonCursorType) cursor `shouldBe` Just JsonCursorString
-      (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns                      >=> jsonCursorType) cursor `shouldBe` Just JsonCursorString
-      (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns >=> ns               >=> jsonCursorType) cursor `shouldBe` Just JsonCursorString
-      (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns >=> ns >=> ns        >=> jsonCursorType) cursor `shouldBe` Just JsonCursorString
-      (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns >=> ns >=> ns >=> ns >=> jsonCursorType) cursor `shouldBe` Just JsonCursorNumber
+      (jsonTypeAt                                                                                    ) cursor `shouldBe` Just JsonTypeObject
+      (fc                                                                              >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeString
+      (fc >=> ns                                                                       >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeObject
+      (fc >=> ns >=> fc                                                                >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeString
+      (fc >=> ns >=> fc >=> ns                                                         >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeString
+      (fc >=> ns >=> fc >=> ns >=> ns                                                  >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeString
+      (fc >=> ns >=> fc >=> ns >=> ns >=> ns                                           >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeObject
+      (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc                                    >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeString
+      (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns                             >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeString
+      (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns                      >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeString
+      (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns >=> ns               >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeString
+      (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns >=> ns >=> ns        >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeString
+      (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns >=> ns >=> ns >=> ns >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeNumber
     it "can navigate up" $ do
       (fptr, offset, size) <- mmapFileForeignPtr "test/data/sample.json" ReadOnly Nothing
       let cursor = fromForeignRegion (fptr, offset, size) :: JsonCursor BS.ByteString t u

@@ -11,12 +11,14 @@ module HaskellWorks.Data.Json.Succinct.Cursor.Internal
 import qualified Data.ByteString                                          as BS
 import qualified Data.ByteString.Char8                                    as BSC
 import           Data.ByteString.Internal                                 as BSI
+import           Data.Char
 import qualified Data.List                                                as L
 import qualified Data.Map                                                 as M
 import           Data.String
 import qualified Data.Vector.Storable                                     as DVS
 import           Data.Word
 import           Data.Word8
+import           Debug.Trace
 import           Foreign.ForeignPtr
 import           HaskellWorks.Data.Bits.BitShown
 import           HaskellWorks.Data.Bits.BitWise
@@ -116,21 +118,35 @@ instance (BP.BalancedParens u, Rank1 u, Rank0 u) => TreeCursor (JsonCursor t v u
 wIsJsonNumberDigit :: Word8 -> Bool
 wIsJsonNumberDigit w = (w >= _0 && w <= _9) || w == _hyphen
 
-instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => JsonTypeAt (JsonCursor BS.ByteString v w) where
-  jsonTypeAtPosition p k = if bpk .?. p
-    then case BS.uncons (vDrop (toCount p) (cursorText k)) of
-      Just (c, _) | c == _bracketleft     -> Just JsonTypeArray
-      Just (c, _) | c == _t               -> Just JsonTypeBool
-      Just (c, _) | c == _n               -> Just JsonTypeNull
-      Just (c, _) | wIsJsonNumberDigit c  -> Just JsonTypeNumber
-      Just (c, _) | c == _braceleft       -> Just JsonTypeObject
-      Just (c, _) | c == _quotedbl        -> Just JsonTypeString
-      _                         -> Nothing
-    else Nothing
-    where bpk = balancedParens k
+instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => JsonTypeAt (JsonCursor String v w) where
+  jsonTypeAtPosition p k = case vDrop (toCount p) (cursorText k) of
+    c:_ | fromIntegral (ord c) == _bracketleft      -> Just JsonTypeArray
+    c:_ | fromIntegral (ord c) == _f                -> Just JsonTypeBool
+    c:_ | fromIntegral (ord c) == _t                -> Just JsonTypeBool
+    c:_ | fromIntegral (ord c) == _n                -> Just JsonTypeNull
+    c:_ | wIsJsonNumberDigit (fromIntegral (ord c)) -> Just JsonTypeNumber
+    c:_ | fromIntegral (ord c) == _braceleft        -> Just JsonTypeObject
+    c:_ | fromIntegral (ord c) == _quotedbl         -> Just JsonTypeString
+    xs                                              -> Nothing
 
   jsonTypeAt k = jsonTypeAtPosition p k
-    where p = toPosition (select1 ik (rank1 bpk (cursorRank k)) - 1)
+    where p   = lastPositionOf (select1 ik (rank1 bpk (cursorRank k)))
+          ik  = interests k
+          bpk = balancedParens k
+
+instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => JsonTypeAt (JsonCursor BS.ByteString v w) where
+  jsonTypeAtPosition p k = case BS.uncons (vDrop (toCount p) (cursorText k)) of
+    Just (c, _) | c == _bracketleft     -> Just JsonTypeArray
+    Just (c, _) | c == _f               -> Just JsonTypeBool
+    Just (c, _) | c == _t               -> Just JsonTypeBool
+    Just (c, _) | c == _n               -> Just JsonTypeNull
+    Just (c, _) | wIsJsonNumberDigit c  -> Just JsonTypeNumber
+    Just (c, _) | c == _braceleft       -> Just JsonTypeObject
+    Just (c, _) | c == _quotedbl        -> Just JsonTypeString
+    _                                   -> Nothing
+
+  jsonTypeAt k = jsonTypeAtPosition p k
+    where p   = lastPositionOf (select1 ik (rank1 bpk (cursorRank k)))
           ik  = interests k
           bpk = balancedParens k
 
