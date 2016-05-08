@@ -177,9 +177,12 @@ genSpec t _ = do
       let cursor = "[null]" :: JsonCursor BS.ByteString t u
       (fc >=> jsonCursorType) cursor `shouldBe` Just JsonCursorNull
       jsonValueAt cursor `shouldBe` Just (JsonArray [JsonNull] :: JsonValue)
+      ((fc >=> jsonValueAt) cursor) `shouldBe` Just (JsonNull :: JsonValue)
     it "cursor can navigate to second child of array" $ do
       let cursor = "[null, {\"field\": 1}]" :: JsonCursor BS.ByteString t u
       (fc >=> ns >=> jsonCursorType) cursor `shouldBe` Just JsonCursorObject
+      ((fc >=> ns >=> jsonValueAt) cursor) `shouldBe` Just (JsonObject (M.fromList [("\"field\"", JsonNumber "1")]) :: JsonValue)
+      jsonValueAt cursor `shouldBe` Just (JsonArray [JsonNull, JsonObject (M.fromList [("\"field\"", JsonNumber "1")])] :: JsonValue)
     it "cursor can navigate to first child of object at second child of array" $ do
       let cursor = "[null, {\"field\": 1}]" :: JsonCursor BS.ByteString t u
       (fc >=> ns >=> fc >=> jsonCursorType) cursor `shouldBe` Just JsonCursorString
