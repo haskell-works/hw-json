@@ -6,7 +6,6 @@ module HaskellWorks.Data.Json.Succinct.Cursor.Token
 import qualified Data.Attoparsec.ByteString.Char8                           as ABC
 import           Data.ByteString.Internal                                   as BSI
 import           HaskellWorks.Data.Bits.BitWise
-import           HaskellWorks.Data.Json.Succinct.Cursor.CursorType
 import           HaskellWorks.Data.Json.Succinct.Cursor.Internal
 import           HaskellWorks.Data.Json.Token.Tokenize
 import           HaskellWorks.Data.Positioning

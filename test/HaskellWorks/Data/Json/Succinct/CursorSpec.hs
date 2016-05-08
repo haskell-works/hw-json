@@ -137,7 +137,6 @@ genSpec :: forall t u.
   , TestBit           u
   , FromForeignRegion (JsonCursor BS.ByteString t u)
   , IsString          (JsonCursor BS.ByteString t u)
-  , HasJsonCursorType (JsonCursor BS.ByteString t u)
   , GenJsonValueAt BS.ByteString BS.ByteString (JsonCursor BS.ByteString t u))
   => String -> (JsonCursor BS.ByteString t u) -> SpecWith ()
 genSpec t _ = do

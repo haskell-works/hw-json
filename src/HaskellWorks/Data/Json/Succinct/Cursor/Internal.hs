@@ -6,6 +6,7 @@
 
 module HaskellWorks.Data.Json.Succinct.Cursor.Internal
   ( JsonCursor(..)
+  , jsonCursorPos
   ) where
 
 import qualified Data.ByteString                                          as BS
@@ -18,7 +19,6 @@ import           Data.String
 import qualified Data.Vector.Storable                                     as DVS
 import           Data.Word
 import           Data.Word8
-import           Debug.Trace
 import           Foreign.ForeignPtr
 import           HaskellWorks.Data.Bits.BitShown
 import           HaskellWorks.Data.Bits.BitWise
@@ -118,6 +118,11 @@ instance (BP.BalancedParens u, Rank1 u, Rank0 u) => TreeCursor (JsonCursor t v u
 wIsJsonNumberDigit :: Word8 -> Bool
 wIsJsonNumberDigit w = (w >= _0 && w <= _9) || w == _hyphen
 
+jsonCursorPos :: (Rank1 w, Select1 v, VectorLike s) => JsonCursor s v w -> Position
+jsonCursorPos k = toPosition (select1 ik (rank1 bpk (cursorRank k)) - 1)
+  where ik  = interests k
+        bpk = balancedParens k
+
 instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => JsonTypeAt (JsonCursor String v w) where
   jsonTypeAtPosition p k = case vDrop (toCount p) (cursorText k) of
     c:_ | fromIntegral (ord c) == _bracketleft      -> Just JsonTypeArray
@@ -127,7 +132,7 @@ instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => JsonTy
     c:_ | wIsJsonNumberDigit (fromIntegral (ord c)) -> Just JsonTypeNumber
     c:_ | fromIntegral (ord c) == _braceleft        -> Just JsonTypeObject
     c:_ | fromIntegral (ord c) == _quotedbl         -> Just JsonTypeString
-    xs                                              -> Nothing
+    _                                               -> Nothing
 
   jsonTypeAt k = jsonTypeAtPosition p k
     where p   = lastPositionOf (select1 ik (rank1 bpk (cursorRank k)))
