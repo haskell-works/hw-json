@@ -38,6 +38,8 @@ import           Test.Hspec
 {-# ANN module ("HLint: ignore Reduce duplication"  :: String) #-}
 {-# ANN module ("HLint: redundant bracket"          :: String) #-}
 
+type JsonValue = GenJsonValue BS.ByteString BS.ByteString
+
 fc = TC.firstChild
 ns = TC.nextSibling
 pn = TC.parent
@@ -135,39 +137,46 @@ genSpec :: forall t u.
   , FromForeignRegion (JsonCursor BS.ByteString t u)
   , IsString          (JsonCursor BS.ByteString t u)
   , HasJsonCursorType (JsonCursor BS.ByteString t u)
-  , JsonValueAt BS.ByteString BS.ByteString (JsonCursor BS.ByteString t u))
+  , GenJsonValueAt BS.ByteString BS.ByteString (JsonCursor BS.ByteString t u))
   => String -> (JsonCursor BS.ByteString t u) -> SpecWith ()
 genSpec t _ = do
   describe ("Cursor for (" ++ t ++ ")") $ do
     it "initialises to beginning of empty object" $ do
       let cursor = "{}" :: JsonCursor BS.ByteString t u
       jsonCursorType cursor `shouldBe` Just JsonCursorObject
+      jsonValueAt cursor `shouldBe` Just (JsonObject M.empty :: JsonValue)
     it "initialises to beginning of empty object preceded by spaces" $ do
       let cursor = " {}" :: JsonCursor BS.ByteString t u
       jsonCursorType cursor `shouldBe` Just JsonCursorObject
-      jsonValueAt cursor `shouldBe` Just (JsonObject M.empty :: JsonValue BS.ByteString BS.ByteString)
+      jsonValueAt cursor `shouldBe` Just (JsonObject M.empty :: JsonValue)
     it "initialises to beginning of number" $ do
       let cursor = "1234" :: JsonCursor BS.ByteString t u
       jsonCursorType cursor `shouldBe` Just JsonCursorNumber
+      jsonValueAt cursor `shouldBe` Just (JsonNumber "1234" :: JsonValue)
     it "initialises to beginning of string" $ do
       let cursor = "\"Hello\"" :: JsonCursor BS.ByteString t u
       jsonCursorType cursor `shouldBe` Just JsonCursorString
+      jsonValueAt cursor `shouldBe` Just (JsonString "\"Hello\"" :: JsonValue)
     it "initialises to beginning of array" $ do
       let cursor = "[]" :: JsonCursor BS.ByteString t u
       jsonCursorType cursor `shouldBe` Just JsonCursorArray
-      jsonValueAt cursor `shouldBe` Just (JsonArray [] :: JsonValue BS.ByteString BS.ByteString)
+      jsonValueAt cursor `shouldBe` Just (JsonArray [] :: JsonValue)
     it "initialises to beginning of boolean true" $ do
       let cursor = "true" :: JsonCursor BS.ByteString t u
       jsonCursorType cursor `shouldBe` Just JsonCursorBool
+      jsonValueAt cursor `shouldBe` Just (JsonBool True :: JsonValue)
     it "initialises to beginning of boolean false" $ do
       let cursor = "false" :: JsonCursor BS.ByteString t u
       jsonCursorType cursor `shouldBe` Just JsonCursorBool
+      jsonValueAt cursor `shouldBe` Just (JsonBool False :: JsonValue)
     it "initialises to beginning of null" $ do
       let cursor = "null" :: JsonCursor BS.ByteString t u
       jsonCursorType cursor `shouldBe` Just JsonCursorNull
+      jsonValueAt cursor `shouldBe` Just (JsonNull :: JsonValue)
     it "cursor can navigate to first child of array" $ do
       let cursor = "[null]" :: JsonCursor BS.ByteString t u
       (fc >=> jsonCursorType) cursor `shouldBe` Just JsonCursorNull
+      jsonValueAt cursor `shouldBe` Just (JsonArray [JsonNull] :: JsonValue)
     it "cursor can navigate to second child of array" $ do
       let cursor = "[null, {\"field\": 1}]" :: JsonCursor BS.ByteString t u
       (fc >=> ns >=> jsonCursorType) cursor `shouldBe` Just JsonCursorObject

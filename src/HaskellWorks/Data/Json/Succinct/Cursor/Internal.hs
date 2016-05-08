@@ -140,7 +140,7 @@ instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => GenJso
     Just (JsonTypeArray ,  _) -> Just $ JsonArray (arrayValuesAt k)
     Just (JsonTypeBool  , bs) -> case BS.uncons bs of
       Just (c, _) | c == _t   -> Just $ JsonBool True
-      Just (c, _) | c == _t   -> Just $ JsonBool False
+      Just (c, _) | c == _f   -> Just $ JsonBool False
       _                       -> Nothing
     Just (JsonTypeNull  ,  _) -> Just JsonNull
     Just (JsonTypeNumber, bs) -> Just $ JsonNumber bs
