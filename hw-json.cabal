@@ -12,7 +12,6 @@ category:               Data, Conduit
 build-type:             Simple
 extra-source-files:     README.md
 cabal-version:          >= 1.10
-data-files:             test/data/sample.json
 
 executable hw-json-example
   hs-source-dirs:       app
