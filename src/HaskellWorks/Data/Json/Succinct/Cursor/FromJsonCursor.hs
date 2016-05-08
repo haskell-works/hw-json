@@ -17,7 +17,7 @@ import           HaskellWorks.Data.TreeCursor
 class FromJsonCursor t v w a where
   fromJsonCursor :: JsonCursor t v w -> a
 
-instance (TreeCursor (JsonCursor BS.ByteString v w), Rank1 w, Select1 v, TestBit w) => FromJsonCursor BS.ByteString v w (JsonValue BS.ByteString BS.ByteString) where
+instance (TreeCursor (JsonCursor BS.ByteString v w), Rank1 w, Select1 v, TestBit w) => FromJsonCursor BS.ByteString v w (GenJsonValue BS.ByteString BS.ByteString) where
   fromJsonCursor k = case jsonTokenAt k of
     Just JsonTokenBraceL          -> undefined
     Just JsonTokenBraceR          -> undefined

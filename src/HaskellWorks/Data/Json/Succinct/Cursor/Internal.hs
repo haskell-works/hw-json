@@ -27,7 +27,7 @@ import qualified HaskellWorks.Data.Json.Succinct.Cursor.BalancedParens    as CBP
 import           HaskellWorks.Data.Json.Succinct.Cursor.BlankedJson
 import           HaskellWorks.Data.Json.Succinct.Cursor.InterestBits
 import           HaskellWorks.Data.Json.Type
-import           HaskellWorks.Data.Json.Value
+import           HaskellWorks.Data.Json.Value.Internal
 import           HaskellWorks.Data.Positioning
 import qualified HaskellWorks.Data.Succinct.BalancedParens                as BP
 import           HaskellWorks.Data.Succinct.RankSelect.Binary.Basic.Rank0
@@ -134,8 +134,8 @@ instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => JsonTy
           ik  = interests k
           bpk = balancedParens k
 
-instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => JsonValueAt BS.ByteString BS.ByteString (JsonCursor BS.ByteString v w) where
-  jsonValueAt :: JsonCursor BS.ByteString v w -> Maybe (JsonValue BS.ByteString BS.ByteString)
+instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => GenJsonValueAt BS.ByteString BS.ByteString (JsonCursor BS.ByteString v w) where
+  jsonValueAt :: JsonCursor BS.ByteString v w -> Maybe (GenJsonValue BS.ByteString BS.ByteString)
   jsonValueAt k = case extractJsonSnippet remainder of
     Just (JsonTypeArray ,  _) -> Just $ JsonArray (arrayValuesAt k)
     Just (JsonTypeBool  , bs) -> case BS.uncons bs of
@@ -151,15 +151,15 @@ instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => JsonVa
           ik  = interests k
           bpk = balancedParens k
           remainder = (vDrop (toCount p) (cursorText k))
-          genArrayValue :: JsonCursor BS.ByteString v w -> Maybe (JsonValue ByteString ByteString, JsonCursor ByteString v w)
+          genArrayValue :: JsonCursor BS.ByteString v w -> Maybe (GenJsonValue ByteString ByteString, JsonCursor ByteString v w)
           genArrayValue j = (,) <$> jsonValueAt j <*> nextSibling j
-          arrayValuesAt :: JsonCursor BS.ByteString v w -> [JsonValue BS.ByteString BS.ByteString]
+          arrayValuesAt :: JsonCursor BS.ByteString v w -> [GenJsonValue BS.ByteString BS.ByteString]
           arrayValuesAt j = case firstChild j of
             Just c  -> L.unfoldr genArrayValue c
             Nothing -> []
-          mapValuesAt :: JsonCursor BS.ByteString v w -> M.Map ByteString (JsonValue ByteString ByteString)
+          mapValuesAt :: JsonCursor BS.ByteString v w -> M.Map ByteString (GenJsonValue ByteString ByteString)
           mapValuesAt j = M.fromList (pairwise (arrayValuesAt j) >>= asField)
-          asField :: (JsonValue ByteString ByteString, JsonValue ByteString ByteString) -> [(ByteString, JsonValue ByteString ByteString)]
+          asField :: (GenJsonValue ByteString ByteString, GenJsonValue ByteString ByteString) -> [(ByteString, GenJsonValue ByteString ByteString)]
           asField (a, b) = case a of
             JsonString s  -> [(s, b)]
             _             -> []
