@@ -87,19 +87,19 @@ spec = describe "HaskellWorks.Data.Json.Succinct.CursorSpec" $ do
       (fc >=> ns >=> fc >=> ns >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeNumber
     it "depth at top" $ do
       let cursor = "[null]" :: JsonCursor String (BitShown [Bool]) (SimpleBalancedParens [Bool])
-      cd cursor `shouldBe` 1
+      cd cursor `shouldBe` Just 1
     it "depth at first child of array" $ do
       let cursor = "[null]" :: JsonCursor String (BitShown [Bool]) (SimpleBalancedParens [Bool])
-      cd <$> fc cursor `shouldBe` Just 2
+      (fc >=> cd) cursor `shouldBe` Just 2
     it "depth at second child of array" $ do
       let cursor = "[null, {\"field\": 1}]" :: JsonCursor String (BitShown [Bool]) (SimpleBalancedParens [Bool])
-      cd <$> (fc >=> ns) cursor `shouldBe` Just 2
+      (fc >=> ns >=> cd) cursor `shouldBe` Just 2
     it "depth at first child of object at second child of array" $ do
       let cursor = "[null, {\"field\": 1}]" :: JsonCursor String (BitShown [Bool]) (SimpleBalancedParens [Bool])
-      cd <$> (fc >=> ns >=> fc) cursor `shouldBe` Just 3
+      (fc >=> ns >=> fc >=> cd) cursor `shouldBe` Just 3
     it "depth at first child of object at second child of array" $ do
       let cursor = "[null, {\"field\": 1}]" :: JsonCursor String (BitShown [Bool]) (SimpleBalancedParens [Bool])
-      cd <$> (fc >=> ns >=> fc >=> ns) cursor `shouldBe` Just 3
+      (fc >=> ns >=> fc >=> ns >=> cd) cursor `shouldBe` Just 3
   genSpec "DVS.Vector Word8"  (undefined :: JsonCursor BS.ByteString (BitShown (DVS.Vector Word8)) (SimpleBalancedParens (DVS.Vector Word8)))
   genSpec "DVS.Vector Word16" (undefined :: JsonCursor BS.ByteString (BitShown (DVS.Vector Word16)) (SimpleBalancedParens (DVS.Vector Word16)))
   genSpec "DVS.Vector Word32" (undefined :: JsonCursor BS.ByteString (BitShown (DVS.Vector Word32)) (SimpleBalancedParens (DVS.Vector Word32)))
@@ -169,8 +169,8 @@ genSpec t _ = do
       it "should have correct type"       $ (fc >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeNull
       it "should have correct value"      $ jsonValueAt cursor `shouldBe` Just (JsonArray [JsonNull] :: JsonValue)
       it "should have correct value"      $ ((fc >=> jsonValueAt) cursor) `shouldBe` Just (JsonNull :: JsonValue)
-      it "depth at top"                   $ cd cursor `shouldBe` 1
-      it "depth at first child of array"  $ cd <$> (fc) cursor `shouldBe` Just 2
+      it "depth at top"                   $ cd cursor `shouldBe` Just 1
+      it "depth at first child of array"  $ (fc >=> cd) cursor `shouldBe` Just 2
     forJson "[null, {\"field\": 1}]" $ \cursor -> do
       it "cursor can navigate to second child of array" $ do
         (fc >=> ns >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeObject
@@ -181,11 +181,11 @@ genSpec t _ = do
       it "cursor can navigate to first child of object at second child of array" $ do
         (fc >=> ns >=> fc >=> ns >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeNumber
       it "depth at second child of array" $ do
-        cd <$> (fc >=> ns) cursor `shouldBe` Just 2
+        (fc >=> ns >=> cd) cursor `shouldBe` Just 2
       it "depth at first child of object at second child of array" $ do
-        cd <$> (fc >=> ns >=> fc) cursor `shouldBe` Just 3
+        (fc >=> ns >=> fc >=> cd) cursor `shouldBe` Just 3
       it "depth at first child of object at second child of array" $ do
-        cd <$> (fc >=> ns >=> fc >=> ns) cursor `shouldBe` Just 3
+        (fc >=> ns >=> fc >=> ns >=> cd) cursor `shouldBe` Just 3
     describe "For sample Json" $ do
       let cursor =  "{ \
                     \    \"widget\": { \
@@ -230,6 +230,7 @@ genSpec t _ = do
         (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns        >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeString
         (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns >=> ns >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeArray
       it "can navigate up" $ do
+        (                                                                      pn) cursor `shouldBe` Nothing
         (fc                                                                >=> pn) cursor `shouldBe`                                    Just cursor
         (fc >=> ns                                                         >=> pn) cursor `shouldBe`                                    Just cursor
         (fc >=> ns >=> fc                                                  >=> pn) cursor `shouldBe` (fc >=> ns                            ) cursor
@@ -241,17 +242,17 @@ genSpec t _ = do
         (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns        >=> pn) cursor `shouldBe` (fc >=> ns >=> fc >=> ns >=> ns >=> ns) cursor
         (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns >=> ns >=> pn) cursor `shouldBe` (fc >=> ns >=> fc >=> ns >=> ns >=> ns) cursor
       it "can get subtree size" $ do
-        ss                                                                          cursor `shouldBe` 16
-        ss <$> (fc                                                                ) cursor `shouldBe` Just 1
-        ss <$> (fc >=> ns                                                         ) cursor `shouldBe` Just 14
-        ss <$> (fc >=> ns >=> fc                                                  ) cursor `shouldBe` Just 1
-        ss <$> (fc >=> ns >=> fc >=> ns                                           ) cursor `shouldBe` Just 1
-        ss <$> (fc >=> ns >=> fc >=> ns >=> ns                                    ) cursor `shouldBe` Just 1
-        ss <$> (fc >=> ns >=> fc >=> ns >=> ns >=> ns                             ) cursor `shouldBe` Just 10
-        ss <$> (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc                      ) cursor `shouldBe` Just 1
-        ss <$> (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns               ) cursor `shouldBe` Just 1
-        ss <$> (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns        ) cursor `shouldBe` Just 1
-        ss <$> (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns >=> ns ) cursor `shouldBe` Just 6
+        (                                                                      ss) cursor `shouldBe` Just 16
+        (fc                                                                >=> ss) cursor `shouldBe` Just 1
+        (fc >=> ns                                                         >=> ss) cursor `shouldBe` Just 14
+        (fc >=> ns >=> fc                                                  >=> ss) cursor `shouldBe` Just 1
+        (fc >=> ns >=> fc >=> ns                                           >=> ss) cursor `shouldBe` Just 1
+        (fc >=> ns >=> fc >=> ns >=> ns                                    >=> ss) cursor `shouldBe` Just 1
+        (fc >=> ns >=> fc >=> ns >=> ns >=> ns                             >=> ss) cursor `shouldBe` Just 10
+        (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc                      >=> ss) cursor `shouldBe` Just 1
+        (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns               >=> ss) cursor `shouldBe` Just 1
+        (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns        >=> ss) cursor `shouldBe` Just 1
+        (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns >=> ns >=> ss) cursor `shouldBe` Just 6
       it "can get token at cursor" $ do
         (jsonTokenAt                                                                      ) cursor `shouldBe` Just (JsonTokenBraceL                 )
         (fc                                                                >=> jsonTokenAt) cursor `shouldBe` Just (JsonTokenString   "widget"      )
