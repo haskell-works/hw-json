@@ -66,7 +66,7 @@ jsonToInterestBits3 = blankJson =$= blankedJsonToInterestBits
 
 benchRankJson40Conduits :: [Benchmark]
 benchRankJson40Conduits =
-  [ env (setupEnvJson "/Users/jky/Downloads/part40.json") $ \bs -> bgroup "Json40"
+  [ env (setupEnvJson "corpus/part40.json") $ \bs -> bgroup "Json40"
     [ bench "Run blankJson                    "  (whnf (runCon blankJson                  ) bs)
     , bench "Run jsonToInterestBits3          "  (whnf (runCon jsonToInterestBits3        ) bs)
     , bench "loadJson                         "  (whnf  loadJson                            bs)
@@ -75,7 +75,7 @@ benchRankJson40Conduits =
 
 benchRankJson80Conduits :: [Benchmark]
 benchRankJson80Conduits =
-  [ env (setupEnvJson "/Users/jky/Downloads/part80.json") $ \bs -> bgroup "Json40"
+  [ env (setupEnvJson "corpus/part80.json") $ \bs -> bgroup "Json40"
     [ bench "Run blankJson                    "  (whnf (runCon blankJson                  ) bs)
     , bench "Run jsonToInterestBits3          "  (whnf (runCon jsonToInterestBits3        ) bs)
     , bench "loadJson" (whnf loadJson bs)
@@ -84,7 +84,7 @@ benchRankJson80Conduits =
 
 benchRankJsonBigConduits :: [Benchmark]
 benchRankJsonBigConduits =
-  [ env (setupEnvJson "/Users/jky/Downloads/78mb.json") $ \bs -> bgroup "JsonBig"
+  [ env (setupEnvJson "corpus/78mb.json") $ \bs -> bgroup "JsonBig"
     [ bench "Run blankJson                    "  (whnf (runCon blankJson                  ) bs)
     , bench "Run jsonToInterestBits3          "  (whnf (runCon jsonToInterestBits3        ) bs)
     , bench "loadJson" (whnf loadJson bs)
@@ -93,7 +93,7 @@ benchRankJsonBigConduits =
 
 benchBlankedJsonToBalancedParens :: [Benchmark]
 benchBlankedJsonToBalancedParens =
-  [ env (setupEnvJson "/Users/jky/Downloads/part40.json") $ \bs -> bgroup "JsonBig"
+  [ env (setupEnvJson "corpus/part40.json") $ \bs -> bgroup "JsonBig"
     [ bench "blankedJsonToBalancedParens2" (whnf (runCon2 blankedJsonToBalancedParens) [bs])
     , bench "blankedJsonToBalancedParens2" (whnf (runCon3 blankedJsonToBalancedParens2) [bs])
     ]
