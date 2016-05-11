@@ -1,0 +1,3 @@
+[submodule "json-corpus"]
+	path = json-corpus
+	url = git@github.com:haskell-works/json-corpus.git
