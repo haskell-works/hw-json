@@ -2,7 +2,14 @@
 
 module HaskellWorks.Data.Json.Value.ByteString where
 
-import Data.ByteString
-import HaskellWorks.Data.Json.Value.Internal
+import qualified Data.ByteString as BS
+import           Data.Map
 
-type JsonValue = GenJsonValue ByteString ByteString
+data JsonValue
+  = JsonString BS.ByteString
+  | JsonNumber BS.ByteString
+  | JsonObject (Map BS.ByteString JsonValue)
+  | JsonArray [JsonValue]
+  | JsonBool Bool
+  | JsonNull
+  deriving (Eq, Show)
