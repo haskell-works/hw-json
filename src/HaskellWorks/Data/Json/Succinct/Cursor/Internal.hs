@@ -1,3 +1,4 @@
+{-# LANGUAGE BangPatterns          #-}
 {-# LANGUAGE FlexibleContexts      #-}
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE InstanceSigs          #-}
@@ -22,8 +23,10 @@ import           Data.Word8
 import           Foreign.ForeignPtr
 import           HaskellWorks.Data.Bits.BitShown
 import           HaskellWorks.Data.Bits.BitWise
+import           HaskellWorks.Data.Decode
 import           HaskellWorks.Data.FromByteString
 import           HaskellWorks.Data.FromForeignRegion
+import           HaskellWorks.Data.Json.Conduit.Words
 import           HaskellWorks.Data.Json.Extract
 import qualified HaskellWorks.Data.Json.Succinct.Cursor.BalancedParens    as CBP
 import           HaskellWorks.Data.Json.Succinct.Cursor.BlankedJson
@@ -154,6 +157,23 @@ instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => JsonTy
     where p   = lastPositionOf (select1 ik (rank1 bpk (cursorRank k)))
           ik  = interests k
           bpk = balancedParens k
+
+instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => Decode (JsonCursor BS.ByteString v w) (BS.ByteString, JsonType) where
+  decode :: JsonCursor BS.ByteString v w -> Either DecodeError (BS.ByteString, JsonType)
+  decode k = case BS.uncons remainder of
+    Just (!c, _) | isLeadingDigit c   -> Right (remainder, JsonTypeNumber )
+    Just (!c, _) | c == _quotedbl     -> Right (remainder, JsonTypeString )
+    Just (!c, _) | c == _t            -> Right (remainder, JsonTypeBool   )
+    Just (!c, _) | c == _f            -> Right (remainder, JsonTypeBool   )
+    Just (!c, _) | c == _n            -> Right (remainder, JsonTypeNull   )
+    Just (!c, _) | c == _braceleft    -> Right (remainder, JsonTypeObject )
+    Just (!c, _) | c == _bracketleft  -> Right (remainder, JsonTypeArray  )
+    Just _                            -> Left (DecodeError "Invalid Json Type")
+    Nothing                           -> Left (DecodeError "End of data"      )
+    where ik        = interests k
+          bpk       = balancedParens k
+          p         = lastPositionOf (select1 ik (rank1 bpk (cursorRank k)))
+          remainder = (vDrop (toCount p) (cursorText k))
 
 instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => GenJsonValueAt BS.ByteString BS.ByteString (JsonCursor BS.ByteString v w) where
   jsonValueAt :: JsonCursor BS.ByteString v w -> Maybe (GenJsonValue BS.ByteString BS.ByteString)
