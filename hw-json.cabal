@@ -21,6 +21,7 @@ executable hw-json-example
                       , bytestring
                       , conduit
                       , criterion
+                      , errors
                       , hw-bits
                       , hw-conduit
                       , hw-diagnostics
