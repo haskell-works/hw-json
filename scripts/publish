@@ -22,6 +22,8 @@ if [ "v$_version" != "$CIRCLE_TAG" ]; then
   exit 1
 fi
 
+cabal configure
+
 cabal sdist
 
 if [ "$ALLOW_UPLOAD" != "" ]; then

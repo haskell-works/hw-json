@@ -2,4 +2,4 @@
 
 nix-shell -E '(import <nixpkgs> {}).haskellPackages.callPackage ./shell.nix {}' --run "echo Initialised dependencies"
 
-nix-env -i cabal-install
+nix-env -i cabal-install "$@"
