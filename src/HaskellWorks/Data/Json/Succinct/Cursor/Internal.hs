@@ -1,4 +1,3 @@
-{-# LANGUAGE BangPatterns          #-}
 {-# LANGUAGE FlexibleContexts      #-}
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE InstanceSigs          #-}
@@ -13,26 +12,16 @@ module HaskellWorks.Data.Json.Succinct.Cursor.Internal
 import qualified Data.ByteString                                            as BS
 import qualified Data.ByteString.Char8                                      as BSC
 import           Data.ByteString.Internal                                   as BSI
-import           Data.Char
-import qualified Data.List                                                  as L
-import qualified Data.Map                                                   as M
 import           Data.String
 import qualified Data.Vector.Storable                                       as DVS
 import           Data.Word
-import           Data.Word8
 import           Foreign.ForeignPtr
 import           HaskellWorks.Data.Bits.BitShown
-import           HaskellWorks.Data.Bits.BitWise
-import           HaskellWorks.Data.Decode
 import           HaskellWorks.Data.FromByteString
 import           HaskellWorks.Data.FromForeignRegion
-import           HaskellWorks.Data.Json.Conduit.Words
-import           HaskellWorks.Data.Json.Extract
 import qualified HaskellWorks.Data.Json.Succinct.Cursor.BalancedParens      as CBP
 import           HaskellWorks.Data.Json.Succinct.Cursor.BlankedJson
 import           HaskellWorks.Data.Json.Succinct.Cursor.InterestBits
-import           HaskellWorks.Data.Json.Type
-import           HaskellWorks.Data.Json.Value.Internal
 import           HaskellWorks.Data.Positioning
 import qualified HaskellWorks.Data.Succinct.BalancedParens                  as BP
 import           HaskellWorks.Data.Succinct.RankSelect.Binary.Basic.Rank0
@@ -118,92 +107,7 @@ instance (BP.BalancedParens u, Rank1 u, Rank0 u) => TreeCursor (JsonCursor t v u
   subtreeSize :: JsonCursor t v u -> Maybe Count
   subtreeSize k = BP.subtreeSize (balancedParens k) (cursorRank k)
 
-wIsJsonNumberDigit :: Word8 -> Bool
-wIsJsonNumberDigit w = (w >= _0 && w <= _9) || w == _hyphen
-
 jsonCursorPos :: (Rank1 w, Select1 v, VectorLike s) => JsonCursor s v w -> Position
 jsonCursorPos k = toPosition (select1 ik (rank1 bpk (cursorRank k)) - 1)
   where ik  = interests k
         bpk = balancedParens k
-
-instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => JsonTypeAt (JsonCursor String v w) where
-  jsonTypeAtPosition p k = case vDrop (toCount p) (cursorText k) of
-    c:_ | fromIntegral (ord c) == _bracketleft      -> Just JsonTypeArray
-    c:_ | fromIntegral (ord c) == _f                -> Just JsonTypeBool
-    c:_ | fromIntegral (ord c) == _t                -> Just JsonTypeBool
-    c:_ | fromIntegral (ord c) == _n                -> Just JsonTypeNull
-    c:_ | wIsJsonNumberDigit (fromIntegral (ord c)) -> Just JsonTypeNumber
-    c:_ | fromIntegral (ord c) == _braceleft        -> Just JsonTypeObject
-    c:_ | fromIntegral (ord c) == _quotedbl         -> Just JsonTypeString
-    _                                               -> Nothing
-
-  jsonTypeAt k = jsonTypeAtPosition p k
-    where p   = lastPositionOf (select1 ik (rank1 bpk (cursorRank k)))
-          ik  = interests k
-          bpk = balancedParens k
-
-instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => JsonTypeAt (JsonCursor BS.ByteString v w) where
-  jsonTypeAtPosition p k = case BS.uncons (vDrop (toCount p) (cursorText k)) of
-    Just (c, _) | c == _bracketleft     -> Just JsonTypeArray
-    Just (c, _) | c == _f               -> Just JsonTypeBool
-    Just (c, _) | c == _t               -> Just JsonTypeBool
-    Just (c, _) | c == _n               -> Just JsonTypeNull
-    Just (c, _) | wIsJsonNumberDigit c  -> Just JsonTypeNumber
-    Just (c, _) | c == _braceleft       -> Just JsonTypeObject
-    Just (c, _) | c == _quotedbl        -> Just JsonTypeString
-    _                                   -> Nothing
-
-  jsonTypeAt k = jsonTypeAtPosition p k
-    where p   = lastPositionOf (select1 ik (rank1 bpk (cursorRank k)))
-          ik  = interests k
-          bpk = balancedParens k
-
-instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => Decode (JsonCursor BS.ByteString v w) (BS.ByteString, JsonType) where
-  decode :: JsonCursor BS.ByteString v w -> Either DecodeError (BS.ByteString, JsonType)
-  decode k = case BS.uncons remainder of
-    Just (!c, _) | isLeadingDigit c   -> Right (remainder, JsonTypeNumber )
-    Just (!c, _) | c == _quotedbl     -> Right (remainder, JsonTypeString )
-    Just (!c, _) | c == _t            -> Right (remainder, JsonTypeBool   )
-    Just (!c, _) | c == _f            -> Right (remainder, JsonTypeBool   )
-    Just (!c, _) | c == _n            -> Right (remainder, JsonTypeNull   )
-    Just (!c, _) | c == _braceleft    -> Right (remainder, JsonTypeObject )
-    Just (!c, _) | c == _bracketleft  -> Right (remainder, JsonTypeArray  )
-    Just _                            -> Left (DecodeError "Invalid Json Type")
-    Nothing                           -> Left (DecodeError "End of data"      )
-    where ik        = interests k
-          bpk       = balancedParens k
-          p         = lastPositionOf (select1 ik (rank1 bpk (cursorRank k)))
-          remainder = (vDrop (toCount p) (cursorText k))
-
-instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => GenJsonValueAt BS.ByteString BS.ByteString (JsonCursor BS.ByteString v w) where
-  jsonValueAt :: JsonCursor BS.ByteString v w -> Maybe (GenJsonValue BS.ByteString BS.ByteString)
-  jsonValueAt k = case extractJsonSnippet remainder of
-    Just (JsonTypeArray ,  _) -> Just $ JsonArray (arrayValuesAt k)
-    Just (JsonTypeBool  , bs) -> case BS.uncons bs of
-      Just (c, _) | c == _t   -> Just $ JsonBool True
-      Just (c, _) | c == _f   -> Just $ JsonBool False
-      _                       -> Nothing
-    Just (JsonTypeNull  ,  _) -> Just JsonNull
-    Just (JsonTypeNumber, bs) -> Just $ JsonNumber bs
-    Just (JsonTypeObject,  _) -> Just $ JsonObject (mapValuesAt k)
-    Just (JsonTypeString, bs) -> Just $ JsonString bs
-    Nothing                   -> Nothing
-    where p = lastPositionOf (select1 ik (rank1 bpk (cursorRank k)))
-          ik  = interests k
-          bpk = balancedParens k
-          remainder = (vDrop (toCount p) (cursorText k))
-          genArrayValue :: JsonCursor BS.ByteString v w -> Maybe (GenJsonValue ByteString ByteString, JsonCursor ByteString v w)
-          genArrayValue j = (,) <$> jsonValueAt j <*> nextSibling j
-          arrayValuesAt :: JsonCursor BS.ByteString v w -> [GenJsonValue BS.ByteString BS.ByteString]
-          arrayValuesAt j = case firstChild j of
-            Just c  -> L.unfoldr genArrayValue c
-            Nothing -> []
-          mapValuesAt :: JsonCursor BS.ByteString v w -> M.Map ByteString (GenJsonValue ByteString ByteString)
-          mapValuesAt j = M.fromList (pairwise (arrayValuesAt j) >>= asField)
-          asField :: (GenJsonValue ByteString ByteString, GenJsonValue ByteString ByteString) -> [(ByteString, GenJsonValue ByteString ByteString)]
-          asField (a, b) = case a of
-            JsonString s  -> [(s, b)]
-            _             -> []
-          pairwise :: [a] -> [(a, a)]
-          pairwise (a:b:rs) = (a, b) : pairwise rs
-          pairwise _        = []

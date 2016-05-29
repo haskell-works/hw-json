@@ -1,8 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module HaskellWorks.Data.Json.ExtractSpec (spec) where
+module HaskellWorks.Data.Json.TypeSpec (spec) where
 
-import           HaskellWorks.Data.Json.Extract
 import           HaskellWorks.Data.Json.Type
 import           Test.Hspec
 

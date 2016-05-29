@@ -39,7 +39,6 @@ library
                       , HaskellWorks.Data.Json.Conduit
                       , HaskellWorks.Data.Json.Conduit.Blank
                       , HaskellWorks.Data.Json.Conduit.Words
-                      , HaskellWorks.Data.Json.Extract
                       , HaskellWorks.Data.Json.Node
                       , HaskellWorks.Data.Json.Succinct
                       , HaskellWorks.Data.Json.Succinct.Cursor
