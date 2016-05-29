@@ -32,7 +32,6 @@ import qualified HaskellWorks.Data.Json.Succinct.Cursor.BalancedParens      as C
 import           HaskellWorks.Data.Json.Succinct.Cursor.BlankedJson
 import           HaskellWorks.Data.Json.Succinct.Cursor.InterestBits
 import           HaskellWorks.Data.Json.Type
-import qualified HaskellWorks.Data.Json.Value.ByteString                    as VBS
 import           HaskellWorks.Data.Json.Value.Internal
 import           HaskellWorks.Data.Positioning
 import qualified HaskellWorks.Data.Succinct.BalancedParens                  as BP
@@ -175,30 +174,6 @@ instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => Decode
           bpk       = balancedParens k
           p         = lastPositionOf (select1 ik (rank1 bpk (cursorRank k)))
           remainder = (vDrop (toCount p) (cursorText k))
-
-instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => Decode (JsonCursor BS.ByteString v w) VBS.JsonValue where
-  decode :: JsonCursor BS.ByteString v w -> Either DecodeError VBS.JsonValue
-  decode k = case BS.uncons remainder of
-    Just (!c, _) | isLeadingDigit c   -> Right (VBS.JsonNumber  undefined)
-    Just (!c, _) | c == _quotedbl     -> Right (VBS.JsonString  undefined)
-    Just (!c, _) | c == _t            -> Right (VBS.JsonBool    True)
-    Just (!c, _) | c == _f            -> Right (VBS.JsonBool    False)
-    Just (!c, _) | c == _n            -> Right (VBS.JsonNull)
-    Just (!c, _) | c == _braceleft    -> VBS.JsonObject <$> mapValuesFrom   (firstChild k)
-    Just (!c, _) | c == _bracketleft  -> VBS.JsonArray  <$> arrayValuesFrom (firstChild k)
-    Just _                            -> Left (DecodeError "Invalid Json Type")
-    Nothing                           -> Left (DecodeError "End of data"      )
-    where ik                = interests k
-          bpk               = balancedParens k
-          p                 = lastPositionOf (select1 ik (rank1 bpk (cursorRank k)))
-          remainder         = (vDrop (toCount p) (cursorText k))
-          arrayValuesFrom j = sequence (L.unfoldr (fmap (\s -> (decode s, nextSibling s))) j)
-          mapValuesFrom j   = (\v -> M.fromList (pairwise v >>= asField)) <$> arrayValuesFrom j
-          pairwise (a:b:rs) = (a, b) : pairwise rs
-          pairwise _        = []
-          asField (a, b)    = case a of
-                                VBS.JsonString s  -> [(s, b)]
-                                _                 -> []
 
 instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => GenJsonValueAt BS.ByteString BS.ByteString (JsonCursor BS.ByteString v w) where
   jsonValueAt :: JsonCursor BS.ByteString v w -> Maybe (GenJsonValue BS.ByteString BS.ByteString)
