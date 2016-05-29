@@ -44,7 +44,6 @@ library
                       , HaskellWorks.Data.Json.Succinct.Cursor
                       , HaskellWorks.Data.Json.Succinct.Cursor.BalancedParens
                       , HaskellWorks.Data.Json.Succinct.Cursor.BlankedJson
-                      , HaskellWorks.Data.Json.Succinct.Cursor.FromJsonCursor
                       , HaskellWorks.Data.Json.Succinct.Cursor.InterestBits
                       , HaskellWorks.Data.Json.Succinct.Cursor.Internal
                       , HaskellWorks.Data.Json.Succinct.Cursor.Token
