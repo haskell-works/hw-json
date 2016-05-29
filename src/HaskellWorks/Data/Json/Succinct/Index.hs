@@ -9,10 +9,9 @@ module HaskellWorks.Data.Json.Succinct.Index where
 import           Control.Arrow
 import           Control.Monad
 import qualified Data.List                                                  as L
-import           Data.Word8
 import           HaskellWorks.Data.Bits.BitWise
 import           HaskellWorks.Data.Decode
-import           HaskellWorks.Data.Json.Conduit.Words
+import           HaskellWorks.Data.Json.CharLike
 import           HaskellWorks.Data.Json.Succinct
 import           HaskellWorks.Data.Positioning
 import qualified HaskellWorks.Data.Succinct.BalancedParens                  as BP
@@ -31,25 +30,7 @@ data JsonIndex s
   | JsonByteStringNull
   deriving (Eq, Show)
 
-class CharLike c where
-  isLeadingDigit2 :: c -> Bool
-  isQuotDbl :: c -> Bool
-  isChar_t :: c -> Bool
-  isChar_f :: c -> Bool
-  isChar_n :: c -> Bool
-  isBraceLeft :: c -> Bool
-  isBracketLeft :: c -> Bool
-
-instance CharLike Word8 where
-  isLeadingDigit2 = isLeadingDigit
-  isQuotDbl       = (== _quotedbl)
-  isChar_t        = (== _t)
-  isChar_f        = (== _f)
-  isChar_n        = (== _n)
-  isBraceLeft     = (== _braceleft)
-  isBracketLeft   = (== _bracketleft)
-
-instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w, VectorLike s, CharLike (Elem s), Ord s)
+instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w, VectorLike s, JsonCharLike (Elem s), Ord s)
     => Decode (JsonCursor s v w) (JsonIndex s) where
   decode :: JsonCursor s v w -> Either DecodeError (JsonIndex s)
   decode k = case vUncons remainder of

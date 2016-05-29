@@ -36,6 +36,7 @@ executable hw-json-example
 library
   hs-source-dirs:       src
   exposed-modules:      HaskellWorks.Data.Json
+                      , HaskellWorks.Data.Json.CharLike
                       , HaskellWorks.Data.Json.Conduit
                       , HaskellWorks.Data.Json.Conduit.Blank
                       , HaskellWorks.Data.Json.Conduit.Words
