@@ -30,10 +30,11 @@ data JsonIndex s
   | JsonByteStringNull
   deriving (Eq, Show)
 
-instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w, VectorLike s, JsonCharLike (Elem s), Ord s)
-    => Decode (JsonCursor s v w) (JsonIndex s) where
-  decode :: JsonCursor s v w -> Either DecodeError (JsonIndex s)
-  decode k = case vUncons remainder of
+class JsonIndexAt a where
+  jsonIndexAt :: a -> Either DecodeError (JsonIndex s)
+
+instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w, VectorLike s, JsonCharLike (Elem s)) => JsonIndexAt (JsonCursor s v w) where
+  jsonIndexAt k = case vUncons remainder of
     Just (!c, _) | isLeadingDigit2 c  -> Right (JsonByteStringNumber  undefined)
     Just (!c, _) | isQuotDbl c        -> Right (JsonByteStringString  undefined)
     Just (!c, _) | isChar_t c         -> Right (JsonByteStringBool    True)
@@ -47,7 +48,7 @@ instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w, VectorLik
           bpk               = balancedParens k
           p                 = lastPositionOf (select1 ik (rank1 bpk (cursorRank k)))
           remainder         = vDrop (toCount p) (cursorText k)
-          arrayValuesFrom j = sequence (L.unfoldr (fmap (decode &&& nextSibling)) j)
+          arrayValuesFrom j = sequence (L.unfoldr (fmap (jsonIndexAt &&& nextSibling)) j)
           mapValuesFrom j   = (pairwise >=> asField) <$> arrayValuesFrom j
           pairwise (a:b:rs) = (a, b) : pairwise rs
           pairwise _        = []
