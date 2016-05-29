@@ -54,7 +54,6 @@ library
                       , HaskellWorks.Data.Json.Token
                       , HaskellWorks.Data.Json.Type
                       , HaskellWorks.Data.Json.Value
-                      , HaskellWorks.Data.Json.Value.Internal
   build-depends:        base                          >= 4          && < 5
                       , array
                       , attoparsec
