@@ -4,7 +4,7 @@
 {-# LANGUAGE InstanceSigs           #-}
 {-# LANGUAGE MultiParamTypeClasses  #-}
 
-module HaskellWorks.Data.Json.Node where
+module HaskellWorks.Data.Json.Succinct.Index where
 
 import           Control.Arrow
 import qualified Data.ByteString                                            as BS
@@ -23,17 +23,17 @@ import           HaskellWorks.Data.Succinct.RankSelect.Binary.Basic.Select1
 import           HaskellWorks.Data.TreeCursor
 import           HaskellWorks.Data.Vector.VectorLike
 
-data JsonByteStringNode
+data JsonIndex
   = JsonByteStringString BS.ByteString
   | JsonByteStringNumber BS.ByteString
-  | JsonByteStringObject (M.Map BS.ByteString JsonByteStringNode)
-  | JsonByteStringArray [JsonByteStringNode]
+  | JsonByteStringObject (M.Map BS.ByteString JsonIndex)
+  | JsonByteStringArray [JsonIndex]
   | JsonByteStringBool Bool
   | JsonByteStringNull
   deriving (Eq, Show)
 
-instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => Decode (JsonCursor BS.ByteString v w) JsonByteStringNode where
-  decode :: JsonCursor BS.ByteString v w -> Either DecodeError JsonByteStringNode
+instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => Decode (JsonCursor BS.ByteString v w) JsonIndex where
+  decode :: JsonCursor BS.ByteString v w -> Either DecodeError JsonIndex
   decode k = case BS.uncons remainder of
     Just (!c, _) | isLeadingDigit c   -> Right (JsonByteStringNumber  undefined)
     Just (!c, _) | c == _quotedbl     -> Right (JsonByteStringString  undefined)
