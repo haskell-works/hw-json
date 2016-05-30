@@ -21,6 +21,7 @@ import           HaskellWorks.Data.Bits.BitShown
 import           HaskellWorks.Data.Bits.BitWise
 import           HaskellWorks.Data.FromForeignRegion
 import           HaskellWorks.Data.Json.Succinct.Cursor                     as C
+import           HaskellWorks.Data.Json.Succinct.Index
 import           HaskellWorks.Data.Json.Token
 import           HaskellWorks.Data.Json.Type
 import           HaskellWorks.Data.Succinct.BalancedParens.Internal
@@ -132,7 +133,7 @@ genSpec :: forall t u.
   , TestBit           u
   , FromForeignRegion (JsonCursor BS.ByteString t u)
   , IsString          (JsonCursor BS.ByteString t u)
-  -- , JsonValueAt (JsonCursor BS.ByteString t u)
+  , JsonIndexAt       (JsonCursor BS.ByteString t u)
   )
   => String -> (JsonCursor BS.ByteString t u) -> SpecWith ()
 genSpec t _ = do
