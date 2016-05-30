@@ -75,11 +75,8 @@ data JsonValue
 class JsonValueAt a where
   jsonValueAt :: a -> Either DecodeError JsonValue
 
-class FromJsonIndex a where
-  fromJsonIndex :: JsonIndex BS.ByteString -> Either DecodeError a
-
-instance FromJsonIndex JsonValue where
-  fromJsonIndex i = case i of
+instance JsonValueAt (JsonIndex BS.ByteString) where
+  jsonValueAt i = case i of
     JsonIndexString  s  -> case ABC.parse parseJsonString s of
       ABC.Fail    {}    -> Left (DecodeError "Invalid number")
       ABC.Partial _     -> Left (DecodeError "Unexpected end of number")
@@ -88,8 +85,8 @@ instance FromJsonIndex JsonValue where
       ABC.Fail    {}    -> Left (DecodeError "Invalid number")
       ABC.Partial _     -> Left (DecodeError "Unexpected end of number")
       ABC.Done    _ r   -> Right (JsonNumber r)
-    JsonIndexObject  fs -> JsonObject <$> mapM (\f -> (,) <$> parseString (fst f) <*> fromJsonIndex (snd f)) fs
-    JsonIndexArray   es -> JsonArray <$> mapM fromJsonIndex es
+    JsonIndexObject  fs -> JsonObject <$> mapM (\f -> (,) <$> parseString (fst f) <*> jsonValueAt (snd f)) fs
+    JsonIndexArray   es -> JsonArray <$> mapM jsonValueAt es
     JsonIndexBool    v  -> Right (JsonBool v)
     JsonIndexNull       -> Right JsonNull
     where parseString bs = case ABC.parse parseJsonString bs of
