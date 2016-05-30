@@ -22,12 +22,12 @@ import           HaskellWorks.Data.TreeCursor
 import           HaskellWorks.Data.Vector.VectorLike
 
 data JsonIndex s
-  = JsonByteStringString s
-  | JsonByteStringNumber s
-  | JsonByteStringObject [(s, JsonIndex s)]
-  | JsonByteStringArray [JsonIndex s]
-  | JsonByteStringBool Bool
-  | JsonByteStringNull
+  = JsonIndexString s
+  | JsonIndexNumber s
+  | JsonIndexObject [(s, JsonIndex s)]
+  | JsonIndexArray [JsonIndex s]
+  | JsonIndexBool Bool
+  | JsonIndexNull
   deriving (Eq, Show)
 
 class JsonIndexAt a where
@@ -35,13 +35,13 @@ class JsonIndexAt a where
 
 instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w, VectorLike s, JsonCharLike (Elem s)) => JsonIndexAt (JsonCursor s v w) where
   jsonIndexAt k = case vUncons remainder of
-    Just (!c, _) | isLeadingDigit2 c  -> Right (JsonByteStringNumber  undefined)
-    Just (!c, _) | isQuotDbl c        -> Right (JsonByteStringString  undefined)
-    Just (!c, _) | isChar_t c         -> Right (JsonByteStringBool    True)
-    Just (!c, _) | isChar_f c         -> Right (JsonByteStringBool    False)
-    Just (!c, _) | isChar_n c         -> Right  JsonByteStringNull
-    Just (!c, _) | isBraceLeft c      -> JsonByteStringObject <$> mapValuesFrom   (firstChild k)
-    Just (!c, _) | isBracketLeft c    -> JsonByteStringArray  <$> arrayValuesFrom (firstChild k)
+    Just (!c, _) | isLeadingDigit2 c  -> Right (JsonIndexNumber  undefined)
+    Just (!c, _) | isQuotDbl c        -> Right (JsonIndexString  undefined)
+    Just (!c, _) | isChar_t c         -> Right (JsonIndexBool    True)
+    Just (!c, _) | isChar_f c         -> Right (JsonIndexBool    False)
+    Just (!c, _) | isChar_n c         -> Right  JsonIndexNull
+    Just (!c, _) | isBraceLeft c      -> JsonIndexObject <$> mapValuesFrom   (firstChild k)
+    Just (!c, _) | isBracketLeft c    -> JsonIndexArray  <$> arrayValuesFrom (firstChild k)
     Just _                            -> Left (DecodeError "Invalid Json Type")
     Nothing                           -> Left (DecodeError "End of data"      )
     where ik                = interests k
@@ -53,5 +53,5 @@ instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w, VectorLik
           pairwise (a:b:rs) = (a, b) : pairwise rs
           pairwise _        = []
           asField (a, b)    = case a of
-                                JsonByteStringString s  -> [(s, b)]
-                                _                       -> []
+                                JsonIndexString s -> [(s, b)]
+                                _                 -> []

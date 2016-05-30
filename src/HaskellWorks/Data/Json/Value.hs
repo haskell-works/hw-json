@@ -73,25 +73,25 @@ data JsonValue
   deriving (Eq, Show)
 
 class JsonValueAt a where
-  jsonValueAt :: a -> Maybe JsonValue
+  jsonValueAt :: a -> Either DecodeError JsonValue
 
 class FromJsonIndex a where
   fromJsonIndex :: JsonIndex BS.ByteString -> Either DecodeError a
 
 instance FromJsonIndex JsonValue where
   fromJsonIndex i = case i of
-    JsonByteStringString  s   -> case ABC.parse parseJsonString s of
-      ABC.Fail    {}  -> Left (DecodeError "Invalid number")
-      ABC.Partial _   -> Left (DecodeError "Unexpected end of number")
-      ABC.Done    _ r -> Right (JsonString r)
-    JsonByteStringNumber  s   -> case ABC.parse ABC.rational s of
-      ABC.Fail    {}  -> Left (DecodeError "Invalid number")
-      ABC.Partial _   -> Left (DecodeError "Unexpected end of number")
-      ABC.Done    _ r -> Right (JsonNumber r)
-    JsonByteStringObject  fs  -> JsonObject <$> mapM (\f -> (,) <$> parseString (fst f) <*> fromJsonIndex (snd f)) fs
-    JsonByteStringArray   es  -> JsonArray <$> mapM fromJsonIndex es
-    JsonByteStringBool    v   -> Right (JsonBool v)
-    JsonByteStringNull        -> Right JsonNull
+    JsonIndexString  s  -> case ABC.parse parseJsonString s of
+      ABC.Fail    {}    -> Left (DecodeError "Invalid number")
+      ABC.Partial _     -> Left (DecodeError "Unexpected end of number")
+      ABC.Done    _ r   -> Right (JsonString r)
+    JsonIndexNumber  s  -> case ABC.parse ABC.rational s of
+      ABC.Fail    {}    -> Left (DecodeError "Invalid number")
+      ABC.Partial _     -> Left (DecodeError "Unexpected end of number")
+      ABC.Done    _ r   -> Right (JsonNumber r)
+    JsonIndexObject  fs -> JsonObject <$> mapM (\f -> (,) <$> parseString (fst f) <*> fromJsonIndex (snd f)) fs
+    JsonIndexArray   es -> JsonArray <$> mapM fromJsonIndex es
+    JsonIndexBool    v  -> Right (JsonBool v)
+    JsonIndexNull       -> Right JsonNull
     where parseString bs = case ABC.parse parseJsonString bs of
             ABC.Fail    {}  -> Left (DecodeError "Invalid number")
             ABC.Partial _   -> Left (DecodeError "Unexpected end of number")
