@@ -8,6 +8,7 @@ module HaskellWorks.Data.Json.Succinct.Index where
 
 import           Control.Arrow
 import           Control.Monad
+import qualified Data.ByteString                                            as BS
 import qualified Data.List                                                  as L
 import           HaskellWorks.Data.Bits.BitWise
 import           HaskellWorks.Data.Decode
@@ -21,22 +22,22 @@ import           HaskellWorks.Data.Succinct.RankSelect.Binary.Basic.Select1
 import           HaskellWorks.Data.TreeCursor
 import           HaskellWorks.Data.Vector.VectorLike
 
-data JsonIndex s
-  = JsonIndexString s
-  | JsonIndexNumber s
-  | JsonIndexObject [(s, JsonIndex s)]
-  | JsonIndexArray [JsonIndex s]
+data JsonIndex
+  = JsonIndexString BS.ByteString
+  | JsonIndexNumber BS.ByteString
+  | JsonIndexObject [(BS.ByteString, JsonIndex)]
+  | JsonIndexArray [JsonIndex]
   | JsonIndexBool Bool
   | JsonIndexNull
   deriving (Eq, Show)
 
 class JsonIndexAt a where
-  jsonIndexAt :: a -> Either DecodeError (JsonIndex s)
+  jsonIndexAt :: a -> Either DecodeError JsonIndex
 
-instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w, VectorLike s, JsonCharLike (Elem s)) => JsonIndexAt (JsonCursor s v w) where
+instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => JsonIndexAt (JsonCursor BS.ByteString v w) where
   jsonIndexAt k = case vUncons remainder of
-    Just (!c, _) | isLeadingDigit2 c  -> Right (JsonIndexNumber  undefined)
-    Just (!c, _) | isQuotDbl c        -> Right (JsonIndexString  undefined)
+    Just (!c, _) | isLeadingDigit2 c  -> Right (JsonIndexNumber  remainder)
+    Just (!c, _) | isQuotDbl c        -> Right (JsonIndexString  remainder)
     Just (!c, _) | isChar_t c         -> Right (JsonIndexBool    True)
     Just (!c, _) | isChar_f c         -> Right (JsonIndexBool    False)
     Just (!c, _) | isChar_n c         -> Right  JsonIndexNull

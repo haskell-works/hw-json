@@ -26,7 +26,7 @@ executable hw-json-example
                       , hw-conduit
                       , hw-diagnostics
                       , hw-json
-                      , hw-prim                       >= 0.0.3
+                      , hw-prim                       >= 0.0.3.1
                       , hw-rankselect
                       , mmap
                       , resourcet
@@ -62,7 +62,7 @@ library
                       , hw-bits
                       , hw-conduit
                       , hw-parser
-                      , hw-prim                       >= 0.0.3
+                      , hw-prim                       >= 0.0.3.1
                       , hw-rankselect
                       , mono-traversable
                       , resourcet
@@ -89,7 +89,7 @@ test-suite hw-json-test
                       , hw-bits
                       , hw-conduit
                       , hw-json
-                      , hw-prim                       >= 0.0.3
+                      , hw-prim                       >= 0.0.3.1
                       , hw-rankselect
                       , mmap
                       , parsec
@@ -117,7 +117,7 @@ benchmark bench
                       , hw-bits
                       , hw-conduit
                       , hw-json
-                      , hw-prim                       >= 0.0.3
+                      , hw-prim                       >= 0.0.3.1
                       , hw-rankselect
                       , mmap
                       , resourcet
