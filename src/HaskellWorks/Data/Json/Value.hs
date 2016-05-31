@@ -83,7 +83,10 @@ instance JsonValueAt JsonIndex where
       ABC.Done    _ r   -> Right (JsonString r)
     JsonIndexNumber  s  -> case ABC.parse ABC.rational s of
       ABC.Fail    {}    -> Left (DecodeError ("Invalid number: '" ++ show (BS.take 20 s) ++ "...'"))
-      ABC.Partial _     -> Left (DecodeError "Unexpected end of number")
+      ABC.Partial f     -> case f " " of
+        ABC.Fail    {}    -> Left (DecodeError ("Invalid number: '" ++ show (BS.take 20 s) ++ "...'"))
+        ABC.Partial _     -> Left (DecodeError "Unexpected end of number")
+        ABC.Done    _ r   -> Right (JsonNumber r)
       ABC.Done    _ r   -> Right (JsonNumber r)
     JsonIndexObject  fs -> JsonObject <$> mapM (\f -> (,) <$> parseString (fst f) <*> jsonValueAt (snd f)) fs
     JsonIndexArray   es -> JsonArray <$> mapM jsonValueAt es

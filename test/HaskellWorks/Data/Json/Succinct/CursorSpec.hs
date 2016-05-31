@@ -155,7 +155,7 @@ genSpec t _ = do
       it "should have correct value"      $ jsonValueVia (Just cursor) `shouldBe` Right (JsonObject [])
     forJson "1234" $ \cursor -> do
       it "should have correct type"       $ jsonTypeAt         cursor  `shouldBe` Just   JsonTypeNumber
-      -- it "should have correct value"      $ jsonValueVia (Just cursor) `shouldBe` Right (JsonNumber 1234)
+      it "should have correct value"      $ jsonValueVia (Just cursor) `shouldBe` Right (JsonNumber 1234)
     forJson "\"Hello\"" $ \cursor -> do
       it "should have correct type"       $ jsonTypeAt         cursor  `shouldBe` Just   JsonTypeString
       it "should have correct value"      $ jsonValueVia (Just cursor) `shouldBe` Right (JsonString "Hello")
