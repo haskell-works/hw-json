@@ -148,40 +148,40 @@ genSpec t _ = do
   describe ("Json cursor of type " ++ t) $ do
     let forJson (cursor :: JsonCursor BS.ByteString t u) f = describe ("of value " ++ show cursor) (f cursor)
     forJson "{}" $ \cursor -> do
-      it "should have correct type"       $ jsonTypeAt cursor `shouldBe` Just JsonTypeObject
-      -- it "should have correct value"      $ jsonValueAt cursor `shouldBe` Just (JsonObject [] :: JsonValue)
+      it "should have correct type"       $ jsonTypeAt         cursor  `shouldBe` Just   JsonTypeObject
+      it "should have correct value"      $ jsonValueVia (Just cursor) `shouldBe` Right (JsonObject [])
     forJson " {}" $ \cursor -> do
-      it "should have correct type"       $ jsonTypeAt cursor `shouldBe` Just JsonTypeObject
-      -- it "should have correct value"      $ jsonValueAt cursor `shouldBe` Just (JsonObject [] :: JsonValue)
+      it "should have correct type"       $ jsonTypeAt         cursor  `shouldBe` Just   JsonTypeObject
+      it "should have correct value"      $ jsonValueVia (Just cursor) `shouldBe` Right (JsonObject [])
     forJson "1234" $ \cursor -> do
-      it "should have correct type"       $ jsonTypeAt cursor `shouldBe` Just JsonTypeNumber
-      -- it "should have correct value"      $ jsonValueAt cursor `shouldBe` Just (JsonNumber 1234 :: JsonValue)
+      it "should have correct type"       $ jsonTypeAt         cursor  `shouldBe` Just   JsonTypeNumber
+      -- it "should have correct value"      $ jsonValueVia (Just cursor) `shouldBe` Right (JsonNumber 1234)
     forJson "\"Hello\"" $ \cursor -> do
-      it "should have correct type"       $ jsonTypeAt cursor `shouldBe` Just JsonTypeString
-      -- it "should have correct value"      $ jsonValueAt cursor `shouldBe` Just (JsonString "\"Hello\"" :: JsonValue)
+      it "should have correct type"       $ jsonTypeAt         cursor  `shouldBe` Just   JsonTypeString
+      it "should have correct value"      $ jsonValueVia (Just cursor) `shouldBe` Right (JsonString "Hello")
     forJson "[]" $ \cursor -> do
-      it "should have correct type"       $ jsonTypeAt cursor `shouldBe` Just JsonTypeArray
-      -- it "should have correct value"      $ jsonValueAt cursor `shouldBe` Just (JsonArray [] :: JsonValue)
+      it "should have correct type"       $ jsonTypeAt         cursor  `shouldBe` Just   JsonTypeArray
+      it "should have correct value"      $ jsonValueVia (Just cursor) `shouldBe` Right (JsonArray [])
     forJson "true" $ \cursor -> do
-      it "should have correct type"       $ jsonTypeAt cursor `shouldBe` Just JsonTypeBool
-      -- it "should have correct value"      $ jsonValueAt cursor `shouldBe` Just (JsonBool True :: JsonValue)
+      it "should have correct type"       $ jsonTypeAt         cursor  `shouldBe` Just   JsonTypeBool
+      it "should have correct value"      $ jsonValueVia (Just cursor) `shouldBe` Right (JsonBool True)
     forJson "false" $ \cursor -> do
-      it "should have correct type"       $ jsonTypeAt cursor `shouldBe` Just JsonTypeBool
-      -- it "should have correct value"      $ jsonValueAt cursor `shouldBe` Just (JsonBool False :: JsonValue)
+      it "should have correct type"       $ jsonTypeAt         cursor  `shouldBe` Just   JsonTypeBool
+      it "should have correct value"      $ jsonValueVia (Just cursor) `shouldBe` Right (JsonBool False)
     forJson "null" $ \cursor -> do
-      it "should have correct type"       $ jsonTypeAt cursor `shouldBe` Just JsonTypeNull
-      -- it "should have correct value"      $ jsonValueAt cursor `shouldBe` Just (JsonNull :: JsonValue)
+      it "should have correct type"       $ jsonTypeAt         cursor  `shouldBe` Just  JsonTypeNull
+      it "should have correct value"      $ jsonValueVia (Just cursor) `shouldBe` Right JsonNull
     forJson "[null]" $ \cursor -> do
       it "should have correct type"       $ (fc >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeNull
-      -- it "should have correct value"      $ jsonValueAt cursor `shouldBe` Just (JsonArray [JsonNull] :: JsonValue)
-      -- it "should have correct value"      $ ((fc >=> jsonValueAt) cursor) `shouldBe` Just (JsonNull :: JsonValue)
-      it "depth at top"                   $ cd cursor `shouldBe` Just 1
+      it "should have correct value"      $ jsonValueVia (Just cursor) `shouldBe` Right (JsonArray [JsonNull])
+      it "should have correct value"      $ jsonValueVia (fc   cursor) `shouldBe` Right  JsonNull
+      it "depth at top"                   $ cd          cursor `shouldBe` Just 1
       it "depth at first child of array"  $ (fc >=> cd) cursor `shouldBe` Just 2
     forJson "[null, {\"field\": 1}]" $ \cursor -> do
       it "cursor can navigate to second child of array" $ do
-        (fc >=> ns >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeObject
-        -- ((fc >=> ns >=> jsonValueAt) cursor) `shouldBe` Just (JsonObject ([("\"field\"", JsonNumber "1")]) :: JsonValue)
-        -- jsonValueAt cursor `shouldBe` Just (JsonArray [JsonNull, JsonObject ([("\"field\"", JsonNumber "1")])] :: JsonValue)
+        (fc >=> ns >=> jsonTypeAt)  cursor  `shouldBe` Just JsonTypeObject
+        jsonValueVia ((fc >=> ns)   cursor) `shouldBe` Right (                     JsonObject [("field", JsonNumber 1)] )
+        jsonValueVia (Just          cursor) `shouldBe` Right (JsonArray [JsonNull, JsonObject [("field", JsonNumber 1)]])
       it "cursor can navigate to first child of object at second child of array" $ do
         (fc >=> ns >=> fc >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeString
       it "cursor can navigate to first child of object at second child of array" $ do
@@ -192,6 +192,20 @@ genSpec t _ = do
         (fc >=> ns >=> fc >=> cd) cursor `shouldBe` Just 3
       it "depth at first child of object at second child of array" $ do
         (fc >=> ns >=> fc >=> ns >=> cd) cursor `shouldBe` Just 3
+    describe "For empty json array" $ do
+      let cursor =  "[]" :: JsonCursor BS.ByteString t u
+      it "can navigate down and forwards" $ do
+        jsonValueVia (Just cursor) `shouldBe` Right (JsonArray [])
+    describe "For empty json array" $ do
+      let cursor =  "[null]" :: JsonCursor BS.ByteString t u
+      it "can navigate down and forwards" $ do
+        (                     jsonTypeAt) cursor `shouldBe` Just JsonTypeArray
+        (fc               >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeNull
+        (fc >=> ns        >=> jsonTypeAt) cursor `shouldBe` Nothing
+        (fc >=> ns >=> ns >=> jsonTypeAt) cursor `shouldBe` Nothing
+      it "can navigate down and forwards" $ do
+        jsonIndexAt cursor `shouldBe` Right (JsonIndexArray [JsonIndexNull])
+        jsonValueVia (Just cursor) `shouldBe` Right (JsonArray [JsonNull])
     describe "For sample Json" $ do
       let cursor =  "{ \
                     \    \"widget\": { \
@@ -203,8 +217,7 @@ genSpec t _ = do
                     \    } \
                     \}" :: JsonCursor BS.ByteString t u
       it "can navigate down and forwards" $ do
-        -- TODO: The second JsonNull is invalid.  Remove it and fix code to pass tests.
-        let array   = JsonArray [JsonNumber 500, JsonNumber 600.01e-02, JsonBool True, JsonBool False, JsonNull, JsonNull] :: JsonValue
+        let array   = JsonArray [JsonNumber 500, JsonNumber 600.01e-02, JsonBool True, JsonBool False, JsonNull] :: JsonValue
         let object1 = JsonObject ([("name", JsonString "main_window"), ("dimensions", array)]) :: JsonValue
         let object2 = JsonObject ([("debug", JsonString "on"), ("window", object1)]) :: JsonValue
         let object3 = JsonObject ([("widget", object2)]) :: JsonValue
@@ -224,7 +237,7 @@ genSpec t _ = do
         jsonValueVia ((fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns              ) cursor) `shouldBe` Right (JsonBool True            )
         jsonValueVia ((fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns >=> ns       ) cursor) `shouldBe` Right (JsonBool False           )
         jsonValueVia ((fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns >=> ns >=> ns) cursor) `shouldBe` Right JsonNull
-      it "can navig e down and forwards" $ do
+      it "can navigate down and forwards" $ do
         (                                                                      jsonTypeAt) cursor `shouldBe` Just JsonTypeObject
         (fc                                                                >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeString
         (fc >=> ns                                                         >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeObject

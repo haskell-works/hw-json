@@ -17,7 +17,6 @@ import           Data.String
 import           HaskellWorks.Data.Decode
 import           HaskellWorks.Data.Json.Succinct.Index
 import           HaskellWorks.Data.Parser               as P
-import Debug.Trace
 
 parseHexDigitNumeric :: P.Parser t => T.Parser t Int
 parseHexDigitNumeric = do

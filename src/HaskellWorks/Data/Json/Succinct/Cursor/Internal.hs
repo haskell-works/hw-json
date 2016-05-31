@@ -96,7 +96,7 @@ instance (BP.BalancedParens u, Rank1 u, Rank0 u) => TreeCursor (JsonCursor t v u
   firstChild k = let mq = BP.firstChild (balancedParens k) (cursorRank k) in (\q -> k { cursorRank = q }) <$> mq
 
   nextSibling :: JsonCursor t v u -> Maybe (JsonCursor t v u)
-  nextSibling k = let mq = BP.nextSibling (balancedParens k) (cursorRank k) in (\q -> k { cursorRank = q }) <$> mq
+  nextSibling k = (\q -> k { cursorRank = q }) <$> BP.nextSibling (balancedParens k) (cursorRank k)
 
   parent :: JsonCursor t v u -> Maybe (JsonCursor t v u)
   parent k = let mq = BP.parent (balancedParens k) (cursorRank k) in (\q -> k { cursorRank = q }) <$> mq
