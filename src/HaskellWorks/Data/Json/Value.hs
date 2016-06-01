@@ -25,9 +25,6 @@ data JsonValue
 class JsonValueAt a where
   jsonValueAt :: a -> Either DecodeError JsonValue
 
-class FromJsonValue a where
-  fromJsonValue :: JsonValue -> Either DecodeError a
-
 instance JsonValueAt JsonIndex where
   jsonValueAt i = case i of
     JsonIndexString  s  -> case ABC.parse parseJsonString s of
@@ -49,6 +46,3 @@ instance JsonValueAt JsonIndex where
             ABC.Fail    {}  -> Left (DecodeError ("Invalid field: '" ++ show (BS.take 20 bs) ++ "...'"))
             ABC.Partial _   -> Left (DecodeError "Unexpected end of field")
             ABC.Done    _ s -> Right s
-
-instance FromJsonValue JsonValue where
-  fromJsonValue = Right
