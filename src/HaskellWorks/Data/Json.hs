@@ -9,3 +9,5 @@ module HaskellWorks.Data.Json
 
 import           HaskellWorks.Data.Json.Succinct  as X
 import           HaskellWorks.Data.Json.Token     as X
+import           HaskellWorks.Data.Json.Type      as X
+import           HaskellWorks.Data.Json.Value     as X
