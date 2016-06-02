@@ -59,7 +59,12 @@ Run the following in the shell:
          274 import qualified Data.Vector.Storable as DVS
          274 import qualified Data.ByteString as BS
          274 import System.IO.MMap
+         274 import Control.Monad
          274 import Data.Word
+         274 import HaskellWorks.Data.Bits.BitShown
+         274 import HaskellWorks.Data.Succinct.BalancedParens.Simple
+         274 import HaskellWorks.Data.FromForeignRegion
+         274 import HaskellWorks.Diagnostics
          274 (fptr :: ForeignPtr Word8, offset, size) <- mmapFileForeignPtr "/Users/jky/Downloads/78mbs.json" ReadOnly Nothing
          601 cursor <- measure (fromForeignRegion (fptr, offset, size) :: JsonCursor BS.ByteString (BitShown (DVS.Vector Word64)) (SimpleBalancedParens (DVS.Vector Word64)))
 
