@@ -1,5 +1,5 @@
 name:                   hw-json
-version:                0.1.0.0
+version:                0.2.0.0
 synopsis:               Conduits for tokenizing streams.
 description:            Please see README.md
 homepage:               http://github.com/haskell-works/hw-json#readme
@@ -63,9 +63,11 @@ library
                       , containers
                       , hw-bits
                       , hw-conduit
+                      , hw-diagnostics
                       , hw-parser
                       , hw-prim                       >= 0.0.3.1
                       , hw-rankselect                 >= 0.0.0.5
+                      , mmap
                       , mono-traversable
                       , resourcet
                       , text
