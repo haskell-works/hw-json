@@ -20,4 +20,3 @@ cabal.sandbox.config
 /*.nix
 /*.nix.part
 /result
-/corpus
