@@ -26,15 +26,14 @@ import           HaskellWorks.Data.FromByteString
 {-# ANN module ("HLint: ignore Reduce duplication"  :: String) #-}
 {-# ANN module ("HLint: redundant bracket"          :: String) #-}
 
-readJson :: String -> IO (JsonCursor BS.ByteString (BitShown (DVS.Vector Word64)) (SimpleBalancedParens (DVS.Vector Word64)))
-readJson path = do
-  bs <- BS.readFile path
-  let !cursor = fromByteString bs :: JsonCursor BS.ByteString (BitShown (DVS.Vector Word64)) (SimpleBalancedParens (DVS.Vector Word64))
-  return cursor
-
 spec :: Spec
 spec = describe "HaskellWorks.Data.Json.Corpus" $ do
-  it "Corpus 5000B loads propertly" $ do
-    !cursor <- readJson "corpus/5000B.json"
-    print (show cursor)
-    1 `shouldBe` 1
+  it "Corpus 5000B loads properly" $ do
+    inJson <- BS.readFile "corpus/5000B.json"
+    inInterestBits <- BS.readFile "corpus/5000B.ib"
+    inInterestBalancedParens <- BS.readFile "corpus/5000B.bp"
+    let !cursor = fromByteString inJson :: JsonCursor BS.ByteString (BitShown (DVS.Vector Word64)) (SimpleBalancedParens (DVS.Vector Word64))
+    let text = cursorText cursor
+    let ib = interests cursor
+    let bp = balancedParens cursor
+    text `shouldBe` inJson
