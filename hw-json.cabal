@@ -84,9 +84,10 @@ test-suite hw-json-test
   type:                 exitcode-stdio-1.0
   hs-source-dirs:       test
   main-is:              Spec.hs
-  other-modules:        HaskellWorks.Data.Json.Token.TokenizeSpec
-                      , HaskellWorks.Data.Json.Succinct.CursorSpec
+  other-modules:        HaskellWorks.Data.Json.CorpusSpec
                       , HaskellWorks.Data.Json.Succinct.Cursor.InterestBitsSpec
+                      , HaskellWorks.Data.Json.Succinct.CursorSpec
+                      , HaskellWorks.Data.Json.Token.TokenizeSpec
                       , HaskellWorks.Data.Json.TypeSpec
                       , HaskellWorks.Data.Json.ValueSpec
   build-depends:        base                          >= 4          && < 5
