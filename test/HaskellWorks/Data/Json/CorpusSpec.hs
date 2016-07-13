@@ -18,7 +18,9 @@ import           Data.Word
 import           HaskellWorks.Data.Bits.BitShown
 import           HaskellWorks.Data.Json.Succinct.Cursor                     as C
 import           HaskellWorks.Data.Succinct.BalancedParens.Simple
+import           HaskellWorks.Data.Vector.VectorLike
 import           Test.Hspec
+import           HaskellWorks.Data.Bits
 
 import           HaskellWorks.Data.FromByteString
 
@@ -29,11 +31,11 @@ import           HaskellWorks.Data.FromByteString
 spec :: Spec
 spec = describe "HaskellWorks.Data.Json.Corpus" $ do
   it "Corpus 5000B loads properly" $ do
-    inJson <- BS.readFile "corpus/5000B.json"
-    inInterestBits <- BS.readFile "corpus/5000B.ib"
-    inInterestBalancedParens <- BS.readFile "corpus/5000B.bp"
+    inJson                    <- BS.readFile "corpus/5000B.json"
+    inInterestBits            <- BS.readFile "corpus/5000B.ib"
+    inInterestBalancedParens  <- BS.readFile "corpus/5000B.bp"
     let !cursor = fromByteString inJson :: JsonCursor BS.ByteString (BitShown (DVS.Vector Word64)) (SimpleBalancedParens (DVS.Vector Word64))
-    let text = cursorText cursor
-    let ib = interests cursor
-    let bp = balancedParens cursor
+    let text    = cursorText      cursor
+    let ib      = interests       cursor
+    let bp      = balancedParens  cursor
     text `shouldBe` inJson

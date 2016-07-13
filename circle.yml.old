@@ -9,9 +9,6 @@ dependencies:
   pre:
     - cp ./scripts/* ~/bin/
   override:
-    # Fix to latest stable release
-    - nox nix-channel --add https://nixos.org/channels/nixos-16.03/ nixpkgs
-    - nox nix-channel --update
     - nox when deps nix-mk
     - nox when deps nix-deps
 
