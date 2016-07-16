@@ -29,7 +29,6 @@ import           HaskellWorks.Data.Succinct.RankSelect.Binary.Basic.Rank1
 import           HaskellWorks.Data.Succinct.RankSelect.Binary.Basic.Select1
 import           HaskellWorks.Data.Succinct.RankSelect.Binary.Poppy512
 import           HaskellWorks.Data.TreeCursor
-import           HaskellWorks.Data.Vector.VectorLike
 
 data JsonCursor t v w = JsonCursor
   { cursorText     :: !t
@@ -107,7 +106,7 @@ instance (BP.BalancedParens u, Rank1 u, Rank0 u) => TreeCursor (JsonCursor t v u
   subtreeSize :: JsonCursor t v u -> Maybe Count
   subtreeSize k = BP.subtreeSize (balancedParens k) (cursorRank k)
 
-jsonCursorPos :: (Rank1 w, Select1 v, VectorLike s) => JsonCursor s v w -> Position
+jsonCursorPos :: (Rank1 w, Select1 v) => JsonCursor s v w -> Position
 jsonCursorPos k = toPosition (select1 ik (rank1 bpk (cursorRank k)) - 1)
   where ik  = interests k
         bpk = balancedParens k

@@ -31,21 +31,21 @@ instance FromBlankedJson (JsonBalancedParens (SimpleBalancedParens [Bool])) wher
   fromBlankedJson (BlankedJson bj) = JsonBalancedParens (SimpleBalancedParens (runListConduit blankedJsonToBalancedParens bj))
 
 instance FromBlankedJson (JsonBalancedParens (SimpleBalancedParens (DVS.Vector Word8))) where
-  fromBlankedJson bj    = JsonBalancedParens (SimpleBalancedParens (DVS.unsafeCast (DVS.unfoldrN newLen genBitWordsForever interestBS)))
-    where interestBS    = BS.concat (runListConduit (blankedJsonToBalancedParens2 =$= compressWordAsBit) (getBlankedJson bj))
-          newLen        = (BS.length interestBS + 7) `div` 8 * 8
+  fromBlankedJson bj  = JsonBalancedParens (SimpleBalancedParens (DVS.unsafeCast (DVS.unfoldrN newLen genBitWordsForever bpBS)))
+    where bpBS        = BS.concat (runListConduit (blankedJsonToBalancedParens2 =$= compressWordAsBit) (getBlankedJson bj))
+          newLen      = (BS.length bpBS + 7) `div` 8 * 8
 
 instance FromBlankedJson (JsonBalancedParens (SimpleBalancedParens (DVS.Vector Word16))) where
-  fromBlankedJson bj    = JsonBalancedParens (SimpleBalancedParens (DVS.unsafeCast (DVS.unfoldrN newLen genBitWordsForever interestBS)))
-    where interestBS    = BS.concat (runListConduit (blankedJsonToBalancedParens2 =$= compressWordAsBit) (getBlankedJson bj))
-          newLen        = (BS.length interestBS + 7) `div` 8 * 8
+  fromBlankedJson bj  = JsonBalancedParens (SimpleBalancedParens (DVS.unsafeCast (DVS.unfoldrN newLen genBitWordsForever bpBS)))
+    where bpBS        = BS.concat (runListConduit (blankedJsonToBalancedParens2 =$= compressWordAsBit) (getBlankedJson bj))
+          newLen      = (BS.length bpBS + 7) `div` 8 * 8
 
 instance FromBlankedJson (JsonBalancedParens (SimpleBalancedParens (DVS.Vector Word32))) where
-  fromBlankedJson bj    = JsonBalancedParens (SimpleBalancedParens (DVS.unsafeCast (DVS.unfoldrN newLen genBitWordsForever interestBS)))
-    where interestBS    = BS.concat (runListConduit (blankedJsonToBalancedParens2 =$= compressWordAsBit) (getBlankedJson bj))
-          newLen        = (BS.length interestBS + 7) `div` 8 * 8
+  fromBlankedJson bj  = JsonBalancedParens (SimpleBalancedParens (DVS.unsafeCast (DVS.unfoldrN newLen genBitWordsForever bpBS)))
+    where bpBS        = BS.concat (runListConduit (blankedJsonToBalancedParens2 =$= compressWordAsBit) (getBlankedJson bj))
+          newLen      = (BS.length bpBS + 7) `div` 8 * 8
 
 instance FromBlankedJson (JsonBalancedParens (SimpleBalancedParens (DVS.Vector Word64))) where
-  fromBlankedJson bj    = JsonBalancedParens (SimpleBalancedParens (DVS.unsafeCast (DVS.unfoldrN newLen genBitWordsForever interestBS)))
-    where interestBS    = BS.concat (runListConduit (blankedJsonToBalancedParens2 =$= compressWordAsBit) (getBlankedJson bj))
-          newLen        = (BS.length interestBS + 7) `div` 8 * 8
+  fromBlankedJson bj  = JsonBalancedParens (SimpleBalancedParens (DVS.unsafeCast (DVS.unfoldrN newLen genBitWordsForever bpBS)))
+    where bpBS        = BS.concat (runListConduit (blankedJsonToBalancedParens2 =$= compressWordAsBit) (getBlankedJson bj))
+          newLen      = (BS.length bpBS + 7) `div` 8 * 8

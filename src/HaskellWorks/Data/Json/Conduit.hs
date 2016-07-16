@@ -83,14 +83,27 @@ blankedJsonToBalancedParens' bs = case BS.uncons bs of
     blankedJsonToBalancedParens' cs
   Nothing -> return ()
 
+repartitionMod8 :: BS.ByteString -> BS.ByteString -> (BS.ByteString, BS.ByteString)
+repartitionMod8 aBS bBS = (BS.take cLen abBS, BS.drop cLen abBS)
+  where abBS = BS.concat [aBS, bBS]
+        abLen = BS.length abBS
+        cLen = (abLen `div` 8) * 8
+
 compressWordAsBit :: Monad m => Conduit BS.ByteString m BS.ByteString
-compressWordAsBit = do
-  mbs <- await
-  case mbs of
-    Just bs -> do
-      let (cs, _) = BS.unfoldrN (BS.length bs + 7 `div` 8) gen bs
+compressWordAsBit = compressWordAsBit' BS.empty
+
+compressWordAsBit' :: Monad m => BS.ByteString -> Conduit BS.ByteString m BS.ByteString
+compressWordAsBit' aBS = do
+  mbBS <- await
+  case mbBS of
+    Just bBS -> do
+      let (cBS, dBS) = repartitionMod8 aBS bBS
+      let (cs, _) = BS.unfoldrN (BS.length cBS + 7 `div` 8) gen cBS
       yield cs
-    Nothing -> return ()
+      compressWordAsBit' dBS
+    Nothing -> do
+      let (cs, _) = BS.unfoldrN (BS.length aBS + 7 `div` 8) gen aBS
+      yield cs
   where gen :: ByteString -> Maybe (Word8, ByteString)
         gen xs = if BS.length xs == 0
           then Nothing
@@ -105,13 +118,14 @@ blankedJsonToBalancedParens2 = do
     Just bs -> do
       let (cs, _) = BS.unfoldrN (BS.length bs * 2) gen (Nothing, bs)
       yield cs
+      blankedJsonToBalancedParens2
     Nothing -> return ()
   where gen :: (Maybe Bool, ByteString) -> Maybe (Word8, (Maybe Bool, ByteString))
         gen (Just True  , bs) = Just (0xFF, (Nothing, bs))
         gen (Just False , bs) = Just (0x00, (Nothing, bs))
         gen (Nothing    , bs) = case BS.uncons bs of
           Just (c, cs) -> case balancedParensOf c of
-            MiniN   -> gen        (Nothing    , cs)
+            MiniN   -> gen         (Nothing    , cs)
             MiniT   -> Just (0xFF, (Nothing    , cs))
             MiniF   -> Just (0x00, (Nothing    , cs))
             MiniTF  -> Just (0xFF, (Just False , cs))
