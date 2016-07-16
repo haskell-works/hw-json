@@ -12,10 +12,12 @@
 
 module HaskellWorks.Data.Json.CorpusSpec(spec) where
 
+import           Control.Monad
 import qualified Data.ByteString                                            as BS
 import qualified Data.Vector.Storable                                       as DVS
 import           Data.Word
 import           HaskellWorks.Data.Bits.BitShown
+import           HaskellWorks.Data.Bits.FromBitTextByteString
 import           HaskellWorks.Data.Json.Succinct.Cursor                     as C
 import           HaskellWorks.Data.Succinct.BalancedParens.Simple
 import           HaskellWorks.Data.Vector.VectorLike
@@ -31,11 +33,15 @@ import           HaskellWorks.Data.FromByteString
 spec :: Spec
 spec = describe "HaskellWorks.Data.Json.Corpus" $ do
   it "Corpus 5000B loads properly" $ do
-    inJson                    <- BS.readFile "corpus/5000B.json"
-    inInterestBits            <- BS.readFile "corpus/5000B.ib"
-    inInterestBalancedParens  <- BS.readFile "corpus/5000B.bp"
-    let !cursor = fromByteString inJson :: JsonCursor BS.ByteString (BitShown (DVS.Vector Word64)) (SimpleBalancedParens (DVS.Vector Word64))
-    let text    = cursorText      cursor
-    let ib      = interests       cursor
-    let bp      = balancedParens  cursor
-    text `shouldBe` inJson
+    inJsonBS                    <- BS.readFile "corpus/5000B.json"
+    inInterestBitsBS            <- BS.readFile "corpus/5000B.ib"
+    inInterestBalancedParensBS  <- BS.readFile "corpus/5000B.bp"
+    let inInterestBits            = fromBitTextByteString inInterestBitsBS
+    let inInterestBalancedParens  = fromBitTextByteString inInterestBalancedParensBS
+    let !cursor = fromByteString inJsonBS :: JsonCursor BS.ByteString (BitShown (DVS.Vector Word64)) (SimpleBalancedParens (DVS.Vector Word64))
+    let text                    = cursorText      cursor
+    let ib                      = interests       cursor
+    let SimpleBalancedParens bp = balancedParens  cursor
+    text `shouldBe` inJsonBS
+    ib `shouldBe` BitShown inInterestBits
+    bp `shouldBe` inInterestBalancedParens
