@@ -44,6 +44,7 @@ library
                       , HaskellWorks.Data.Json.Conduit.Blank
                       , HaskellWorks.Data.Json.Conduit.Words
                       , HaskellWorks.Data.Json.FromValue
+                      , HaskellWorks.Data.Json.PartialValue
                       , HaskellWorks.Data.Json.Succinct
                       , HaskellWorks.Data.Json.Succinct.Cursor
                       , HaskellWorks.Data.Json.Succinct.Cursor.BalancedParens
@@ -52,6 +53,7 @@ library
                       , HaskellWorks.Data.Json.Succinct.Cursor.Internal
                       , HaskellWorks.Data.Json.Succinct.Cursor.Token
                       , HaskellWorks.Data.Json.Succinct.Index
+                      , HaskellWorks.Data.Json.Succinct.PartialIndex
                       , HaskellWorks.Data.Json.Token.Tokenize
                       , HaskellWorks.Data.Json.Token.Types
                       , HaskellWorks.Data.Json.Token
