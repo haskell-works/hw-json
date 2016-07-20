@@ -13,7 +13,11 @@ build-type:             Simple
 extra-source-files:     README.md,
                         corpus/5000B.bp,
                         corpus/5000B.ib,
-                        corpus/5000B.json
+                        corpus/5000B.json,
+                        corpus/issue-0001.bp,
+                        corpus/issue-0001.ib,
+                        corpus/issue-0001.json,
+                        corpus/issue-0001.md
 cabal-version:          >= 1.22
 
 executable hw-json-example
