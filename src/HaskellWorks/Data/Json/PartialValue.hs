@@ -15,6 +15,7 @@ import qualified Data.Attoparsec.ByteString.Char8             as ABC
 import qualified Data.ByteString                              as BS
 import           HaskellWorks.Data.Json.Succinct.PartialIndex
 import           HaskellWorks.Data.Json.Value.Internal
+import           Text.PrettyPrint.ANSI.Leijen
 
 data JsonPartialValue
   = JsonPartialString String
@@ -56,3 +57,29 @@ instance JsonPartialValueAt JsonPartialIndex where
             ABC.Fail    {}  -> JsonPartialError ("Invalid field: '" ++ show (BS.take 20 bs) ++ "...'")
             ABC.Partial _   -> JsonPartialError "Unexpected end of field"
             ABC.Done    _ s -> JsonPartialString s
+
+data JsonPartialField = JsonPartialField String JsonPartialValue
+
+toJsonPartialField :: (String, JsonPartialValue) -> JsonPartialField
+toJsonPartialField (k, v) = JsonPartialField k v
+
+instance Pretty JsonPartialField where
+  pretty (JsonPartialField k v) = text (show k) <> text ": " <> pretty v
+
+hEncloseSep :: Doc -> Doc -> Doc -> [Doc] -> Doc
+hEncloseSep l r s ds
+    = case ds of
+        []  -> l <> r
+        [d] -> l <> d <> r
+        _   -> hcat (zipWith (<>) (l : repeat s) ds) <> r
+
+instance Pretty JsonPartialValue where
+  pretty mjpv = case mjpv of
+    JsonPartialString s   -> dullgreen  (text (show s))
+    JsonPartialNumber n   -> cyan       (text (show n))
+    JsonPartialObject []  -> text "{}"
+    JsonPartialObject kvs -> hEncloseSep (text "{{") (text "}}") (text ",") ((pretty . toJsonPartialField) `map` kvs)
+    JsonPartialArray vs   -> hEncloseSep (text "[") (text "]") (text ",") (pretty `map` vs)
+    JsonPartialBool w     -> red (text (show w))
+    JsonPartialNull       -> text "null"
+    JsonPartialError s    -> text "<error " <> text s <> text ">"
