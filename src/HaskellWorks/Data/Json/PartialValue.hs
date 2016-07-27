@@ -78,7 +78,7 @@ instance Pretty JsonPartialValue where
     JsonPartialString s   -> dullgreen  (text (show s))
     JsonPartialNumber n   -> cyan       (text (show n))
     JsonPartialObject []  -> text "{}"
-    JsonPartialObject kvs -> hEncloseSep (text "{{") (text "}}") (text ",") ((pretty . toJsonPartialField) `map` kvs)
+    JsonPartialObject kvs -> hEncloseSep (text "{") (text "}") (text ",") ((pretty . toJsonPartialField) `map` kvs)
     JsonPartialArray vs   -> hEncloseSep (text "[") (text "]") (text ",") (pretty `map` vs)
     JsonPartialBool w     -> red (text (show w))
     JsonPartialNull       -> text "null"
