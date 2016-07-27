@@ -1,5 +1,5 @@
 name:                   hw-json
-version:                0.2.0.3
+version:                0.2.0.4
 synopsis:               Conduits for tokenizing streams.
 description:            Please see README.md
 homepage:               http://github.com/haskell-works/hw-json#readme
