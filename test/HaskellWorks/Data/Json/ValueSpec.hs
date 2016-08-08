@@ -38,7 +38,7 @@ import           Test.Hspec
 
 fc = TC.firstChild
 ns = TC.nextSibling
-cd = TC.depth
+-- cd = TC.depth
 
 spec :: Spec
 spec = describe "HaskellWorks.Data.Json.ValueSpec" $ do
@@ -91,18 +91,18 @@ genSpec t _ = do
     forJson "[null]" $ \cursor -> do
       it "should have correct value"      $ jsonValueVia (Just cursor) `shouldBe` Right (JsonArray [JsonNull])
       it "should have correct value"      $ jsonValueVia (fc   cursor) `shouldBe` Right  JsonNull
-      it "depth at top"                   $ cd          cursor `shouldBe` Just 1
-      it "depth at first child of array"  $ (fc >=> cd) cursor `shouldBe` Just 2
+      -- it "depth at top"                   $ cd          cursor `shouldBe` Just 1
+      -- it "depth at first child of array"  $ (fc >=> cd) cursor `shouldBe` Just 2
     forJson "[null, {\"field\": 1}]" $ \cursor -> do
       it "cursor can navigate to second child of array" $ do
         jsonValueVia ((fc >=> ns)   cursor) `shouldBe` Right (                     JsonObject [("field", JsonNumber 1)] )
         jsonValueVia (Just          cursor) `shouldBe` Right (JsonArray [JsonNull, JsonObject [("field", JsonNumber 1)]])
-      it "depth at second child of array" $ do
-        (fc >=> ns >=> cd) cursor `shouldBe` Just 2
-      it "depth at first child of object at second child of array" $ do
-        (fc >=> ns >=> fc >=> cd) cursor `shouldBe` Just 3
-      it "depth at first child of object at second child of array" $ do
-        (fc >=> ns >=> fc >=> ns >=> cd) cursor `shouldBe` Just 3
+      -- it "depth at second child of array" $ do
+      --   (fc >=> ns >=> cd) cursor `shouldBe` Just 2
+      -- it "depth at first child of object at second child of array" $ do
+      --   (fc >=> ns >=> fc >=> cd) cursor `shouldBe` Just 3
+      -- it "depth at first child of object at second child of array" $ do
+      --   (fc >=> ns >=> fc >=> ns >=> cd) cursor `shouldBe` Just 3
     describe "For empty json array" $ do
       let cursor =  "[]" :: JsonCursor BS.ByteString t u
       it "can navigate down and forwards" $ do

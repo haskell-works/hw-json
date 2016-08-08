@@ -38,28 +38,28 @@ import           Test.Hspec
 
 fc = TC.firstChild
 ns = TC.nextSibling
-pn = TC.parent
-cd = TC.depth
+-- pn = TC.parent
+-- cd = TC.depth
 ss = TC.subtreeSize
 
 spec :: Spec
 spec = describe "HaskellWorks.Data.Json.Succinct.CursorSpec" $ do
-  describe "Cursor for [Bool]" $ do
-    it "depth at top" $ do
-      let cursor = "[null]" :: JsonCursor String (BitShown [Bool]) (SimpleBalancedParens [Bool])
-      cd cursor `shouldBe` Just 1
-    it "depth at first child of array" $ do
-      let cursor = "[null]" :: JsonCursor String (BitShown [Bool]) (SimpleBalancedParens [Bool])
-      (fc >=> cd) cursor `shouldBe` Just 2
-    it "depth at second child of array" $ do
-      let cursor = "[null, {\"field\": 1}]" :: JsonCursor String (BitShown [Bool]) (SimpleBalancedParens [Bool])
-      (fc >=> ns >=> cd) cursor `shouldBe` Just 2
-    it "depth at first child of object at second child of array" $ do
-      let cursor = "[null, {\"field\": 1}]" :: JsonCursor String (BitShown [Bool]) (SimpleBalancedParens [Bool])
-      (fc >=> ns >=> fc >=> cd) cursor `shouldBe` Just 3
-    it "depth at first child of object at second child of array" $ do
-      let cursor = "[null, {\"field\": 1}]" :: JsonCursor String (BitShown [Bool]) (SimpleBalancedParens [Bool])
-      (fc >=> ns >=> fc >=> ns >=> cd) cursor `shouldBe` Just 3
+  -- describe "Cursor for [Bool]" $ do
+  --   it "depth at top" $ do
+  --     let cursor = "[null]" :: JsonCursor String (BitShown [Bool]) (SimpleBalancedParens [Bool])
+  --     cd cursor `shouldBe` Just 1
+  --   it "depth at first child of array" $ do
+  --     let cursor = "[null]" :: JsonCursor String (BitShown [Bool]) (SimpleBalancedParens [Bool])
+  --     (fc >=> cd) cursor `shouldBe` Just 2
+  --   it "depth at second child of array" $ do
+  --     let cursor = "[null, {\"field\": 1}]" :: JsonCursor String (BitShown [Bool]) (SimpleBalancedParens [Bool])
+  --     (fc >=> ns >=> cd) cursor `shouldBe` Just 2
+  --   it "depth at first child of object at second child of array" $ do
+  --     let cursor = "[null, {\"field\": 1}]" :: JsonCursor String (BitShown [Bool]) (SimpleBalancedParens [Bool])
+  --     (fc >=> ns >=> fc >=> cd) cursor `shouldBe` Just 3
+  --   it "depth at first child of object at second child of array" $ do
+  --     let cursor = "[null, {\"field\": 1}]" :: JsonCursor String (BitShown [Bool]) (SimpleBalancedParens [Bool])
+  --     (fc >=> ns >=> fc >=> ns >=> cd) cursor `shouldBe` Just 3
   genSpec "DVS.Vector Word8"  (undefined :: JsonCursor BS.ByteString (BitShown (DVS.Vector Word8)) (SimpleBalancedParens (DVS.Vector Word8)))
   genSpec "DVS.Vector Word16" (undefined :: JsonCursor BS.ByteString (BitShown (DVS.Vector Word16)) (SimpleBalancedParens (DVS.Vector Word16)))
   genSpec "DVS.Vector Word32" (undefined :: JsonCursor BS.ByteString (BitShown (DVS.Vector Word32)) (SimpleBalancedParens (DVS.Vector Word32)))
@@ -101,17 +101,17 @@ genSpec :: forall t u.
   => String -> (JsonCursor BS.ByteString t u) -> SpecWith ()
 genSpec t _ = do
   describe ("Json cursor of type " ++ t) $ do
-    let forJson (cursor :: JsonCursor BS.ByteString t u) f = describe ("of value " ++ show cursor) (f cursor)
-    forJson "[null]" $ \cursor -> do
-      it "depth at top"                   $ cd          cursor `shouldBe` Just 1
-      it "depth at first child of array"  $ (fc >=> cd) cursor `shouldBe` Just 2
-    forJson "[null, {\"field\": 1}]" $ \cursor -> do
-      it "depth at second child of array" $ do
-        (fc >=> ns >=> cd) cursor `shouldBe` Just 2
-      it "depth at first child of object at second child of array" $ do
-        (fc >=> ns >=> fc >=> cd) cursor `shouldBe` Just 3
-      it "depth at first child of object at second child of array" $ do
-        (fc >=> ns >=> fc >=> ns >=> cd) cursor `shouldBe` Just 3
+    -- let forJson (cursor :: JsonCursor BS.ByteString t u) f = describe ("of value " ++ show cursor) (f cursor)
+    -- forJson "[null]" $ \cursor -> do
+    --   it "depth at top"                   $ cd          cursor `shouldBe` Just 1
+    --   it "depth at first child of array"  $ (fc >=> cd) cursor `shouldBe` Just 2
+    -- forJson "[null, {\"field\": 1}]" $ \cursor -> do
+    --   it "depth at second child of array" $ do
+    --     (fc >=> ns >=> cd) cursor `shouldBe` Just 2
+    --   it "depth at first child of object at second child of array" $ do
+    --     (fc >=> ns >=> fc >=> cd) cursor `shouldBe` Just 3
+    --   it "depth at first child of object at second child of array" $ do
+    --     (fc >=> ns >=> fc >=> ns >=> cd) cursor `shouldBe` Just 3
     describe "For empty json array" $ do
       let cursor =  "[null]" :: JsonCursor BS.ByteString t u
       it "can navigate down and forwards" $ do
@@ -126,18 +126,18 @@ genSpec t _ = do
                     \        } \
                     \    } \
                     \}" :: JsonCursor BS.ByteString t u
-      it "can navigate up" $ do
-        (                                                                      pn) cursor `shouldBe` Nothing
-        (fc                                                                >=> pn) cursor `shouldBe`                                    Just cursor
-        (fc >=> ns                                                         >=> pn) cursor `shouldBe`                                    Just cursor
-        (fc >=> ns >=> fc                                                  >=> pn) cursor `shouldBe` (fc >=> ns                            ) cursor
-        (fc >=> ns >=> fc >=> ns                                           >=> pn) cursor `shouldBe` (fc >=> ns                            ) cursor
-        (fc >=> ns >=> fc >=> ns >=> ns                                    >=> pn) cursor `shouldBe` (fc >=> ns                            ) cursor
-        (fc >=> ns >=> fc >=> ns >=> ns >=> ns                             >=> pn) cursor `shouldBe` (fc >=> ns                            ) cursor
-        (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc                      >=> pn) cursor `shouldBe` (fc >=> ns >=> fc >=> ns >=> ns >=> ns) cursor
-        (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns               >=> pn) cursor `shouldBe` (fc >=> ns >=> fc >=> ns >=> ns >=> ns) cursor
-        (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns        >=> pn) cursor `shouldBe` (fc >=> ns >=> fc >=> ns >=> ns >=> ns) cursor
-        (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns >=> ns >=> pn) cursor `shouldBe` (fc >=> ns >=> fc >=> ns >=> ns >=> ns) cursor
+      -- it "can navigate up" $ do
+      --   (                                                                      pn) cursor `shouldBe` Nothing
+      --   (fc                                                                >=> pn) cursor `shouldBe`                                    Just cursor
+      --   (fc >=> ns                                                         >=> pn) cursor `shouldBe`                                    Just cursor
+      --   (fc >=> ns >=> fc                                                  >=> pn) cursor `shouldBe` (fc >=> ns                            ) cursor
+      --   (fc >=> ns >=> fc >=> ns                                           >=> pn) cursor `shouldBe` (fc >=> ns                            ) cursor
+      --   (fc >=> ns >=> fc >=> ns >=> ns                                    >=> pn) cursor `shouldBe` (fc >=> ns                            ) cursor
+      --   (fc >=> ns >=> fc >=> ns >=> ns >=> ns                             >=> pn) cursor `shouldBe` (fc >=> ns                            ) cursor
+      --   (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc                      >=> pn) cursor `shouldBe` (fc >=> ns >=> fc >=> ns >=> ns >=> ns) cursor
+      --   (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns               >=> pn) cursor `shouldBe` (fc >=> ns >=> fc >=> ns >=> ns >=> ns) cursor
+      --   (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns        >=> pn) cursor `shouldBe` (fc >=> ns >=> fc >=> ns >=> ns >=> ns) cursor
+      --   (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns >=> ns >=> pn) cursor `shouldBe` (fc >=> ns >=> fc >=> ns >=> ns >=> ns) cursor
       it "can get subtree size" $ do
         (                                                                      ss) cursor `shouldBe` Just 16
         (fc                                                                >=> ss) cursor `shouldBe` Just 1
