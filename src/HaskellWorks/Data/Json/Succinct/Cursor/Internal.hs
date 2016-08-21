@@ -100,8 +100,8 @@ instance (BP.BalancedParens u, Rank1 u, Rank0 u) => TreeCursor (JsonCursor t v u
   parent :: JsonCursor t v u -> Maybe (JsonCursor t v u)
   parent k = let mq = BP.parent (balancedParens k) (cursorRank k) in (\q -> k { cursorRank = q }) <$> mq
 
-  -- depth :: JsonCursor t v u -> Maybe Count
-  -- depth k = BP.depth (balancedParens k) (cursorRank k)
+  depth :: JsonCursor t v u -> Maybe Count
+  depth k = BP.depth (balancedParens k) (cursorRank k)
 
   subtreeSize :: JsonCursor t v u -> Maybe Count
   subtreeSize k = BP.subtreeSize (balancedParens k) (cursorRank k)
