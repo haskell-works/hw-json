@@ -29,12 +29,12 @@ executable hw-json-example
                       , conduit
                       , criterion
                       , errors
-                      , hw-bits
+                      , hw-bits                       >= 0.1.0.0
                       , hw-conduit
                       , hw-diagnostics
                       , hw-json
-                      , hw-prim                       >= 0.0.3.1
-                      , hw-rankselect                 >= 0.0.0.5
+                      , hw-prim                       >= 0.1.0.0
+                      , hw-rankselect                 >= 0.3.0.0
                       , mmap
                       , resourcet
                       , vector
@@ -48,6 +48,7 @@ library
                       , HaskellWorks.Data.Json.Conduit.Blank
                       , HaskellWorks.Data.Json.Conduit.Words
                       , HaskellWorks.Data.Json.FromValue
+                      , HaskellWorks.Data.Json.Load
                       , HaskellWorks.Data.Json.PartialValue
                       , HaskellWorks.Data.Json.Succinct
                       , HaskellWorks.Data.Json.Succinct.Cursor
@@ -71,12 +72,14 @@ library
                       , bytestring
                       , conduit
                       , containers
-                      , hw-bits
+                      , dlist
+                      , hw-bits                       >= 0.1.0.0
                       , hw-conduit
                       , hw-diagnostics
+                      , hw-mquery                     >= 0.1.0.0
                       , hw-parser
-                      , hw-prim                       >= 0.0.3.1
-                      , hw-rankselect                 >= 0.0.0.5
+                      , hw-prim                       >= 0.1.0.0
+                      , hw-rankselect                 >= 0.1.0.0
                       , mmap
                       , mono-traversable
                       , resourcet

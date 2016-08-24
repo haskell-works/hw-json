@@ -1,6 +1,7 @@
 hw-bits
 hw-conduit
 hw-diagnostics
+hw-mquery
 hw-parser
 hw-prim
 hw-rankselect

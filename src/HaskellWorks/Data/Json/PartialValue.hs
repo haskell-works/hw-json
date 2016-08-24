@@ -8,13 +8,30 @@
 module HaskellWorks.Data.Json.PartialValue
   ( JsonPartialValue(..)
   , JsonPartialValueAt(..)
+  , asInteger
+  , asString
+  , castAsInteger
+  , entry
+  , hasKey
+  , hasKV
+  , item
+  , jsonKeys
+  , jsonSize
+  , named
   ) where
 
 import           Control.Arrow
 import qualified Data.Attoparsec.ByteString.Char8             as ABC
 import qualified Data.ByteString                              as BS
+import qualified Data.DList                                   as DL
+import           HaskellWorks.Data.AtLeastSize
+import           HaskellWorks.Data.Entry
+import           HaskellWorks.Data.Micro
+import           HaskellWorks.Data.Mini
+import           HaskellWorks.Data.MQuery
 import           HaskellWorks.Data.Json.Succinct.PartialIndex
 import           HaskellWorks.Data.Json.Value.Internal
+import           HaskellWorks.Data.Row
 import           Text.PrettyPrint.ANSI.Leijen
 
 data JsonPartialValue
@@ -30,8 +47,8 @@ data JsonPartialValue
 class JsonPartialValueAt a where
   jsonPartialJsonValueAt :: a -> JsonPartialValue
 
-asString :: JsonPartialValue -> String
-asString pjv = case pjv of
+jsonPartialValueString :: JsonPartialValue -> String
+jsonPartialValueString pjv = case pjv of
   JsonPartialString s -> s
   _                   -> ""
 
@@ -48,7 +65,7 @@ instance JsonPartialValueAt JsonPartialIndex where
         ABC.Partial _     -> JsonPartialError "Unexpected end of number"
         ABC.Done    _ r   -> JsonPartialNumber r
       ABC.Done    _ r   -> JsonPartialNumber r
-    JsonPartialIndexObject  fs -> JsonPartialObject (map ((asString . parseString) *** jsonPartialJsonValueAt) fs)
+    JsonPartialIndexObject  fs -> JsonPartialObject (map ((jsonPartialValueString . parseString) *** jsonPartialJsonValueAt) fs)
     JsonPartialIndexArray   es -> JsonPartialArray (map jsonPartialJsonValueAt es)
     JsonPartialIndexBool    v  -> JsonPartialBool v
     JsonPartialIndexNull       -> JsonPartialNull
@@ -83,3 +100,91 @@ instance Pretty JsonPartialValue where
     JsonPartialBool w     -> red (text (show w))
     JsonPartialNull       -> text "null"
     JsonPartialError s    -> text "<error " <> text s <> text ">"
+
+instance Pretty (Micro JsonPartialValue) where
+  pretty (Micro (JsonPartialString s )) = dullgreen (text (show s))
+  pretty (Micro (JsonPartialNumber n )) = cyan      (text (show n))
+  pretty (Micro (JsonPartialObject [])) = text "{}"
+  pretty (Micro (JsonPartialObject _ )) = text "{..}"
+  pretty (Micro (JsonPartialArray [] )) = text "[]"
+  pretty (Micro (JsonPartialArray _  )) = text "[..]"
+  pretty (Micro (JsonPartialBool w   )) = red (text (show w))
+  pretty (Micro  JsonPartialNull      ) = text "null"
+  pretty (Micro (JsonPartialError s  )) = text "<error " <> text s <> text ">"
+
+instance Pretty (Micro (String, JsonPartialValue)) where
+  pretty (Micro (fieldName, jpv)) = red (text (show fieldName)) <> text ": " <> pretty (Micro jpv)
+
+instance Pretty (Mini JsonPartialValue) where
+  pretty mjpv = case mjpv of
+    Mini (JsonPartialString s   ) -> dullgreen  (text (show s))
+    Mini (JsonPartialNumber n   ) -> cyan       (text (show n))
+    Mini (JsonPartialObject []  ) -> text "{}"
+    Mini (JsonPartialObject kvs ) -> case kvs of
+      (_:_:_:_:_:_:_:_:_:_:_:_:_) -> text "{" <> prettyKvs kvs <> text ", ..}"
+      []                          -> text "{}"
+      _                           -> text "{" <> prettyKvs kvs <> text "}"
+    Mini (JsonPartialArray []   ) -> text "[]"
+    Mini (JsonPartialArray vs   ) | vs `atLeastSize` 11 -> text "[" <> nest 2 (prettyVs (Micro `map` take 10 vs)) <> text ", ..]"
+    Mini (JsonPartialArray vs   ) | vs `atLeastSize` 1  -> text "[" <> nest 2 (prettyVs (Micro `map` take 10 vs)) <> text "]"
+    Mini (JsonPartialArray _    )                       -> text "[]"
+    Mini (JsonPartialBool w     ) -> red (text (show w))
+    Mini  JsonPartialNull         -> text "null"
+    Mini (JsonPartialError s    ) -> text "<error " <> text s <> text ">"
+
+instance Pretty (Mini (String, JsonPartialValue)) where
+  pretty (Mini (fieldName, jpv)) = text (show fieldName) <> text ": " <> pretty (Mini jpv)
+
+instance Pretty (MQuery JsonPartialValue) where
+  pretty = pretty . Row 120 . mQuery
+
+instance Pretty (MQuery (Entry String JsonPartialValue)) where
+  pretty (MQuery das) = pretty (Row 120 das)
+
+hasKV :: String -> JsonPartialValue -> JsonPartialValue -> MQuery JsonPartialValue
+hasKV k v (JsonPartialObject xs)  = if (k, v) `elem` xs then MQuery (DL.singleton (JsonPartialObject xs)) else MQuery DL.empty
+hasKV _ _  _                      = MQuery DL.empty
+
+item :: JsonPartialValue -> MQuery JsonPartialValue
+item jpv = case jpv of
+  JsonPartialArray es -> MQuery $ DL.fromList es
+  _                   -> MQuery   DL.empty
+
+entry :: JsonPartialValue -> MQuery (Entry String JsonPartialValue)
+entry jpv = case jpv of
+  JsonPartialObject fs  -> MQuery $ DL.fromList (uncurry Entry `map` fs)
+  _                     -> MQuery   DL.empty
+
+asString :: JsonPartialValue -> MQuery String
+asString jpv = case jpv of
+  JsonPartialString s -> MQuery $ DL.singleton s
+  _                   -> MQuery   DL.empty
+
+asInteger :: JsonPartialValue -> MQuery Integer
+asInteger jpv = case jpv of
+  JsonPartialNumber n -> MQuery $ DL.singleton (floor n)
+  _                   -> MQuery   DL.empty
+
+castAsInteger :: JsonPartialValue -> MQuery Integer
+castAsInteger jpv = case jpv of
+  JsonPartialString n -> MQuery $ DL.singleton (read n)
+  JsonPartialNumber n -> MQuery $ DL.singleton (floor n)
+  _                   -> MQuery   DL.empty
+
+named :: String -> Entry String JsonPartialValue -> MQuery JsonPartialValue
+named fieldName (Entry fieldName' jpv) | fieldName == fieldName'  = MQuery $ DL.singleton jpv
+named _         _                                                 = MQuery   DL.empty
+
+jsonKeys :: JsonPartialValue -> [String]
+jsonKeys jpv = case jpv of
+  JsonPartialObject fs  -> fst `map` fs
+  _                     -> []
+
+hasKey :: String -> JsonPartialValue -> Bool
+hasKey fieldName jpv = fieldName `elem` jsonKeys jpv
+
+jsonSize :: JsonPartialValue -> MQuery JsonPartialValue
+jsonSize jpv = case jpv of
+  JsonPartialArray  es  -> MQuery (DL.singleton (JsonPartialNumber (fromIntegral (length es))))
+  JsonPartialObject es  -> MQuery (DL.singleton (JsonPartialNumber (fromIntegral (length es))))
+  _                     -> MQuery (DL.singleton (JsonPartialNumber 0))
