@@ -20,3 +20,5 @@ cabal.sandbox.config
 /*.nix
 /*.nix.part
 /result
+/*.json
+/*.json.*
