@@ -42,7 +42,7 @@ data JsonPartialValue
   | JsonPartialBool Bool
   | JsonPartialNull
   | JsonPartialError String
-  deriving (Eq, Show)
+  deriving (Eq, Show, Ord)
 
 class JsonPartialValueAt a where
   jsonPartialJsonValueAt :: a -> JsonPartialValue
