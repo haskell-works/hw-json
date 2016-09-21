@@ -101,6 +101,7 @@ Run the following in the shell:
 
 ### Navigation example
 
+```
 $  cabal repl --ghc-option='-package mmap'
 λ> :set -XNoMonomorphismRestriction
 λ> import qualified Data.ByteString                                            as BS
@@ -127,6 +128,7 @@ $  cabal repl --ghc-option='-package mmap'
 λ> let ss = TC.subtreeSize
 λ> let cursor = "[null, {\"field\": 1}]" :: JsonCursor BS.ByteString (BitShown (DVS.Vector Word64)) (SimpleBalancedParens (DVS.Vector Word64))
 λ> cursor
+```
 
 ### Querying example
 
