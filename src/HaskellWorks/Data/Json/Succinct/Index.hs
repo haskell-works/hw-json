@@ -12,6 +12,7 @@ import qualified Data.ByteString                                            as B
 import qualified Data.List                                                  as L
 import           HaskellWorks.Data.Bits.BitWise
 import           HaskellWorks.Data.Decode
+import           HaskellWorks.Data.IndexedSeq
 import           HaskellWorks.Data.Json.CharLike
 import           HaskellWorks.Data.Json.Succinct
 import           HaskellWorks.Data.Positioning
@@ -20,7 +21,6 @@ import           HaskellWorks.Data.Succinct.RankSelect.Binary.Basic.Rank0
 import           HaskellWorks.Data.Succinct.RankSelect.Binary.Basic.Rank1
 import           HaskellWorks.Data.Succinct.RankSelect.Binary.Basic.Select1
 import           HaskellWorks.Data.TreeCursor
-import           HaskellWorks.Data.Vector.VectorLike
 
 data JsonIndex
   = JsonIndexString BS.ByteString

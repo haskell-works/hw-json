@@ -11,13 +11,13 @@ import qualified Data.ByteString                                            as B
 import           Data.Char
 import           Data.Word8
 import           HaskellWorks.Data.Bits.BitWise
+import           HaskellWorks.Data.IndexedSeq
 import           HaskellWorks.Data.Json.Succinct
 import           HaskellWorks.Data.Positioning
 import qualified HaskellWorks.Data.Succinct.BalancedParens                  as BP
 import           HaskellWorks.Data.Succinct.RankSelect.Binary.Basic.Rank0
 import           HaskellWorks.Data.Succinct.RankSelect.Binary.Basic.Rank1
 import           HaskellWorks.Data.Succinct.RankSelect.Binary.Basic.Select1
-import           HaskellWorks.Data.Vector.VectorLike
 
 wIsJsonNumberDigit :: Word8 -> Bool
 wIsJsonNumberDigit w = (w >= _0 && w <= _9) || w == _hyphen
