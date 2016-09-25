@@ -32,11 +32,10 @@ _patch=$(
 case $1 in
 major)
   _new_version="$(($_major + 1)).0.0.0"
-  _new_branch="$(($_major + 1)).0.0"
+  _new_branch="$(($_major + 1))"
   ;;
 minor)
   _new_version="$_major.$(($_minor + 1)).0.0"
-  _new_branch="$_major.$(($_minor + 1)).0"
   ;;
 point)
   _new_version="$_major.$_minor.$(($_point + 1)).0"
@@ -58,10 +57,15 @@ echo ""
 
 if [ "$_new_branch" != "" ]; then
   echo "  git checkout -b ${_new_branch}-branch"
-  echo "  git push --set-upstream origin ${_new_branch}-branch"
 fi
 
 echo "  git add $_repo_name.cabal"
 echo "  git commit -m 'New version $_new_version'"
-echo "  git push origin"
+
+if [ "$_new_branch" != "" ]; then
+  echo "  git push --set-upstream origin ${_new_branch}-branch"
+else
+  echo "  git push origin"
+fi
+
 echo ""

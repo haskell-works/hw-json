@@ -11,13 +11,16 @@ import qualified Data.ByteString                                            as B
 import           Data.Char
 import           Data.Word8
 import           HaskellWorks.Data.Bits.BitWise
-import           HaskellWorks.Data.IndexedSeq
+import           HaskellWorks.Data.Drop
 import           HaskellWorks.Data.Json.Succinct
 import           HaskellWorks.Data.Positioning
 import qualified HaskellWorks.Data.Succinct.BalancedParens                  as BP
 import           HaskellWorks.Data.Succinct.RankSelect.Binary.Basic.Rank0
 import           HaskellWorks.Data.Succinct.RankSelect.Binary.Basic.Rank1
 import           HaskellWorks.Data.Succinct.RankSelect.Binary.Basic.Select1
+import           Prelude hiding (drop)
+
+{-# ANN module ("HLint: Reduce duplication" :: String) #-}
 
 wIsJsonNumberDigit :: Word8 -> Bool
 wIsJsonNumberDigit w = (w >= _0 && w <= _9) || w == _hyphen
@@ -36,7 +39,7 @@ class JsonTypeAt a where
   jsonTypeAt :: a -> Maybe JsonType
 
 instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => JsonTypeAt (JsonCursor String v w) where
-  jsonTypeAtPosition p k = case vDrop (toCount p) (cursorText k) of
+  jsonTypeAtPosition p k = case drop (toCount p) (cursorText k) of
     c:_ | fromIntegral (ord c) == _bracketleft      -> Just JsonTypeArray
     c:_ | fromIntegral (ord c) == _f                -> Just JsonTypeBool
     c:_ | fromIntegral (ord c) == _t                -> Just JsonTypeBool
@@ -52,7 +55,7 @@ instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => JsonTy
           bpk = balancedParens k
 
 instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => JsonTypeAt (JsonCursor BS.ByteString v w) where
-  jsonTypeAtPosition p k = case BS.uncons (vDrop (toCount p) (cursorText k)) of
+  jsonTypeAtPosition p k = case BS.uncons (drop (toCount p) (cursorText k)) of
     Just (c, _) | c == _bracketleft     -> Just JsonTypeArray
     Just (c, _) | c == _f               -> Just JsonTypeBool
     Just (c, _) | c == _t               -> Just JsonTypeBool

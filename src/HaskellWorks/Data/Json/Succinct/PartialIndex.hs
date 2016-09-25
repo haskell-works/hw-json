@@ -11,7 +11,7 @@ import           Control.Arrow
 import qualified Data.ByteString                                            as BS
 import qualified Data.List                                                  as L
 import           HaskellWorks.Data.Bits.BitWise
-import           HaskellWorks.Data.IndexedSeq
+import           HaskellWorks.Data.Drop
 import           HaskellWorks.Data.Json.CharLike
 import           HaskellWorks.Data.Json.Succinct
 import           HaskellWorks.Data.Positioning
@@ -20,6 +20,8 @@ import           HaskellWorks.Data.Succinct.RankSelect.Binary.Basic.Rank0
 import           HaskellWorks.Data.Succinct.RankSelect.Binary.Basic.Rank1
 import           HaskellWorks.Data.Succinct.RankSelect.Binary.Basic.Select1
 import           HaskellWorks.Data.TreeCursor
+import           HaskellWorks.Data.Uncons
+import           Prelude hiding (drop)
 
 data JsonPartialIndex
   = JsonPartialIndexString BS.ByteString
@@ -35,7 +37,7 @@ class JsonPartialIndexAt a where
   jsonPartialIndexAt :: a -> JsonPartialIndex
 
 instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => JsonPartialIndexAt (JsonCursor BS.ByteString v w) where
-  jsonPartialIndexAt k = case vUncons remainder of
+  jsonPartialIndexAt k = case uncons remainder of
     Just (!c, _) | isLeadingDigit2 c  -> JsonPartialIndexNumber  remainder
     Just (!c, _) | isQuotDbl c        -> JsonPartialIndexString  remainder
     Just (!c, _) | isChar_t c         -> JsonPartialIndexBool    True
@@ -48,7 +50,7 @@ instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => JsonPa
     where ik                = interests k
           bpk               = balancedParens k
           p                 = lastPositionOf (select1 ik (rank1 bpk (cursorRank k)))
-          remainder         = vDrop (toCount p) (cursorText k)
+          remainder         = drop (toCount p) (cursorText k)
           arrayValuesFrom :: Maybe (JsonCursor BS.ByteString v w) -> [JsonPartialIndex]
           arrayValuesFrom = L.unfoldr (fmap (jsonPartialIndexAt &&& nextSibling))
           mapValuesFrom j   = pairwise (arrayValuesFrom j) >>= asField
