@@ -1,9 +1,9 @@
 name:                   hw-json
-version:                0.2.0.4
+version:                0.2.0.5
 synopsis:               Conduits for tokenizing streams.
 description:            Please see README.md
 homepage:               http://github.com/haskell-works/hw-json#readme
-license:                BSD3
+license:                MIT
 license-file:           LICENSE
 author:                 John Ky
 maintainer:             newhoggy@gmail.com
@@ -33,7 +33,7 @@ executable hw-json-example
                       , hw-conduit
                       , hw-diagnostics
                       , hw-json
-                      , hw-prim                       >= 0.1.0.0
+                      , hw-prim                       >= 0.3.0.0
                       , hw-rankselect                 >= 0.3.0.0
                       , mmap
                       , resourcet
@@ -78,7 +78,7 @@ library
                       , hw-diagnostics
                       , hw-mquery                     >= 0.1.0.0
                       , hw-parser
-                      , hw-prim                       >= 0.1.0.0
+                      , hw-prim                       >= 0.3.0.0
                       , hw-rankselect                 >= 0.1.0.0
                       , mmap
                       , mono-traversable
@@ -110,7 +110,7 @@ test-suite hw-json-test
                       , hw-bits
                       , hw-conduit
                       , hw-json
-                      , hw-prim                       >= 0.0.3.1
+                      , hw-prim                       >= 0.3.0.0
                       , hw-rankselect                 >= 0.0.0.5
                       , mmap
                       , parsec
@@ -138,7 +138,7 @@ benchmark bench
                       , hw-bits
                       , hw-conduit
                       , hw-json
-                      , hw-prim                       >= 0.0.3.1
+                      , hw-prim                       >= 0.3.0.0
                       , hw-rankselect                 >= 0.0.0.5
                       , mmap
                       , resourcet
