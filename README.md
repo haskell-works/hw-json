@@ -46,10 +46,13 @@ Run the following in the shell:
 
     Mem (MB) CMD
     -------- ---------------------------------------------------------
-         302 import Data.Aeson
-         302 import qualified  Data.ByteString.Lazy as BSL
-         302 json78m <- BSL.readFile "/Users/jky/Downloads/78mbs.json"
-        1400 let !x = decode json78m :: Maybe Value
+          54 import           Control.DeepSeq
+          64 import           Data.Aeson
+          64 import qualified Data.ByteString.Lazy as BSL
+          66 json78m <- BSL.readFile "../data/78mb.json"
+         167 let !x = deepseq json78m json78m
+        1207 let !y = decode json78m :: Maybe Value
+
 
 ### Parsing large Json files in Haskell with hw-json
 
@@ -143,29 +146,28 @@ import           HaskellWorks.Data.MQuery
 import           HaskellWorks.Data.Json.PartialValue
 import           HaskellWorks.Data.Row
 import           HaskellWorks.Diagnostics
-import           Text.PrettyPrint.ANSI.Leijen
 ```
 
 ```
-!json <- loadJsonPartial "data/78mb.json"
-!json <- loadJsonWithIndex "data/78mb.json"
-!json <- loadJson "data/78mb.json"
+!json <- loadJsonPartial "../data/78mb.json"
+!json <- loadJsonWithIndex "../data/78mb.json"
+!json <- loadJson "../data/78mb.json"
+!json <- loadJsonWithPoppy512SMinMaxIndex "../data/78mb.json"
 let q = MQuery (DL.singleton json)
 ```
 
 ```
-putPretty $ q >>= item & limit 10
-putPretty $ q >>= item & page 10 1
-putPretty $ q >>= item >>= hasKV "founded_year" (JsonPartialNumber 2005) & limit 10
-putPretty $ q >>= item >>= entry
-putPretty $ q >>= item >>= entry >>= named "name" & limit 10
-putPretty $ q >>= item >>= entry >>= satisfying (\(k, _) -> k == "name") >>= value & limit 10
-putPretty $ q >>= item >>= entry >>= satisfying ((== "name") . fst) >>= value & limit 10
-putPretty $ q >>= (item >=> entry >=> key) & limit 10
-putPretty $ q >>= item >>= entry >>= key & limit 100 & onList (uniq . sort)
-putPretty $ (q >>= item >>= entry & limit 1) >>= field "name" & limit 10
-putPretty $ do {j <- q; e <- item j; (k, v) <- entry e; return k}
-putPretty $ do {j <- q; e <- item j; (k, v) <- entry e; guard (k == "name"); return v}
+measureIO $ putPretty $ q >>= item & limit 10
+measureIO $ putPretty $ q >>= item & page 10 1
+measureIO $ putPretty $ q >>= item >>= hasKV "founded_year" (JsonPartialNumber 2005) & limit 10
+measureIO $ putPretty $ q >>= item >>= entry
+measureIO $ putPretty $ q >>= item >>= entry >>= named "name" & limit 10
+measureIO $ putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> entry >=> named "price_currency_code")
+measureIO $ putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> entry >=> named "price_currency_code") & onList (uniq . sort)
+measureIO $ putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> entry >=> named "price_currency_code" >=> asString >=> valueOf "USD") & limit 10
+measureIO $ putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> having (entry >=> named "price_currency_code" >=> asString >=> valueOf "USD") >=> entry >=> named "price_amount") & limit 10
+measureIO $ putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> having (entry >=> named "price_currency_code" >=> asString >=> valueOf "USD") >=> entry >=> named "price_amount" >=> castAsInteger ) & limit 10
+measureIO $ putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> having (entry >=> named "price_currency_code" >=> asString >=> valueOf "USD") >=> entry >=> named "price_amount" >=> castAsInteger ) & aggregate sum
 ```
 
 ### Decoding
