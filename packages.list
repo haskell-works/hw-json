@@ -5,3 +5,4 @@ hw-mquery
 hw-parser
 hw-prim
 hw-rankselect
+hw-string-parse

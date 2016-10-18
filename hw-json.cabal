@@ -25,19 +25,28 @@ executable hw-json-example
   main-is:              Main.hs
   ghc-options:          -threaded -rtsopts -with-rtsopts=-N -O2 -Wall -msse4.2
   build-depends:        base                          >= 4          && < 5
+                      , array
+                      , ansi-wl-pprint
+                      , attoparsec
                       , bytestring
                       , conduit
+                      , containers
                       , criterion
-                      , errors
-                      , hw-bits                       >= 0.1.0.0
+                      , dlist
+                      , hw-bits                       >= 0.3.0.0
                       , hw-conduit
                       , hw-diagnostics
                       , hw-json
-                      , hw-prim                       >= 0.3.0.0
-                      , hw-rankselect                 >= 0.3.0.0
+                      , hw-mquery                     >= 0.1.0.0
+                      , hw-parser
+                      , hw-prim                       >= 0.3.0.5
+                      , hw-rankselect                 >= 0.4.0.0
                       , mmap
+                      , mono-traversable
                       , resourcet
+                      , text
                       , vector
+                      , word8
   default-language:     Haskell2010
 
 library
@@ -48,8 +57,9 @@ library
                       , HaskellWorks.Data.Json.Conduit.Blank
                       , HaskellWorks.Data.Json.Conduit.Words
                       , HaskellWorks.Data.Json.FromValue
-                      , HaskellWorks.Data.Json.LightValue
+                      , HaskellWorks.Data.Json.LightJson
                       , HaskellWorks.Data.Json.Load
+                      , HaskellWorks.Data.Json.LoadCursor
                       , HaskellWorks.Data.Json.PartialValue
                       , HaskellWorks.Data.Json.Succinct
                       , HaskellWorks.Data.Json.Succinct.Cursor
@@ -66,6 +76,7 @@ library
                       , HaskellWorks.Data.Json.Type
                       , HaskellWorks.Data.Json.Value
                       , HaskellWorks.Data.Json.Value.Internal
+
   build-depends:        base                          >= 4          && < 5
                       , array
                       , ansi-wl-pprint
@@ -74,13 +85,13 @@ library
                       , conduit
                       , containers
                       , dlist
-                      , hw-bits                       >= 0.1.0.0
+                      , hw-bits                       >= 0.3.0.0
                       , hw-conduit
                       , hw-diagnostics
                       , hw-mquery                     >= 0.1.0.0
                       , hw-parser
-                      , hw-prim                       >= 0.3.0.0
-                      , hw-rankselect                 >= 0.1.0.0
+                      , hw-prim                       >= 0.3.0.5
+                      , hw-rankselect                 >= 0.4.0.0
                       , mmap
                       , mono-traversable
                       , resourcet
@@ -111,7 +122,7 @@ test-suite hw-json-test
                       , hw-bits
                       , hw-conduit
                       , hw-json
-                      , hw-prim                       >= 0.3.0.0
+                      , hw-prim                       >= 0.3.0.5
                       , hw-rankselect                 >= 0.0.0.5
                       , mmap
                       , parsec
@@ -139,7 +150,7 @@ benchmark bench
                       , hw-bits
                       , hw-conduit
                       , hw-json
-                      , hw-prim                       >= 0.3.0.0
+                      , hw-prim                       >= 0.3.0.5
                       , hw-rankselect                 >= 0.0.0.5
                       , mmap
                       , resourcet

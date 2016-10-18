@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleContexts      #-}
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE InstanceSigs          #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
@@ -21,16 +22,22 @@ module HaskellWorks.Data.Json.PartialValue
   ) where
 
 import           Control.Arrow
-import qualified Data.Attoparsec.ByteString.Char8             as ABC
-import qualified Data.ByteString                              as BS
-import qualified Data.DList                                   as DL
+import qualified Data.Attoparsec.ByteString.Char8                           as ABC
+import qualified Data.ByteString                                            as BS
+import qualified Data.DList                                                 as DL
 import           HaskellWorks.Data.AtLeastSize
+import           HaskellWorks.Data.Bits.BitWise
 import           HaskellWorks.Data.Entry
 import           HaskellWorks.Data.Micro
 import           HaskellWorks.Data.Mini
 import           HaskellWorks.Data.MQuery
+import           HaskellWorks.Data.Json.Succinct.Cursor
 import           HaskellWorks.Data.Json.Succinct.PartialIndex
 import           HaskellWorks.Data.Json.Value.Internal
+import qualified HaskellWorks.Data.Succinct.BalancedParens                  as BP
+import           HaskellWorks.Data.Succinct.RankSelect.Binary.Basic.Rank0
+import           HaskellWorks.Data.Succinct.RankSelect.Binary.Basic.Rank1
+import           HaskellWorks.Data.Succinct.RankSelect.Binary.Basic.Select1
 import           HaskellWorks.Data.Row
 import           Text.PrettyPrint.ANSI.Leijen
 
@@ -46,6 +53,8 @@ data JsonPartialValue
 
 class JsonPartialValueAt a where
   jsonPartialJsonValueAt :: a -> JsonPartialValue
+
+data JsonPartialField = JsonPartialField String JsonPartialValue
 
 jsonPartialValueString :: JsonPartialValue -> String
 jsonPartialValueString pjv = case pjv of
@@ -75,7 +84,8 @@ instance JsonPartialValueAt JsonPartialIndex where
             ABC.Partial _   -> JsonPartialError "Unexpected end of field"
             ABC.Done    _ s -> JsonPartialString s
 
-data JsonPartialField = JsonPartialField String JsonPartialValue
+instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => JsonPartialValueAt (JsonCursor BS.ByteString v w) where
+  jsonPartialJsonValueAt = jsonPartialJsonValueAt . jsonPartialIndexAt
 
 toJsonPartialField :: (String, JsonPartialValue) -> JsonPartialField
 toJsonPartialField (k, v) = JsonPartialField k v

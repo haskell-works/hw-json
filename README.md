@@ -140,7 +140,7 @@ import           Control.Monad
 import qualified Data.DList as DL
 import           Data.Function
 import           Data.List
-import           HaskellWorks.Data.Json.Load
+import           HaskellWorks.Data.Json.LoadCursor
 import           HaskellWorks.Data.Micro
 import           HaskellWorks.Data.MQuery
 import           HaskellWorks.Data.Json.PartialValue
@@ -149,10 +149,11 @@ import           HaskellWorks.Diagnostics
 ```
 
 ```
-!json <- loadJsonPartial "../data/78mb.json"
-!json <- loadJsonWithIndex "../data/78mb.json"
-!json <- loadJson "../data/78mb.json"
-!json <- loadJsonWithPoppy512SMinMaxIndex "../data/78mb.json"
+!cursor <- loadJsonPartial "../data/78mb.json"
+!cursor <- loadJsonWithIndex "../data/78mb.json"
+!cursor <- loadJson "../data/78mb.json"
+!cursor <- loadJsonWithPoppy512SMinMaxIndex "../data/78mb.json"
+let !json = jsonPartialJsonValueAt cursor
 let q = MQuery (DL.singleton json)
 ```
 
@@ -164,6 +165,41 @@ measureIO $ putPretty $ q >>= item >>= entry
 measureIO $ putPretty $ q >>= item >>= entry >>= named "name" & limit 10
 measureIO $ putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> entry >=> named "price_currency_code")
 measureIO $ putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> entry >=> named "price_currency_code") & onList (uniq . sort)
+measureIO $ putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> entry >=> named "price_currency_code" >=> asString >=> valueOf "USD") & limit 10
+measureIO $ putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> having (entry >=> named "price_currency_code" >=> asString >=> valueOf "USD") >=> entry >=> named "price_amount") & limit 10
+measureIO $ putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> having (entry >=> named "price_currency_code" >=> asString >=> valueOf "USD") >=> entry >=> named "price_amount" >=> castAsInteger ) & limit 10
+measureIO $ putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> having (entry >=> named "price_currency_code" >=> asString >=> valueOf "USD") >=> entry >=> named "price_amount" >=> castAsInteger ) & aggregate sum
+```
+
+```
+import           Control.Monad
+import qualified Data.DList as DL
+import           Data.Function
+import           Data.List
+import           HaskellWorks.Data.Json.LoadCursor
+import           HaskellWorks.Data.Micro
+import           HaskellWorks.Data.MQuery
+import           HaskellWorks.Data.Json.LightJson
+import           HaskellWorks.Data.Row
+import           HaskellWorks.Diagnostics
+```
+
+```
+!cursor <- loadJsonPartial "../data/78mb.json"
+!cursor <- loadJsonWithIndex "../data/78mb.json"
+!cursor <- loadJson "../data/78mb.json"
+!cursor <- loadJsonWithPoppy512SMinMaxIndex "../data/78mb.json"
+let !json = lightJsonAt cursor
+let q = MQuery (DL.singleton json)
+```
+
+```
+measureIO $ putPretty $ q >>= item & limit 10
+measureIO $ putPretty $ q >>= item & page 10 1
+measureIO $ putPretty $ q >>= item >>= entry
+measureIO $ putPretty $ q >>= item >>= entry >>= named "name" & limit 10
+measureIO $ putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> entry >=> named "price_currency_code" >=> asString)
+measureIO $ putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> entry >=> named "price_currency_code" >=> asString) & onList (uniq . sort)
 measureIO $ putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> entry >=> named "price_currency_code" >=> asString >=> valueOf "USD") & limit 10
 measureIO $ putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> having (entry >=> named "price_currency_code" >=> asString >=> valueOf "USD") >=> entry >=> named "price_amount") & limit 10
 measureIO $ putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> having (entry >=> named "price_currency_code" >=> asString >=> valueOf "USD") >=> entry >=> named "price_amount" >=> castAsInteger ) & limit 10
