@@ -201,3 +201,6 @@ let bp3 = makePoppy512 jsonBp
 
 ## Special mentions
 * [Sydney Paper Club](http://www.meetup.com/Sydney-Paper-Club/)
+
+
+ :set +s

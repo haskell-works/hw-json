@@ -48,6 +48,7 @@ library
                       , HaskellWorks.Data.Json.Conduit.Blank
                       , HaskellWorks.Data.Json.Conduit.Words
                       , HaskellWorks.Data.Json.FromValue
+                      , HaskellWorks.Data.Json.LightValue
                       , HaskellWorks.Data.Json.Load
                       , HaskellWorks.Data.Json.PartialValue
                       , HaskellWorks.Data.Json.Succinct
