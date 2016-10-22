@@ -1,9 +1,9 @@
 name:                   hw-json
-version:                0.3.0.0
-synopsis:               Conduits for tokenizing streams.
+version:                0.4.0.0
+synopsis:               Memory efficient JSON parser
 description:            Please see README.md
 homepage:               http://github.com/haskell-works/hw-json#readme
-license:                MIT
+license:                BSD3
 license-file:           LICENSE
 author:                 John Ky
 maintainer:             newhoggy@gmail.com
@@ -33,14 +33,16 @@ executable hw-json-example
                       , containers
                       , criterion
                       , dlist
+                      , hw-balancedparens             >= 0.0.0.1
                       , hw-bits                       >= 0.3.0.0
                       , hw-conduit
                       , hw-diagnostics
                       , hw-json
                       , hw-mquery                     >= 0.1.0.0
                       , hw-parser
-                      , hw-prim                       >= 0.3.0.5
-                      , hw-rankselect                 >= 0.4.0.0
+                      , hw-prim                       >= 0.4.0.0
+                      , hw-rankselect                 >= 0.6.0.0
+                      , hw-rankselect-base            >= 0.1.0.0
                       , mmap
                       , mono-traversable
                       , resourcet
@@ -85,13 +87,15 @@ library
                       , conduit
                       , containers
                       , dlist
+                      , hw-balancedparens             >= 0.0.0.1
                       , hw-bits                       >= 0.3.0.0
                       , hw-conduit
                       , hw-diagnostics
                       , hw-mquery                     >= 0.1.0.0
                       , hw-parser
-                      , hw-prim                       >= 0.3.0.5
-                      , hw-rankselect                 >= 0.4.0.0
+                      , hw-prim                       >= 0.4.0.0
+                      , hw-rankselect                 >= 0.6.0.0
+                      , hw-rankselect-base            >= 0.1.0.0
                       , mmap
                       , mono-traversable
                       , resourcet
@@ -119,11 +123,13 @@ test-suite hw-json-test
                       , containers
                       , conduit
                       , hspec
-                      , hw-bits
+                      , hw-balancedparens             >= 0.0.0.1
+                      , hw-bits                       >= 0.3.0.0
                       , hw-conduit
                       , hw-json
-                      , hw-prim                       >= 0.3.0.5
-                      , hw-rankselect                 >= 0.0.0.5
+                      , hw-prim                       >= 0.4.0.0
+                      , hw-rankselect                 >= 0.6.0.0
+                      , hw-rankselect-base            >= 0.1.0.0
                       , mmap
                       , parsec
                       , QuickCheck
@@ -147,11 +153,13 @@ benchmark bench
                       , bytestring
                       , conduit
                       , criterion
-                      , hw-bits
+                      , hw-balancedparens             >= 0.0.0.1
+                      , hw-bits                       >= 0.3.0.0
                       , hw-conduit
                       , hw-json
-                      , hw-prim                       >= 0.3.0.5
-                      , hw-rankselect                 >= 0.0.0.5
+                      , hw-prim                       >= 0.4.0.0
+                      , hw-rankselect                 >= 0.6.0.0
+                      , hw-rankselect-base            >= 0.1.0.0
                       , mmap
                       , resourcet
                       , vector
