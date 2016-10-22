@@ -24,6 +24,9 @@ import           Data.Word
 import           Foreign.ForeignPtr
 import           Foreign.Ptr
 import           Foreign.Storable
+import           HaskellWorks.Data.BalancedParens.RangeMinMax
+import           HaskellWorks.Data.BalancedParens.RangeMinMax2
+import           HaskellWorks.Data.BalancedParens.Simple
 import           HaskellWorks.Data.Bits.BitShown
 import           HaskellWorks.Data.Decode
 import           HaskellWorks.Data.FromByteString
@@ -31,12 +34,9 @@ import           HaskellWorks.Data.FromForeignRegion
 import           HaskellWorks.Data.Json.Succinct.Cursor
 import           HaskellWorks.Data.Json.Succinct.Index
 import           HaskellWorks.Data.Json.Value
-import           HaskellWorks.Data.Succinct.BalancedParens.RangeMinMax
-import           HaskellWorks.Data.Succinct.BalancedParens.RangeMinMax2
-import           HaskellWorks.Data.Succinct.BalancedParens.Simple
-import           HaskellWorks.Data.Succinct.RankSelect.Binary.CsPoppy
-import           HaskellWorks.Data.Succinct.RankSelect.Binary.Poppy512
-import           HaskellWorks.Data.Succinct.RankSelect.Binary.Poppy512S
+import           HaskellWorks.Data.RankSelect.CsPoppy
+import           HaskellWorks.Data.RankSelect.Poppy512
+import           HaskellWorks.Data.RankSelect.Poppy512S
 import           HaskellWorks.Diagnostics.Time
 import           System.IO
 import           System.IO.MMap

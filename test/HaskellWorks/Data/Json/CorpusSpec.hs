@@ -15,10 +15,10 @@ module HaskellWorks.Data.Json.CorpusSpec(spec) where
 import qualified Data.ByteString                                            as BS
 import qualified Data.Vector.Storable                                       as DVS
 import           Data.Word
+import           HaskellWorks.Data.BalancedParens.Simple
 import           HaskellWorks.Data.Bits.BitShown
 import           HaskellWorks.Data.Bits.FromBitTextByteString
 import           HaskellWorks.Data.Json.Succinct.Cursor                     as C
-import           HaskellWorks.Data.Succinct.BalancedParens.Simple
 import           Test.Hspec
 
 import           HaskellWorks.Data.FromByteString

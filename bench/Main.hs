@@ -11,13 +11,13 @@ import           Data.Conduit
 import qualified Data.Vector.Storable                                as DVS
 import           Data.Word
 import           Foreign
+import           HaskellWorks.Data.BalancedParens.Simple
 import           HaskellWorks.Data.Bits.BitShown
 import           HaskellWorks.Data.Conduit.List
 import           HaskellWorks.Data.FromByteString
 import           HaskellWorks.Data.Json.Conduit
 import           HaskellWorks.Data.Json.Conduit.Blank
 import           HaskellWorks.Data.Json.Succinct.Cursor
-import           HaskellWorks.Data.Succinct.BalancedParens.Simple
 import           System.IO.MMap
 
 setupEnvJson :: FilePath -> IO BS.ByteString

@@ -18,7 +18,7 @@ import           HaskellWorks.Data.Conduit.List
 import           HaskellWorks.Data.FromByteString
 import           HaskellWorks.Data.Json.Conduit
 import           HaskellWorks.Data.Json.Succinct.Cursor.BlankedJson
-import           HaskellWorks.Data.Succinct.RankSelect.Binary.Poppy512
+import           HaskellWorks.Data.RankSelect.Poppy512
 
 newtype JsonInterestBits a = JsonInterestBits a
 
