@@ -9,24 +9,24 @@ module HaskellWorks.Data.Json.Succinct.Cursor.Internal
   , jsonCursorPos
   ) where
 
-import qualified Data.ByteString                                            as BS
-import qualified Data.ByteString.Char8                                      as BSC
-import           Data.ByteString.Internal                                   as BSI
+import qualified Data.ByteString                                        as BS
+import qualified Data.ByteString.Char8                                  as BSC
+import           Data.ByteString.Internal                               as BSI
 import           Data.String
-import qualified Data.Vector.Storable                                       as DVS
+import qualified Data.Vector.Storable                                   as DVS
 import           Data.Word
 import           Foreign.ForeignPtr
 import           HaskellWorks.Data.Bits.BitShown
 import           HaskellWorks.Data.FromByteString
 import           HaskellWorks.Data.FromForeignRegion
-import qualified HaskellWorks.Data.Json.Succinct.Cursor.BalancedParens      as CBP
+import qualified HaskellWorks.Data.Json.Succinct.Cursor.BalancedParens  as CBP
 import           HaskellWorks.Data.Json.Succinct.Cursor.BlankedJson
 import           HaskellWorks.Data.Json.Succinct.Cursor.InterestBits
 import           HaskellWorks.Data.Positioning
-import qualified HaskellWorks.Data.Succinct.BalancedParens                  as BP
-import           HaskellWorks.Data.Succinct.RankSelect.Binary.Basic.Rank0
-import           HaskellWorks.Data.Succinct.RankSelect.Binary.Basic.Rank1
-import           HaskellWorks.Data.Succinct.RankSelect.Binary.Basic.Select1
+import           HaskellWorks.Data.RankSelect.Base.Rank0
+import           HaskellWorks.Data.RankSelect.Base.Rank1
+import           HaskellWorks.Data.RankSelect.Base.Select1
+import qualified HaskellWorks.Data.Succinct.BalancedParens              as BP
 import           HaskellWorks.Data.Succinct.RankSelect.Binary.Poppy512
 import           HaskellWorks.Data.TreeCursor
 

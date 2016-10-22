@@ -40,7 +40,8 @@ executable hw-json-example
                       , hw-mquery                     >= 0.1.0.0
                       , hw-parser
                       , hw-prim                       >= 0.3.0.5
-                      , hw-rankselect                 >= 0.4.0.0
+                      , hw-rankselect                 >= 0.5.0.0
+                      , hw-rankselect-base            >= 0.1.0.0
                       , mmap
                       , mono-traversable
                       , resourcet
@@ -91,7 +92,8 @@ library
                       , hw-mquery                     >= 0.1.0.0
                       , hw-parser
                       , hw-prim                       >= 0.3.0.5
-                      , hw-rankselect                 >= 0.4.0.0
+                      , hw-rankselect                 >= 0.5.0.0
+                      , hw-rankselect-base            >= 0.1.0.0
                       , mmap
                       , mono-traversable
                       , resourcet
@@ -123,7 +125,8 @@ test-suite hw-json-test
                       , hw-conduit
                       , hw-json
                       , hw-prim                       >= 0.3.0.5
-                      , hw-rankselect                 >= 0.0.0.5
+                      , hw-rankselect                 >= 0.5.0.0
+                      , hw-rankselect-base            >= 0.1.0.0
                       , mmap
                       , parsec
                       , QuickCheck
@@ -151,7 +154,8 @@ benchmark bench
                       , hw-conduit
                       , hw-json
                       , hw-prim                       >= 0.3.0.5
-                      , hw-rankselect                 >= 0.0.0.5
+                      , hw-rankselect                 >= 0.5.0.0
+                      , hw-rankselect-base            >= 0.1.0.0
                       , mmap
                       , resourcet
                       , vector

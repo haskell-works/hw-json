@@ -8,18 +8,18 @@ module HaskellWorks.Data.Json.Succinct.Index where
 
 import           Control.Arrow
 import           Control.Monad
-import qualified Data.ByteString                                            as BS
-import qualified Data.List                                                  as L
+import qualified Data.ByteString                            as BS
+import qualified Data.List                                  as L
 import           HaskellWorks.Data.Bits.BitWise
 import           HaskellWorks.Data.Decode
 import           HaskellWorks.Data.Drop
 import           HaskellWorks.Data.Json.CharLike
 import           HaskellWorks.Data.Json.Succinct
 import           HaskellWorks.Data.Positioning
-import qualified HaskellWorks.Data.Succinct.BalancedParens                  as BP
-import           HaskellWorks.Data.Succinct.RankSelect.Binary.Basic.Rank0
-import           HaskellWorks.Data.Succinct.RankSelect.Binary.Basic.Rank1
-import           HaskellWorks.Data.Succinct.RankSelect.Binary.Basic.Select1
+import           HaskellWorks.Data.RankSelect.Base.Rank0
+import           HaskellWorks.Data.RankSelect.Base.Rank1
+import           HaskellWorks.Data.RankSelect.Base.Select1
+import qualified HaskellWorks.Data.Succinct.BalancedParens  as BP
 import           HaskellWorks.Data.TreeCursor
 import           HaskellWorks.Data.Uncons
 import           Prelude hiding (drop)
