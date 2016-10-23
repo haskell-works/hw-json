@@ -9,7 +9,7 @@ dependencies:
     - fetch
     - stack setup
     - stack clean
-    - stack init --resolver ghc-8
+    - stack init --resolver lts-7.2
 
 test:
   override:
@@ -22,8 +22,10 @@ deployment:
     commands:
       - nox when tag autotag
 
-  # hackage:
-  #   owner: haskell-works
-  #   tag: /v.*/
-  #   commands:
-  #     - nox when deploy nix-shell shell.nix --command publish
+  hackage:
+    owner: haskell-works
+    tag: /v.*/
+    commands:
+      - ./scripts/setup-cred
+      - stack sdist
+      - stack upload .
