@@ -22,3 +22,5 @@ cabal.sandbox.config
 /result
 /*.json
 /*.json.*
+/deps
+/stack.yaml

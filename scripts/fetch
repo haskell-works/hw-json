@@ -1,5 +1,17 @@
 #!/usr/bin/env bash
 
-for x in $(cabal install $(echo *.cabal | cut -d '.' -f 1) --dry-run | grep hw-); do
+mkdir -p deps
+
+_project="$(echo *.cabal | cut -d '.' -f 1)"
+
+pushd deps > /dev/null
+
+cp ../$_project.cabal ./
+
+for x in $(cabal install $_project --dry-run | grep hw-); do
   stack unpack $x
 done
+
+rm ./$_project.cabal
+
+popd > /dev/null
