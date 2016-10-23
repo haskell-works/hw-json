@@ -36,7 +36,7 @@ executable hw-json-example
                       , hw-balancedparens             >= 0.1.0.0
                       , hw-bits                       >= 0.4.0.0
                       , hw-conduit                    >= 0.1.0.0
-                      , hw-diagnostics                >= 0.0.0.6
+                      , hw-diagnostics                >= 0.0.0.5
                       , hw-json
                       , hw-mquery                     >= 0.1.0.0
                       , hw-parser                     >= 0.0.0.1
