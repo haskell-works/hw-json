@@ -109,7 +109,8 @@ test-suite hw-json-test
   type:                 exitcode-stdio-1.0
   hs-source-dirs:       test
   main-is:              Spec.hs
-  other-modules:        HaskellWorks.Data.Json.CorpusSpec
+  other-modules:        HaskellWorks.Data.Json.Conduit.BlankSpec
+                      , HaskellWorks.Data.Json.CorpusSpec
                       , HaskellWorks.Data.Json.Succinct.Cursor.BalancedParensSpec
                       , HaskellWorks.Data.Json.Succinct.Cursor.InterestBitsSpec
                       , HaskellWorks.Data.Json.Succinct.CursorSpec
