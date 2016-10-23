@@ -39,9 +39,6 @@ import           HaskellWorks.Data.Uncons
 import           Prelude hiding (drop)
 import           Text.PrettyPrint.ANSI.Leijen
 
-newtype RawString = RawString BS.ByteString
-  deriving (Eq, Ord, Show, IsString)
-
 data LightJson c
   = LightJsonString String
   | LightJsonNumber BS.ByteString
@@ -164,9 +161,6 @@ hEncloseSep l r s ds
         [d] -> l <> d <> r
         _   -> hcat (zipWith (<>) (l : repeat s) ds) <> r
 
-instance Pretty RawString where
-  pretty bs = text (show bs)
-
 instance LightJsonAt c => Pretty (LightJson c) where
   pretty c = case c of
     LightJsonString s   -> dullgreen  (text (show s))
@@ -215,10 +209,7 @@ instance LightJsonAt c => Pretty (Mini (String, LightJson c)) where
 instance LightJsonAt c => Pretty (MQuery (LightJson c)) where
   pretty = pretty . Row 120 . mQuery
 
-instance Pretty (MQuery RawString) where
-  pretty = pretty . Row 120 . mQuery
-
-instance LightJsonAt c => Pretty (MQuery (Entry RawString (LightJson c))) where
+instance LightJsonAt c => Pretty (MQuery (Entry String (LightJson c))) where
   pretty (MQuery das) = pretty (Row 120 das)
 
 -- hasKV :: LightJsonAt c => BS.ByteString -> LightJson c -> LightJson c -> MQuery (LightJson c)
