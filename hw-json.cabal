@@ -90,7 +90,6 @@ library
                       , hw-balancedparens             >= 0.1.0.0
                       , hw-bits                       >= 0.4.0.0
                       , hw-conduit                    >= 0.1.0.0
-                      , hw-diagnostics                >= 0.0.0.6
                       , hw-mquery                     >= 0.1.0.0
                       , hw-parser                     >= 0.0.0.1
                       , hw-prim                       >= 0.4.0.0

@@ -37,7 +37,6 @@ import           HaskellWorks.Data.Json.Value
 import           HaskellWorks.Data.RankSelect.CsPoppy
 import           HaskellWorks.Data.RankSelect.Poppy512
 import           HaskellWorks.Data.RankSelect.Poppy512S
-import           HaskellWorks.Diagnostics.Time
 import           System.IO
 import           System.IO.MMap
 
@@ -57,7 +56,7 @@ readJson :: String -> IO (JsonCursor BS.ByteString (BitShown (DVS.Vector Word64)
 readJson path = do
   bs <- BS.readFile path
   putStrLn "Read file"
-  !cursor <- measure (fromByteString bs :: JsonCursor BS.ByteString (BitShown (DVS.Vector Word64)) (SimpleBalancedParens (DVS.Vector Word64)))
+  let !cursor = fromByteString bs :: JsonCursor BS.ByteString (BitShown (DVS.Vector Word64)) (SimpleBalancedParens (DVS.Vector Word64))
   putStrLn "Created cursor"
   return cursor
 
