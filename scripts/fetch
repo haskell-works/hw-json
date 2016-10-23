@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-for x in $(cabal install hw-rankselect-base --dry-run | grep hw-); do
+for x in $(cabal install $(echo *.cabal | cut -d '.' -f 1) --dry-run | grep hw-); do
   stack unpack $x
 done
