@@ -1,23 +1,19 @@
-machine:
-  post:
-    - curl https://nixos.org/nix/install | sh
-
 dependencies:
   cache_directories:
-    - "~/.cabal"
-    - "~/.ghc"
+    - "~/.stack"
   pre:
+    - wget -qO- https://get.haskellstack.org/ | sh
     - cp ./scripts/* ~/bin/
   override:
-    # Fix to latest stable release
-    - nox nix-channel --add https://nixos.org/channels/nixos-16.03/ nixpkgs
-    - nox nix-channel --update
-    - nox when deps nix-mk
-    - nox when deps nix-deps
+    - cabal update
+    - fetch
+    - stack setup
+    - stack clean
+    - stack init --resolver ghc-8
 
 test:
   override:
-    - nox when build nix-build
+    - stack test
 
 deployment:
   release_branch:
@@ -26,8 +22,8 @@ deployment:
     commands:
       - nox when tag autotag
 
-  hackage:
-    owner: haskell-works
-    tag: /v.*/
-    commands:
-      - nox when deploy nix-shell shell.nix --command publish
+  # hackage:
+  #   owner: haskell-works
+  #   tag: /v.*/
+  #   commands:
+  #     - nox when deploy nix-shell shell.nix --command publish
