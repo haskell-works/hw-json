@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-nix-shell -E '(import <nixpkgs> {}).haskellPackages.callPackage ./shell.nix {}' --run "echo Initialised dependencies"
-
-nix-env -i cabal-install "$@"
