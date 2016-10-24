@@ -25,4 +25,4 @@ deployment:
     owner: haskell-works
     tag: /v.*/
     commands:
-      - ./publish
+      - publish
