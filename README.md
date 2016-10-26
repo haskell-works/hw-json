@@ -63,6 +63,7 @@ For an example, see [`app/Main.hs`](../master/app/Main.hs)
 ## Examples
 
 ### Performance example
+(This section out of date)
 
     import Foreign
     import qualified Data.Vector.Storable as DVS
@@ -94,32 +95,31 @@ For an example, see [`app/Main.hs`](../master/app/Main.hs)
 ### Navigation example
 
 ```
-$  cabal repl --ghc-option='-package mmap'
-λ> :set -XNoMonomorphismRestriction
-λ> import qualified Data.ByteString                                            as BS
-λ> import           Data.String
-λ> import qualified Data.Vector.Storable                                       as DVS
-λ> import           Data.Word
-λ> import           HaskellWorks.Data.Bits.BitShow
-λ> import           HaskellWorks.Data.Bits.BitShown
-λ> import           HaskellWorks.Data.FromForeignRegion
-λ> import           HaskellWorks.Data.Json.Succinct.Cursor                     as C
-λ> import           HaskellWorks.Data.Json.Token
-λ> import           HaskellWorks.Data.Succinct.BalancedParens.Internal
-λ> import           HaskellWorks.Data.Succinct.BalancedParens.Simple
-λ> import           HaskellWorks.Data.Succinct.RankSelect.Binary.Basic.Rank0
-λ> import           HaskellWorks.Data.Succinct.RankSelect.Binary.Basic.Rank1
-λ> import           HaskellWorks.Data.Succinct.RankSelect.Binary.Basic.Select1
-λ> import           HaskellWorks.Data.Succinct.RankSelect.Binary.Poppy512
-λ> import qualified HaskellWorks.Data.TreeCursor as TC
-λ> import           System.IO.MMap
-λ> let fc = TC.firstChild
-λ> let ns = TC.nextSibling
-λ> let pn = TC.parent
-λ> let cd = TC.depth
-λ> let ss = TC.subtreeSize
-λ> let cursor = "[null, {\"field\": 1}]" :: JsonCursor BS.ByteString (BitShown (DVS.Vector Word64)) (SimpleBalancedParens (DVS.Vector Word64))
-λ> cursor
+import qualified Data.ByteString                             as BS
+import           Data.String
+import qualified Data.Vector.Storable                        as DVS
+import           Data.Word
+import           HaskellWorks.Data.Bits.BitShow
+import           HaskellWorks.Data.Bits.BitShown
+import           HaskellWorks.Data.FromForeignRegion
+import           HaskellWorks.Data.Json.Succinct.Cursor      as C
+import           HaskellWorks.Data.Json.Token
+import           HaskellWorks.Data.BalancedParens.Simple
+import           HaskellWorks.Data.RankSelect.Base.Rank0
+import           HaskellWorks.Data.RankSelect.Base.Rank1
+import           HaskellWorks.Data.RankSelect.Base.Select1
+import           HaskellWorks.Data.RankSelect.Poppy512
+import qualified HaskellWorks.Data.TreeCursor as TC
+import           System.IO.MMap
+let fc = TC.firstChild
+let ns = TC.nextSibling
+let pn = TC.parent
+let cd = TC.depth
+let ss = TC.subtreeSize
+let cursor = "[null, {\"field\": 1}]" :: JsonCursor BS.ByteString (BitShown (DVS.Vector Word64)) (SimpleBalancedParens (DVS.Vector Word64))
+cursor
+fc cursor
+(fc >=> ns) cursor
 ```
 
 ### Querying example
