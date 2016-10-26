@@ -21,7 +21,7 @@ projects() {
 }
 
 for x in $(projects | sort | uniq); do
-  stack unpack $x
+  cabal unpack $x
 done
 
 rm ./$_project.cabal
