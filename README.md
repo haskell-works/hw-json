@@ -14,18 +14,6 @@ For an example, see [`app/Main.hs`](../master/app/Main.hs)
 * Install `haskell-stack`.
 * Install `hlint` (eg. `stack install hlint`)
 
-## Building
-
-Run the following in the shell:
-
-    git clone git@github.com:haskell-works/hw-json.git
-    cd hw-json
-    stack setup
-    stack build
-    stack test
-    stack ghci --ghc-options -XOverloadedStrings \
-      --main-is hw-json:exe:hw-json-example
-
 ## Memory benchmark
 
 ### Parsing large Json files in Scala with Argonaut
@@ -58,18 +46,19 @@ Run the following in the shell:
 
     Mem (MB) CMD
     -------- ---------------------------------------------------------
-         274 import Foreign
-         274 import qualified Data.Vector.Storable as DVS
-         274 import qualified Data.ByteString as BS
-         274 import System.IO.MMap
-         274 import Control.Monad
-         274 import Data.Word
-         274 import HaskellWorks.Data.Bits.BitShown
-         274 import HaskellWorks.Data.Succinct.BalancedParens.Simple
-         274 import HaskellWorks.Data.FromForeignRegion
-         274 import HaskellWorks.Diagnostics
-         274 (fptr :: ForeignPtr Word8, offset, size) <- mmapFileForeignPtr "/Users/jky/Downloads/78mbs.json" ReadOnly Nothing
-         601 cursor <- measure (fromForeignRegion (fptr, offset, size) :: JsonCursor BS.ByteString (BitShown (DVS.Vector Word64)) (SimpleBalancedParens (DVS.Vector Word64)))
+          57 import           Foreign
+          58 import           Control.Monad
+          59 import qualified Data.ByteString as BS
+          76 import qualified Data.Vector.Storable as DVS
+          77 import           Data.Word
+          77 import           HaskellWorks.Data.BalancedParens.Simple
+          77 import           HaskellWorks.Data.Bits.BitShown
+          77 import           HaskellWorks.Data.FromForeignRegion
+          81 import           HaskellWorks.Data.Json.Succinct.Cursor
+          82 import           HaskellWorks.Diagnostics
+          83 import           System.IO.MMap
+          88 (fptr :: ForeignPtr Word8, offset, size) <- mmapFileForeignPtr "../data/78mbs.json" ReadOnly Nothing
+         276 cursor <- measure (fromForeignRegion (fptr, offset, size) :: JsonCursor BS.ByteString (BitShown (DVS.Vector Word64)) (SimpleBalancedParens (DVS.Vector Word64)))
 
 ## Examples
 
