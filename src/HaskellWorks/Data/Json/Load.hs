@@ -58,7 +58,7 @@ writeVector fp v = withFile fp WriteMode $ \h -> hPutVector h v
 
 readJson :: String -> IO (JsonCursor BS.ByteString (BitShown (DVS.Vector Word64)) (SimpleBalancedParens (DVS.Vector Word64)))
 readJson path = do
-  bs <- BS.readFile path
+  bs <- loadByteString path
   putStrLn "Read file"
   let !cursor = fromByteString bs :: JsonCursor BS.ByteString (BitShown (DVS.Vector Word64)) (SimpleBalancedParens (DVS.Vector Word64))
   putStrLn "Created cursor"
