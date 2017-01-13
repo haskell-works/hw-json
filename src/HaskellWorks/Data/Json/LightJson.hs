@@ -171,7 +171,7 @@ instance LightJsonAt c => Pretty (LightJson c) where
     LightJsonNull       -> text "null"
     LightJsonError s    -> text "<error " <> text s <> text ">"
 
-instance LightJsonAt c => Pretty (Micro (LightJson c)) where
+instance Pretty (Micro (LightJson c)) where
   pretty (Micro (LightJsonString s )) = dullgreen (text (show s))
   pretty (Micro (LightJsonNumber n )) = cyan      (text (show n))
   pretty (Micro (LightJsonObject [])) = text "{}"
@@ -182,7 +182,7 @@ instance LightJsonAt c => Pretty (Micro (LightJson c)) where
   pretty (Micro  LightJsonNull      ) = text "null"
   pretty (Micro (LightJsonError s  )) = text "<error " <> text s <> text ">"
 
-instance LightJsonAt c => Pretty (Micro (String, LightJson c)) where
+instance Pretty (Micro (String, LightJson c)) where
   pretty (Micro (fieldName, jpv)) = red (text (show fieldName)) <> text ": " <> pretty (Micro jpv)
 
 instance LightJsonAt c => Pretty (Mini (LightJson c)) where
