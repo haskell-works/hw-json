@@ -19,7 +19,8 @@ cabal.sandbox.config
 /.stack-work/
 /result
 /deps
-/stack.yaml
 /*.json
 /*.json.ib
 /*.json.bp
+/snapshot.yaml
+/stack-ci.yaml

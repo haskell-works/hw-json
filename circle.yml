@@ -1,28 +1,107 @@
-dependencies:
-  cache_directories:
-    - "~/.cabal"
-    - "~/.stack"
-  pre:
-    - wget -qO- https://get.haskellstack.org/ | sh
-    - cp ./scripts/* ~/bin/
-  override:
-    - fetch
-    - stack init --resolver lts-7.2
-    - stack build --only-dependencies
+version: 2.0
+jobs:
+  build:
+    working_directory: ~/hw-json
+    docker:
+      - image: fpco/stack-build:latest
 
-test:
-  override:
-    - stack test
+    steps:
+      - checkout
 
+      ##### Copying scripts
+      - run:
+          name: Copying scripts
+          command: |
+            mkdir -p ~/.local/bin
+            cp ./scripts/* ~/.local/bin
+
+      ##### Updating cabval package list
+      - run:
+          name: Updating cabal package list date stamp
+          command: date +%F > dot-cabal-cache-date
+
+      - restore_cache:
+          keys:
+            - dot-cabal-{{ checksum "dot-cabal-cache-date" }}
+            - dot-cabal
+
+      - run:
+          name: Updating cabal package list
+          command: cabal update
+
+      - save_cache:
+          key: dot-cabal-{{ checksum "dot-cabal-cache-date" }}
+          paths:
+            - ~/.cabal
+      - save_cache:
+          key: dot-cabal
+          paths:
+            - ~/.cabal
+      
+      ##### Fetching latest organisation package versions
+      - run:
+          name: Fetching latest organisation package versions
+          command: |
+            fetch
+            echo "== stack-ci.yaml =="
+            cat stack-ci.yaml
+
+      ##### Building library
+      - restore_cache:
+          keys:
+            - dot-stack-{{ checksum "stack.yaml" }}-{{ checksum "hw-json.cabal" }}
+            - dot-stack-{{ checksum "stack.yaml" }}-build
+            - dot-stack-{{ checksum "stack.yaml" }}-setup
+
+      - restore_cache:
+          key: dot-stack-work-{{ checksum "stack.yaml" }}
+
+      - run:
+          name: Stack setup
+          command: stack setup
+
+      - save_cache:
+          key: dot-stack-{{ checksum "stack.yaml" }}-setup
+          paths:
+            - ~/.stack
+
+      - run:
+          name: Building dependencies
+          command: stack --stack-yaml stack-ci.yaml build --only-dependencies
+
+      - run:
+          name: Compiling
+          command: stack --stack-yaml stack-ci.yaml build --test --no-run-tests
+
+      - save_cache:
+          key: dot-stack-{{ checksum "stack.yaml" }}-{{ checksum "hw-json.cabal" }}
+          paths:
+            - ~/.stack
+      - save_cache:
+          key: dot-stack-{{ checksum "stack.yaml" }}-build
+          paths:
+            - ~/.stack
+
+      - save_cache:
+          key: dot-stack-work-{{ checksum "stack.yaml" }}
+          paths: ~/hw-json/.stack-work
+
+      ##### Running tests
+      - run:
+          name: Running tests against latest on hackage
+          command: stack --stack-yaml stack-ci.yaml test
+
+      - deploy:
+          command: |
+            if [ "$CIRCLE_PROJECT_USERNAME" == "haskell-works" ]; then
+              if [[ "$CIRCLE_BRANCH" =~ .*-branch ]]; then
+                when tag autotag
+              elif [[ "$CIRCLE_TAG" =~ v.* ]]; then
+                publish
+              fi
+            fi
 deployment:
-  release_branch:
-    owner: haskell-works
-    branch: /.*-branch/
-    commands:
-      - when tag autotag
-
-  hackage:
-    owner: haskell-works
+  tagged_builds:
     tag: /v.*/
     commands:
-      - publish
+      - echo "Make tags run in 2.0"

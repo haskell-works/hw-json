@@ -20,10 +20,10 @@ projects() {
   done
 }
 
-for x in $(projects | sort | uniq); do
-  cabal unpack $x
-done
+grep '^extra-deps:$' -B 1000 ../stack.yaml > stack-a.yaml
+projects | sort | uniq | sed 's|^|  - |g' > stack-b.yaml
+grep '^extra-deps:$' -A 1000 ../stack.yaml | grep -v '^extra-deps:$' > stack-c.yaml
 
-rm ./$_project.cabal
+cat stack-a.yaml stack-b.yaml stack-c.yaml > ../stack-ci.yaml
 
 popd > /dev/null
