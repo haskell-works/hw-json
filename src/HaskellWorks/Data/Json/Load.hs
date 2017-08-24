@@ -18,31 +18,32 @@ module HaskellWorks.Data.Json.Load
   , loadJsonWithPoppy512SMinMax2Index
   ) where
 
-import           Control.Monad
+import Control.Monad
+import Data.Word
+import Foreign.ForeignPtr
+import Foreign.Ptr
+import Foreign.Storable
+import HaskellWorks.Data.BalancedParens.RangeMinMax
+import HaskellWorks.Data.BalancedParens.RangeMinMax2
+import HaskellWorks.Data.BalancedParens.Simple
+import HaskellWorks.Data.Bits.BitShown
+import HaskellWorks.Data.FromByteString
+import HaskellWorks.Data.FromForeignRegion
+import HaskellWorks.Data.Json.DecodeError
+import HaskellWorks.Data.Json.PartialValue
+import HaskellWorks.Data.Json.Succinct.Cursor
+import HaskellWorks.Data.Json.Succinct.Index
+import HaskellWorks.Data.Json.Succinct.PartialIndex
+import HaskellWorks.Data.Json.Value
+import HaskellWorks.Data.RankSelect.CsPoppy
+import HaskellWorks.Data.RankSelect.Poppy512
+import HaskellWorks.Data.RankSelect.Poppy512S
+import System.IO
+import System.IO.MMap
+
 import qualified Data.ByteString                                          as BS
 import qualified Data.ByteString.Internal                                 as BSI
 import qualified Data.Vector.Storable                                     as DVS
-import           Data.Word
-import           Foreign.ForeignPtr
-import           Foreign.Ptr
-import           Foreign.Storable
-import           HaskellWorks.Data.BalancedParens.RangeMinMax
-import           HaskellWorks.Data.BalancedParens.RangeMinMax2
-import           HaskellWorks.Data.BalancedParens.Simple
-import           HaskellWorks.Data.Bits.BitShown
-import           HaskellWorks.Data.Decode
-import           HaskellWorks.Data.FromByteString
-import           HaskellWorks.Data.FromForeignRegion
-import           HaskellWorks.Data.Json.PartialValue
-import           HaskellWorks.Data.Json.Succinct.Cursor
-import           HaskellWorks.Data.Json.Succinct.Index
-import           HaskellWorks.Data.Json.Succinct.PartialIndex
-import           HaskellWorks.Data.Json.Value
-import           HaskellWorks.Data.RankSelect.CsPoppy
-import           HaskellWorks.Data.RankSelect.Poppy512
-import           HaskellWorks.Data.RankSelect.Poppy512S
-import           System.IO
-import           System.IO.MMap
 
 -- | Write out a vector verbatim into an open file handle.
 hPutVector :: forall a. Storable a => Handle -> DVS.Vector a -> IO ()

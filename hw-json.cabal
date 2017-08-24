@@ -1,5 +1,5 @@
 name:                   hw-json
-version:                0.4.0.0
+version:                0.5.0.0
 synopsis:               Memory efficient JSON parser
 description:            Please see README.md
 homepage:               http://github.com/haskell-works/hw-json#readme
@@ -58,6 +58,7 @@ library
                       , HaskellWorks.Data.Json.Conduit
                       , HaskellWorks.Data.Json.Conduit.Blank
                       , HaskellWorks.Data.Json.Conduit.Words
+                      , HaskellWorks.Data.Json.DecodeError
                       , HaskellWorks.Data.Json.FromValue
                       , HaskellWorks.Data.Json.LightJson
                       , HaskellWorks.Data.Json.Load
