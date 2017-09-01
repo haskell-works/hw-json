@@ -1,8 +1,8 @@
-{-# LANGUAGE FlexibleContexts       #-}
-{-# LANGUAGE FlexibleInstances      #-}
-{-# LANGUAGE MultiParamTypeClasses  #-}
-{-# LANGUAGE OverloadedStrings      #-}
-{-# LANGUAGE TypeSynonymInstances   #-}
+{-# LANGUAGE FlexibleContexts      #-}
+{-# LANGUAGE FlexibleInstances     #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE OverloadedStrings     #-}
+{-# LANGUAGE TypeSynonymInstances  #-}
 
 module HaskellWorks.Data.Json.Token.Tokenize
     ( IsChar(..)
@@ -10,18 +10,19 @@ module HaskellWorks.Data.Json.Token.Tokenize
     , ParseJson(..)
     ) where
 
-import           Control.Applicative
-import qualified Data.Attoparsec.ByteString.Char8   as BC
-import qualified Data.Attoparsec.Combinator         as AC
-import qualified Data.Attoparsec.Types              as T
-import qualified Data.ByteString                    as BS
-import           Data.Bits
-import           Data.Char
-import           Data.Word
-import           Data.Word8
-import           HaskellWorks.Data.Char.IsChar
-import           HaskellWorks.Data.Json.Token.Types
-import           HaskellWorks.Data.Parser           as P
+import Control.Applicative
+import Data.Bits
+import Data.Char
+import Data.Word
+import Data.Word8
+import HaskellWorks.Data.Char.IsChar
+import HaskellWorks.Data.Json.Token.Types
+import HaskellWorks.Data.Parser           as P
+
+import qualified Data.Attoparsec.ByteString.Char8 as BC
+import qualified Data.Attoparsec.Combinator       as AC
+import qualified Data.Attoparsec.Types            as T
+import qualified Data.ByteString                  as BS
 
 hexDigitNumeric :: P.Parser t => T.Parser t Int
 hexDigitNumeric = do

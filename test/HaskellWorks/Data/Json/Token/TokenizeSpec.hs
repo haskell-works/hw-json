@@ -2,10 +2,11 @@
 
 module HaskellWorks.Data.Json.Token.TokenizeSpec (spec) where
 
-import qualified Data.Attoparsec.ByteString.Char8      as BC
-import           Data.ByteString                       as BS
-import           HaskellWorks.Data.Json.Token.Tokenize
-import           Test.Hspec
+import Data.ByteString                       as BS
+import HaskellWorks.Data.Json.Token.Tokenize
+import Test.Hspec
+
+import qualified Data.Attoparsec.ByteString.Char8 as BC
 
 {-# ANN module ("HLint: ignore Redundant do"        :: String) #-}
 

@@ -10,16 +10,17 @@ module HaskellWorks.Data.Json.Conduit
   , interestingWord8s
   ) where
 
-import           Control.Monad
-import           Data.Array.Unboxed                   as A
-import qualified Data.Bits                            as BITS
-import           Data.ByteString                      as BS
-import           Data.Conduit
-import           Data.Int
-import           Data.Word
-import           Data.Word8
-import           HaskellWorks.Data.Bits.BitWise
-import           Prelude                              as P
+import Control.Monad
+import Data.Array.Unboxed             as A
+import Data.ByteString                as BS
+import Data.Conduit
+import Data.Int
+import Data.Word
+import Data.Word8
+import HaskellWorks.Data.Bits.BitWise
+import Prelude                        as P
+
+import qualified Data.Bits as BITS
 
 interestingWord8s :: A.UArray Word8 Word8
 interestingWord8s = A.array (0, 255) [
@@ -79,7 +80,7 @@ blankedJsonToBalancedParens' bs = case BS.uncons bs of
       d | d == _f             -> yield True >> yield False
       d | d == _1             -> yield True >> yield False
       d | d == _n             -> yield True >> yield False
-      _                       -> return ()
+      _ -> return ()
     blankedJsonToBalancedParens' cs
   Nothing -> return ()
 
@@ -125,10 +126,10 @@ blankedJsonToBalancedParens2 = do
         gen (Just False , bs) = Just (0x00, (Nothing, bs))
         gen (Nothing    , bs) = case BS.uncons bs of
           Just (c, cs) -> case balancedParensOf c of
-            MiniN   -> gen         (Nothing    , cs)
-            MiniT   -> Just (0xFF, (Nothing    , cs))
-            MiniF   -> Just (0x00, (Nothing    , cs))
-            MiniTF  -> Just (0xFF, (Just False , cs))
+            MiniN  -> gen         (Nothing    , cs)
+            MiniT  -> Just (0xFF, (Nothing    , cs))
+            MiniF  -> Just (0x00, (Nothing    , cs))
+            MiniTF -> Just (0xFF, (Just False , cs))
           Nothing   -> Nothing
 
 data MiniBP = MiniN | MiniT | MiniF | MiniTF
@@ -145,7 +146,7 @@ balancedParensOf c = case c of
     d | d == _f             -> MiniTF
     d | d == _1             -> MiniTF
     d | d == _n             -> MiniTF
-    _                       -> MiniN
+    _ -> MiniN
 
 yieldBitsOfWord8 :: Monad m => Word8 -> Conduit BS.ByteString m Bool
 yieldBitsOfWord8 w = do

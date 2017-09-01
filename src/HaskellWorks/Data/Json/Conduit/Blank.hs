@@ -1,18 +1,17 @@
 {-# LANGUAGE BangPatterns      #-}
-{-# LANGUAGE OverloadedStrings #-}
 
 module HaskellWorks.Data.Json.Conduit.Blank
   ( blankJson
   ) where
 
-import           Control.Monad
-import           Control.Monad.Trans.Resource         (MonadThrow)
-import           Data.ByteString                      as BS
-import           Data.Conduit
-import           Data.Word
-import           Data.Word8
-import           HaskellWorks.Data.Json.Conduit.Words
-import           Prelude                              as P
+import Control.Monad
+import Control.Monad.Trans.Resource         (MonadThrow)
+import Data.ByteString                      as BS
+import Data.Conduit
+import Data.Word
+import Data.Word8
+import HaskellWorks.Data.Json.Conduit.Words
+import Prelude                              as P
 
 data BlankState
   = Escaped

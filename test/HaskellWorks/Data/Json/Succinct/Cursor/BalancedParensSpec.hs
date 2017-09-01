@@ -3,14 +3,15 @@
 
 module HaskellWorks.Data.Json.Succinct.Cursor.BalancedParensSpec(spec) where
 
-import qualified Data.ByteString                                    as BS
-import           Data.Conduit
-import           Data.String
-import           HaskellWorks.Data.Bits.BitShown
-import           HaskellWorks.Data.Conduit.List
-import           HaskellWorks.Data.Json.Conduit
-import           HaskellWorks.Data.Json.Succinct.Cursor.BlankedJson
-import           Test.Hspec
+import Data.Conduit
+import Data.String
+import HaskellWorks.Data.Bits.BitShown
+import HaskellWorks.Data.Conduit.List
+import HaskellWorks.Data.Json.Conduit
+import HaskellWorks.Data.Json.Succinct.Cursor.BlankedJson
+import Test.Hspec
+
+import qualified Data.ByteString as BS
 
 {-# ANN module ("HLint: Ignore Redundant do"        :: String) #-}
 

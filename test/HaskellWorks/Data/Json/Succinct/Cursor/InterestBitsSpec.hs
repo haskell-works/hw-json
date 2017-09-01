@@ -4,15 +4,16 @@
 
 module HaskellWorks.Data.Json.Succinct.Cursor.InterestBitsSpec(spec) where
 
-import qualified Data.ByteString                                     as BS
-import           Data.String
-import qualified Data.Vector.Storable                                as DVS
-import           Data.Word
-import           HaskellWorks.Data.Bits.BitShown
-import           HaskellWorks.Data.FromByteString
-import           HaskellWorks.Data.Json.Succinct.Cursor.BlankedJson
-import           HaskellWorks.Data.Json.Succinct.Cursor.InterestBits
-import           Test.Hspec
+import Data.String
+import Data.Word
+import HaskellWorks.Data.Bits.BitShown
+import HaskellWorks.Data.FromByteString
+import HaskellWorks.Data.Json.Succinct.Cursor.BlankedJson
+import HaskellWorks.Data.Json.Succinct.Cursor.InterestBits
+import Test.Hspec
+
+import qualified Data.ByteString      as BS
+import qualified Data.Vector.Storable as DVS
 
 {-# ANN module ("HLint: ignore Redundant do"        :: String) #-}
 

@@ -1,27 +1,27 @@
-{-# LANGUAGE BangPatterns               #-}
-{-# LANGUAGE ExplicitForAll             #-}
-{-# LANGUAGE FlexibleContexts           #-}
-{-# LANGUAGE FlexibleInstances          #-}
-{-# LANGUAGE InstanceSigs               #-}
-{-# LANGUAGE MultiParamTypeClasses      #-}
-{-# LANGUAGE NoMonomorphismRestriction  #-}
-{-# LANGUAGE OverloadedStrings          #-}
-{-# LANGUAGE ScopedTypeVariables        #-}
+{-# LANGUAGE BangPatterns              #-}
+{-# LANGUAGE ExplicitForAll            #-}
+{-# LANGUAGE FlexibleContexts          #-}
+{-# LANGUAGE FlexibleInstances         #-}
+{-# LANGUAGE InstanceSigs              #-}
+{-# LANGUAGE MultiParamTypeClasses     #-}
+{-# LANGUAGE NoMonomorphismRestriction #-}
+{-# LANGUAGE OverloadedStrings         #-}
+{-# LANGUAGE ScopedTypeVariables       #-}
 
 {-# OPTIONS_GHC -fno-warn-missing-signatures #-}
 
 module HaskellWorks.Data.Json.CorpusSpec(spec) where
 
-import qualified Data.ByteString                                            as BS
-import qualified Data.Vector.Storable                                       as DVS
-import           Data.Word
-import           HaskellWorks.Data.BalancedParens.Simple
-import           HaskellWorks.Data.Bits.BitShown
-import           HaskellWorks.Data.Bits.FromBitTextByteString
-import           HaskellWorks.Data.Json.Succinct.Cursor                     as C
-import           Test.Hspec
+import Data.Word
+import HaskellWorks.Data.BalancedParens.Simple
+import HaskellWorks.Data.Bits.BitShown
+import HaskellWorks.Data.Bits.FromBitTextByteString
+import HaskellWorks.Data.FromByteString
+import HaskellWorks.Data.Json.Succinct.Cursor       as C
+import Test.Hspec
 
-import           HaskellWorks.Data.FromByteString
+import qualified Data.ByteString      as BS
+import qualified Data.Vector.Storable as DVS
 
 {-# ANN module ("HLint: ignore Redundant do"        :: String) #-}
 {-# ANN module ("HLint: ignore Reduce duplication"  :: String) #-}

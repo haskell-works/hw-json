@@ -7,13 +7,14 @@
 
 module HaskellWorks.Data.Json.Value.Internal where
 
-import           Control.Applicative
-import qualified Data.Attoparsec.ByteString.Char8       as ABC
-import qualified Data.Attoparsec.Types                  as T
-import           Data.Bits
-import           Data.Char
-import           Data.String
-import           HaskellWorks.Data.Parser               as P
+import Control.Applicative
+import Data.Bits
+import Data.Char
+import Data.String
+import HaskellWorks.Data.Parser as P
+
+import qualified Data.Attoparsec.ByteString.Char8 as ABC
+import qualified Data.Attoparsec.Types            as T
 
 parseHexDigitNumeric :: P.Parser t => T.Parser t Int
 parseHexDigitNumeric = do

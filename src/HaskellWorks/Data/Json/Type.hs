@@ -1,24 +1,25 @@
-{-# LANGUAGE FlexibleInstances      #-}
-{-# LANGUAGE InstanceSigs           #-}
-{-# LANGUAGE MultiParamTypeClasses  #-}
+{-# LANGUAGE FlexibleInstances     #-}
+{-# LANGUAGE InstanceSigs          #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 
 module HaskellWorks.Data.Json.Type
   ( JsonType(..)
   , JsonTypeAt(..)
   ) where
 
-import qualified Data.ByteString                            as BS
-import           Data.Char
-import           Data.Word8
-import qualified HaskellWorks.Data.BalancedParens           as BP
-import           HaskellWorks.Data.Bits.BitWise
-import           HaskellWorks.Data.Drop
-import           HaskellWorks.Data.Json.Succinct
-import           HaskellWorks.Data.Positioning
-import           HaskellWorks.Data.RankSelect.Base.Rank0
-import           HaskellWorks.Data.RankSelect.Base.Rank1
-import           HaskellWorks.Data.RankSelect.Base.Select1
-import           Prelude hiding (drop)
+import Data.Char
+import Data.Word8
+import HaskellWorks.Data.Bits.BitWise
+import HaskellWorks.Data.Drop
+import HaskellWorks.Data.Json.Succinct
+import HaskellWorks.Data.Positioning
+import HaskellWorks.Data.RankSelect.Base.Rank0
+import HaskellWorks.Data.RankSelect.Base.Rank1
+import HaskellWorks.Data.RankSelect.Base.Select1
+import Prelude                                   hiding (drop)
+
+import qualified Data.ByteString                  as BS
+import qualified HaskellWorks.Data.BalancedParens as BP
 
 {-# ANN module ("HLint: Reduce duplication" :: String) #-}
 
@@ -47,7 +48,7 @@ instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => JsonTy
     c:_ | wIsJsonNumberDigit (fromIntegral (ord c)) -> Just JsonTypeNumber
     c:_ | fromIntegral (ord c) == _braceleft        -> Just JsonTypeObject
     c:_ | fromIntegral (ord c) == _quotedbl         -> Just JsonTypeString
-    _                                               -> Nothing
+    _   -> Nothing
 
   jsonTypeAt k = jsonTypeAtPosition p k
     where p   = lastPositionOf (select1 ik (rank1 bpk (cursorRank k)))
@@ -63,7 +64,7 @@ instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => JsonTy
     Just (c, _) | wIsJsonNumberDigit c  -> Just JsonTypeNumber
     Just (c, _) | c == _braceleft       -> Just JsonTypeObject
     Just (c, _) | c == _quotedbl        -> Just JsonTypeString
-    _                                   -> Nothing
+    _           -> Nothing
 
   jsonTypeAt k = jsonTypeAtPosition p k
     where p   = lastPositionOf (select1 ik (rank1 bpk (cursorRank k)))

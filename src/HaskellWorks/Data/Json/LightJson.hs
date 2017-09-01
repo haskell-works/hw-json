@@ -1,42 +1,43 @@
-{-# LANGUAGE BangPatterns               #-}
-{-# LANGUAGE FlexibleContexts           #-}
-{-# LANGUAGE FlexibleInstances          #-}
-{-# LANGUAGE InstanceSigs               #-}
-{-# LANGUAGE MultiParamTypeClasses      #-}
-{-# LANGUAGE OverloadedStrings          #-}
-{-# LANGUAGE ScopedTypeVariables        #-}
+{-# LANGUAGE BangPatterns          #-}
+{-# LANGUAGE FlexibleContexts      #-}
+{-# LANGUAGE FlexibleInstances     #-}
+{-# LANGUAGE InstanceSigs          #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE OverloadedStrings     #-}
+{-# LANGUAGE ScopedTypeVariables   #-}
 
 module HaskellWorks.Data.Json.LightJson where
 
-import           Control.Arrow
-import qualified Data.Attoparsec.ByteString.Char8           as ABC
-import qualified Data.ByteString.Char8                      as BSC
-import qualified Data.ByteString                            as BS
-import qualified Data.DList                                 as DL
-import qualified Data.List                                  as L
-import           Data.String
-import           Data.Word
-import           Data.Word8
-import           HaskellWorks.Data.AtLeastSize
-import           HaskellWorks.Data.Bits.BitWise
-import qualified HaskellWorks.Data.BalancedParens           as BP
-import           HaskellWorks.Data.Drop
-import           HaskellWorks.Data.Entry
-import           HaskellWorks.Data.Json.CharLike
-import           HaskellWorks.Data.Json.Conduit.Words
-import           HaskellWorks.Data.Json.Succinct
-import           HaskellWorks.Data.Micro
-import           HaskellWorks.Data.Mini
-import           HaskellWorks.Data.MQuery
-import           HaskellWorks.Data.Positioning
-import           HaskellWorks.Data.RankSelect.Base.Rank0
-import           HaskellWorks.Data.RankSelect.Base.Rank1
-import           HaskellWorks.Data.RankSelect.Base.Select1
-import           HaskellWorks.Data.Row
-import           HaskellWorks.Data.TreeCursor
-import           HaskellWorks.Data.Uncons
-import           Prelude hiding (drop)
-import           Text.PrettyPrint.ANSI.Leijen
+import Control.Arrow
+import Data.String
+import Data.Word
+import Data.Word8
+import HaskellWorks.Data.AtLeastSize
+import HaskellWorks.Data.Bits.BitWise
+import HaskellWorks.Data.Drop
+import HaskellWorks.Data.Entry
+import HaskellWorks.Data.Json.CharLike
+import HaskellWorks.Data.Json.Conduit.Words
+import HaskellWorks.Data.Json.Succinct
+import HaskellWorks.Data.Micro
+import HaskellWorks.Data.Mini
+import HaskellWorks.Data.MQuery
+import HaskellWorks.Data.Positioning
+import HaskellWorks.Data.RankSelect.Base.Rank0
+import HaskellWorks.Data.RankSelect.Base.Rank1
+import HaskellWorks.Data.RankSelect.Base.Select1
+import HaskellWorks.Data.Row
+import HaskellWorks.Data.TreeCursor
+import HaskellWorks.Data.Uncons
+import Prelude                                   hiding (drop)
+import Text.PrettyPrint.ANSI.Leijen
+
+import qualified Data.Attoparsec.ByteString.Char8 as ABC
+import qualified Data.ByteString                  as BS
+import qualified Data.ByteString.Char8            as BSC
+import qualified Data.DList                       as DL
+import qualified Data.List                        as L
+import qualified HaskellWorks.Data.BalancedParens as BP
 
 data LightJson c
   = LightJsonString String
@@ -49,11 +50,11 @@ data LightJson c
   deriving Show
 
 instance Eq (LightJson c) where
-  (==) (LightJsonString a) (LightJsonString b)  = a == b
-  (==) (LightJsonNumber a) (LightJsonNumber b)  = a == b
-  (==) (LightJsonBool   a) (LightJsonBool   b)  = a == b
-  (==)  LightJsonNull       LightJsonNull       = True
-  (==)  _                   _                   = False
+  (==) (LightJsonString a) (LightJsonString b) = a == b
+  (==) (LightJsonNumber a) (LightJsonNumber b) = a == b
+  (==) (LightJsonBool   a) (LightJsonBool   b) = a == b
+  (==)  LightJsonNull       LightJsonNull      = True
+  (==)  _                   _                  = False
 
 -- instance Ord (LightJson c) where
 --   compare (LightJsonString a) (LightJsonString b)  = a `compare` b
@@ -82,33 +83,33 @@ slurpByteString bs = let (!cs, _) = BS.unfoldrN (BS.length bs) genString (InJson
         genString (InJson, cs) = case BS.uncons cs of
           Just (!e, !es) | e == _quotedbl     -> genString            (InString , es)
           -- TODO: Only match whitespace
-          Just (!_, !es)                      -> genString            (InJson   , es)
-          Nothing                             -> Nothing
+          Just (!_, !es) -> genString            (InJson   , es)
+          Nothing        -> Nothing
         genString (InString, ds) = case BS.uncons ds of
           Just (!e, !es) | e == _backslash    -> genString            (Escaped  , es)
           Just (!e, !_ ) | e == _quotedbl     -> Nothing
-          Just (e , !es)                      -> Just (e            , (InString , es))
-          Nothing                             -> Nothing
+          Just (e , !es) -> Just (e            , (InString , es))
+          Nothing        -> Nothing
         genString (Escaped, ds) = case BS.uncons ds of
-          Just (_ , !es)                      -> Just (_period      , (InString , es))
-          Nothing                             -> Nothing
+          Just (_ , !es) -> Just (_period      , (InString , es))
+          Nothing        -> Nothing
         genString (_, _) = Nothing
 
 slurpString :: BS.ByteString -> String
 slurpString bs = L.unfoldr genString (InJson, BSC.unpack bs)
   where genString :: (JsonState, String) -> Maybe (Char, (JsonState, String))
         genString (InJson, ds) = case ds of
-          (e:es)  | e == '"'  -> genString  (InString , es)
-          (_:es)              -> genString  (InJson   , es)
-          _                   -> Nothing
+          (e:es) | e == '"'  -> genString  (InString , es)
+          (_:es) -> genString  (InJson   , es)
+          _      -> Nothing
         genString (InString, ds) = case ds of
           (e:es) | e == '\\'  -> genString  (Escaped  , es)
           (e:_ ) | e == '"'   -> Nothing
-          (e:es)              -> Just (e,   (InString , es))
-          _                   -> Nothing
+          (e:es) -> Just (e,   (InString , es))
+          _      -> Nothing
         genString (Escaped, ds) = case ds of
-          (_:es)              -> Just ('.', (InString , es))
-          _                   -> Nothing
+          (_:es) -> Just ('.', (InString , es))
+          _      -> Nothing
         genString (_, _) = Nothing
 
 slurpNumber :: BS.ByteString -> BS.ByteString
@@ -116,12 +117,12 @@ slurpNumber bs = let (!cs, _) = BS.unfoldrN (BS.length bs) genNumber (InJson, bs
     where genNumber :: (JsonState, BS.ByteString) -> Maybe (Word8, (JsonState, BS.ByteString))
           genNumber (InJson, cs) = case BS.uncons cs of
             Just (!d, !ds) | isLeadingDigit d   -> Just (d           , (InNumber , ds))
-            Just (!d, !ds)                      -> Just (d           , (InJson   , ds))
-            Nothing -> Nothing
+            Just (!d, !ds) -> Just (d           , (InJson   , ds))
+            Nothing        -> Nothing
           genNumber (InNumber, cs) = case BS.uncons cs of
             Just (!d, !ds) | isTrailingDigit d  -> Just (d           , (InNumber , ds))
             Just (!d, !ds) | d == _quotedbl     -> Just (_parenleft  , (InString , ds))
-            _                                   -> Nothing
+            _              -> Nothing
           genNumber (_, _) = Nothing
 
 instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => LightJsonAt (JsonCursor BS.ByteString v w) where
@@ -133,8 +134,8 @@ instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => LightJ
     Just (!c, _) | isChar_n c         -> LightJsonNull
     Just (!c, _) | isBraceLeft c      -> LightJsonObject (mapValuesFrom   (firstChild k))
     Just (!c, _) | isBracketLeft c    -> LightJsonArray  (arrayValuesFrom (firstChild k))
-    Just _                            -> LightJsonError "Invalid Json Type"
-    Nothing                           -> LightJsonError "End of data"
+    Just _       -> LightJsonError "Invalid Json Type"
+    Nothing      -> LightJsonError "End of data"
     where ik                = interests k
           bpk               = balancedParens k
           p                 = lastPositionOf (select1 ik (rank1 bpk (cursorRank k)))
@@ -223,8 +224,8 @@ item jpv = case jpv of
 
 entry :: LightJsonAt c => LightJson c -> MQuery (Entry String (LightJson c))
 entry jpv = case jpv of
-  LightJsonObject fs  -> MQuery $ DL.fromList ((uncurry Entry . second lightJsonAt) `map` fs)
-  _                   -> MQuery   DL.empty
+  LightJsonObject fs -> MQuery $ DL.fromList ((uncurry Entry . second lightJsonAt) `map` fs)
+  _                  -> MQuery   DL.empty
 
 asString :: LightJson c -> MQuery String
 asString jpv = case jpv of
@@ -236,9 +237,9 @@ asDouble jpv = case jpv of
   LightJsonNumber sn  -> case ABC.parse ABC.rational sn of
     ABC.Fail    {}    -> MQuery DL.empty
     ABC.Partial f     -> case f " " of
-      ABC.Fail    {}    -> MQuery DL.empty
-      ABC.Partial _     -> MQuery DL.empty
-      ABC.Done    _ r   -> MQuery (DL.singleton r)
+      ABC.Fail    {}  -> MQuery DL.empty
+      ABC.Partial _   -> MQuery DL.empty
+      ABC.Done    _ r -> MQuery (DL.singleton r)
     ABC.Done    _ r   -> MQuery (DL.singleton r)
   _                   -> MQuery   DL.empty
 
@@ -255,18 +256,18 @@ castAsInteger jpv = case jpv of
 
 named :: String -> Entry String (LightJson c) -> MQuery (LightJson c)
 named fieldName (Entry fieldName' jpv) | fieldName == fieldName'  = MQuery $ DL.singleton jpv
-named _         _                                                 = MQuery   DL.empty
+named _         _                      = MQuery   DL.empty
 
 jsonKeys :: LightJson c -> [String]
 jsonKeys jpv = case jpv of
-  LightJsonObject fs  -> fst `map` fs
-  _                   -> []
+  LightJsonObject fs -> fst `map` fs
+  _                  -> []
 
 hasKey :: String -> LightJson c -> Bool
 hasKey fieldName jpv = fieldName `elem` jsonKeys jpv
 
 jsonSize :: LightJson c -> MQuery Integer
 jsonSize jpv = case jpv of
-  LightJsonArray  es  -> MQuery (DL.singleton (fromIntegral (length es)))
-  LightJsonObject es  -> MQuery (DL.singleton (fromIntegral (length es)))
-  _                   -> MQuery (DL.singleton 0)
+  LightJsonArray  es -> MQuery (DL.singleton (fromIntegral (length es)))
+  LightJsonObject es -> MQuery (DL.singleton (fromIntegral (length es)))
+  _                  -> MQuery (DL.singleton 0)

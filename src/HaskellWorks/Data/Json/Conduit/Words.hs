@@ -1,7 +1,7 @@
 module HaskellWorks.Data.Json.Conduit.Words where
 
-import           Data.Word
-import           Data.Word8
+import Data.Word
+import Data.Word8
 
 isLeadingDigit :: Word8 -> Bool
 isLeadingDigit w = w == _hyphen || (w >= _0 && w <= _9)

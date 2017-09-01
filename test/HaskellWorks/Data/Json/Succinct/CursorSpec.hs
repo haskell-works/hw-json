@@ -1,36 +1,37 @@
-{-# LANGUAGE ExplicitForAll             #-}
-{-# LANGUAGE FlexibleContexts           #-}
-{-# LANGUAGE FlexibleInstances          #-}
-{-# LANGUAGE InstanceSigs               #-}
-{-# LANGUAGE MultiParamTypeClasses      #-}
-{-# LANGUAGE NoMonomorphismRestriction  #-}
-{-# LANGUAGE OverloadedStrings          #-}
-{-# LANGUAGE ScopedTypeVariables        #-}
+{-# LANGUAGE ExplicitForAll            #-}
+{-# LANGUAGE FlexibleContexts          #-}
+{-# LANGUAGE FlexibleInstances         #-}
+{-# LANGUAGE InstanceSigs              #-}
+{-# LANGUAGE MultiParamTypeClasses     #-}
+{-# LANGUAGE NoMonomorphismRestriction #-}
+{-# LANGUAGE OverloadedStrings         #-}
+{-# LANGUAGE ScopedTypeVariables       #-}
 
 {-# OPTIONS_GHC -fno-warn-missing-signatures #-}
 
 module HaskellWorks.Data.Json.Succinct.CursorSpec(spec) where
 
-import           Control.Monad
-import qualified Data.ByteString                                            as BS
-import           Data.String
-import qualified Data.Vector.Storable                                       as DVS
-import           Data.Word
-import           HaskellWorks.Data.BalancedParens.BalancedParens
-import           HaskellWorks.Data.BalancedParens.Simple
-import           HaskellWorks.Data.Bits.BitShow
-import           HaskellWorks.Data.Bits.BitShown
-import           HaskellWorks.Data.Bits.BitWise
-import           HaskellWorks.Data.FromForeignRegion
-import           HaskellWorks.Data.Json.Succinct.Cursor                     as C
-import           HaskellWorks.Data.Json.Succinct.Index
-import           HaskellWorks.Data.Json.Token
-import           HaskellWorks.Data.RankSelect.Base.Rank0
-import           HaskellWorks.Data.RankSelect.Base.Rank1
-import           HaskellWorks.Data.RankSelect.Base.Select1
-import           HaskellWorks.Data.RankSelect.Poppy512
-import qualified HaskellWorks.Data.TreeCursor                               as TC
-import           Test.Hspec
+import Control.Monad
+import Data.String
+import Data.Word
+import HaskellWorks.Data.BalancedParens.BalancedParens
+import HaskellWorks.Data.BalancedParens.Simple
+import HaskellWorks.Data.Bits.BitShow
+import HaskellWorks.Data.Bits.BitShown
+import HaskellWorks.Data.Bits.BitWise
+import HaskellWorks.Data.FromForeignRegion
+import HaskellWorks.Data.Json.Succinct.Cursor          as C
+import HaskellWorks.Data.Json.Succinct.Index
+import HaskellWorks.Data.Json.Token
+import HaskellWorks.Data.RankSelect.Base.Rank0
+import HaskellWorks.Data.RankSelect.Base.Rank1
+import HaskellWorks.Data.RankSelect.Base.Select1
+import HaskellWorks.Data.RankSelect.Poppy512
+import Test.Hspec
+
+import qualified Data.ByteString              as BS
+import qualified Data.Vector.Storable         as DVS
+import qualified HaskellWorks.Data.TreeCursor as TC
 
 {-# ANN module ("HLint: ignore Redundant do"        :: String) #-}
 {-# ANN module ("HLint: ignore Reduce duplication"  :: String) #-}

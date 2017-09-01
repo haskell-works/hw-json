@@ -7,11 +7,12 @@
 
 module HaskellWorks.Data.Json.Value where
 
-import qualified Data.Attoparsec.ByteString.Char8       as ABC
-import qualified Data.ByteString                        as BS
-import           HaskellWorks.Data.Decode
-import           HaskellWorks.Data.Json.Succinct.Index
-import           HaskellWorks.Data.Json.Value.Internal
+import HaskellWorks.Data.Decode
+import HaskellWorks.Data.Json.Succinct.Index
+import HaskellWorks.Data.Json.Value.Internal
+
+import qualified Data.Attoparsec.ByteString.Char8 as ABC
+import qualified Data.ByteString                  as BS
 
 data JsonValue
   = JsonString String
@@ -28,15 +29,15 @@ class JsonValueAt a where
 instance JsonValueAt JsonIndex where
   jsonValueAt i = case i of
     JsonIndexString  s  -> case ABC.parse parseJsonString s of
-      ABC.Fail    {}    -> Left (DecodeError ("Invalid string: '" ++ show (BS.take 20 s) ++ "...'"))
-      ABC.Partial _     -> Left (DecodeError "Unexpected end of string")
-      ABC.Done    _ r   -> Right (JsonString r)
+      ABC.Fail    {}  -> Left (DecodeError ("Invalid string: '" ++ show (BS.take 20 s) ++ "...'"))
+      ABC.Partial _   -> Left (DecodeError "Unexpected end of string")
+      ABC.Done    _ r -> Right (JsonString r)
     JsonIndexNumber  s  -> case ABC.parse ABC.rational s of
       ABC.Fail    {}    -> Left (DecodeError ("Invalid number: '" ++ show (BS.take 20 s) ++ "...'"))
       ABC.Partial f     -> case f " " of
-        ABC.Fail    {}    -> Left (DecodeError ("Invalid number: '" ++ show (BS.take 20 s) ++ "...'"))
-        ABC.Partial _     -> Left (DecodeError "Unexpected end of number")
-        ABC.Done    _ r   -> Right (JsonNumber r)
+        ABC.Fail    {}  -> Left (DecodeError ("Invalid number: '" ++ show (BS.take 20 s) ++ "...'"))
+        ABC.Partial _   -> Left (DecodeError "Unexpected end of number")
+        ABC.Done    _ r -> Right (JsonNumber r)
       ABC.Done    _ r   -> Right (JsonNumber r)
     JsonIndexObject  fs -> JsonObject <$> mapM (\f -> (,) <$> parseString (fst f) <*> jsonValueAt (snd f)) fs
     JsonIndexArray   es -> JsonArray <$> mapM jsonValueAt es

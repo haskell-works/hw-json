@@ -2,10 +2,11 @@
 
 module HaskellWorks.Data.Json.Conduit.BlankSpec (spec) where
 
-import qualified Data.ByteString                      as BS
-import           HaskellWorks.Data.Json.Conduit.Blank
-import           HaskellWorks.Data.Conduit.List
-import           Test.Hspec
+import HaskellWorks.Data.Conduit.List
+import HaskellWorks.Data.Json.Conduit.Blank
+import Test.Hspec
+
+import qualified Data.ByteString as BS
 
 {-# ANN module ("HLint: ignore Redundant do" :: String) #-}
 

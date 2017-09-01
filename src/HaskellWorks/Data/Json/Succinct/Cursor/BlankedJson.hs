@@ -5,11 +5,12 @@ module HaskellWorks.Data.Json.Succinct.Cursor.BlankedJson
   , getBlankedJson
   ) where
 
-import qualified Data.ByteString                      as BS
-import           HaskellWorks.Data.ByteString
-import           HaskellWorks.Data.Conduit.List
-import           HaskellWorks.Data.FromByteString
-import           HaskellWorks.Data.Json.Conduit.Blank
+import HaskellWorks.Data.ByteString
+import HaskellWorks.Data.Conduit.List
+import HaskellWorks.Data.FromByteString
+import HaskellWorks.Data.Json.Conduit.Blank
+
+import qualified Data.ByteString as BS
 
 newtype BlankedJson = BlankedJson [BS.ByteString] deriving (Eq, Show)
 

@@ -21,26 +21,27 @@ module HaskellWorks.Data.Json.PartialValue
   , named
   ) where
 
-import           Control.Arrow
-import qualified Data.Attoparsec.ByteString.Char8             as ABC
-import qualified Data.ByteString                              as BS
-import qualified Data.DList                                   as DL
-import           HaskellWorks.Data.AtLeastSize
-import qualified HaskellWorks.Data.BalancedParens             as BP
-import           HaskellWorks.Data.Bits.BitWise
-import           HaskellWorks.Data.Entry
-import           HaskellWorks.Data.Micro
-import           HaskellWorks.Data.Mini
-import           HaskellWorks.Data.MQuery
-import           HaskellWorks.Data.Json.Succinct.Cursor
-import           HaskellWorks.Data.Json.Succinct.PartialIndex
-import           HaskellWorks.Data.Json.Value.Internal
-import           HaskellWorks.Data.RankSelect.Base.Rank0
-import           HaskellWorks.Data.RankSelect.Base.Rank1
-import           HaskellWorks.Data.RankSelect.Base.Select1
-import           HaskellWorks.Data.Row
-import           Text.PrettyPrint.ANSI.Leijen
+import Control.Arrow
+import HaskellWorks.Data.AtLeastSize
+import HaskellWorks.Data.Bits.BitWise
+import HaskellWorks.Data.Entry
+import HaskellWorks.Data.Json.Succinct.Cursor
+import HaskellWorks.Data.Json.Succinct.PartialIndex
+import HaskellWorks.Data.Json.Value.Internal
+import HaskellWorks.Data.Micro
+import HaskellWorks.Data.Mini
+import HaskellWorks.Data.MQuery
+import HaskellWorks.Data.RankSelect.Base.Rank0
+import HaskellWorks.Data.RankSelect.Base.Rank1
+import HaskellWorks.Data.RankSelect.Base.Select1
+import HaskellWorks.Data.Row
+import Text.PrettyPrint.ANSI.Leijen
 
+import qualified Data.Attoparsec.ByteString.Char8 as ABC
+import qualified Data.ByteString                  as BS
+import qualified Data.DList                       as DL
+import qualified HaskellWorks.Data.BalancedParens as BP
+s
 data JsonPartialValue
   = JsonPartialString String
   | JsonPartialNumber Double
@@ -64,15 +65,15 @@ jsonPartialValueString pjv = case pjv of
 instance JsonPartialValueAt JsonPartialIndex where
   jsonPartialJsonValueAt i = case i of
     JsonPartialIndexString s  -> case ABC.parse parseJsonString s of
-      ABC.Fail    {}          -> JsonPartialError ("Invalid string: '" ++ show (BS.take 20 s) ++ "...'")
-      ABC.Partial _           -> JsonPartialError "Unexpected end of string"
-      ABC.Done    _ r         -> JsonPartialString r
+      ABC.Fail    {}  -> JsonPartialError ("Invalid string: '" ++ show (BS.take 20 s) ++ "...'")
+      ABC.Partial _   -> JsonPartialError "Unexpected end of string"
+      ABC.Done    _ r -> JsonPartialString r
     JsonPartialIndexNumber s  -> case ABC.parse ABC.rational s of
       ABC.Fail    {}    -> JsonPartialError ("Invalid number: '" ++ show (BS.take 20 s) ++ "...'")
       ABC.Partial f     -> case f " " of
-        ABC.Fail    {}    -> JsonPartialError ("Invalid number: '" ++ show (BS.take 20 s) ++ "...'")
-        ABC.Partial _     -> JsonPartialError "Unexpected end of number"
-        ABC.Done    _ r   -> JsonPartialNumber r
+        ABC.Fail    {}  -> JsonPartialError ("Invalid number: '" ++ show (BS.take 20 s) ++ "...'")
+        ABC.Partial _   -> JsonPartialError "Unexpected end of number"
+        ABC.Done    _ r -> JsonPartialNumber r
       ABC.Done    _ r   -> JsonPartialNumber r
     JsonPartialIndexObject  fs -> JsonPartialObject (map ((jsonPartialValueString . parseString) *** jsonPartialJsonValueAt) fs)
     JsonPartialIndexArray   es -> JsonPartialArray (map jsonPartialJsonValueAt es)
@@ -152,8 +153,8 @@ instance Pretty (MQuery (Entry String JsonPartialValue)) where
   pretty (MQuery das) = pretty (Row 120 das)
 
 hasKV :: String -> JsonPartialValue -> JsonPartialValue -> MQuery JsonPartialValue
-hasKV k v (JsonPartialObject xs)  = if (k, v) `elem` xs then MQuery (DL.singleton (JsonPartialObject xs)) else MQuery DL.empty
-hasKV _ _  _                      = MQuery DL.empty
+hasKV k v (JsonPartialObject xs) = if (k, v) `elem` xs then MQuery (DL.singleton (JsonPartialObject xs)) else MQuery DL.empty
+hasKV _ _  _                     = MQuery DL.empty
 
 item :: JsonPartialValue -> MQuery JsonPartialValue
 item jpv = case jpv of
@@ -162,8 +163,8 @@ item jpv = case jpv of
 
 entry :: JsonPartialValue -> MQuery (Entry String JsonPartialValue)
 entry jpv = case jpv of
-  JsonPartialObject fs  -> MQuery $ DL.fromList (uncurry Entry `map` fs)
-  _                     -> MQuery   DL.empty
+  JsonPartialObject fs -> MQuery $ DL.fromList (uncurry Entry `map` fs)
+  _                    -> MQuery   DL.empty
 
 asString :: JsonPartialValue -> MQuery String
 asString jpv = case jpv of
@@ -183,18 +184,18 @@ castAsInteger jpv = case jpv of
 
 named :: String -> Entry String JsonPartialValue -> MQuery JsonPartialValue
 named fieldName (Entry fieldName' jpv) | fieldName == fieldName'  = MQuery $ DL.singleton jpv
-named _         _                                                 = MQuery   DL.empty
+named _         _                      = MQuery   DL.empty
 
 jsonKeys :: JsonPartialValue -> [String]
 jsonKeys jpv = case jpv of
-  JsonPartialObject fs  -> fst `map` fs
-  _                     -> []
+  JsonPartialObject fs -> fst `map` fs
+  _                    -> []
 
 hasKey :: String -> JsonPartialValue -> Bool
 hasKey fieldName jpv = fieldName `elem` jsonKeys jpv
 
 jsonSize :: JsonPartialValue -> MQuery JsonPartialValue
 jsonSize jpv = case jpv of
-  JsonPartialArray  es  -> MQuery (DL.singleton (JsonPartialNumber (fromIntegral (length es))))
-  JsonPartialObject es  -> MQuery (DL.singleton (JsonPartialNumber (fromIntegral (length es))))
-  _                     -> MQuery (DL.singleton (JsonPartialNumber 0))
+  JsonPartialArray  es -> MQuery (DL.singleton (JsonPartialNumber (fromIntegral (length es))))
+  JsonPartialObject es -> MQuery (DL.singleton (JsonPartialNumber (fromIntegral (length es))))
+  _                    -> MQuery (DL.singleton (JsonPartialNumber 0))
