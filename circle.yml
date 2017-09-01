@@ -37,7 +37,7 @@ jobs:
           key: dot-cabal
           paths:
             - ~/.cabal
-      
+
       ##### Fetching latest organisation package versions
       - run:
           name: Fetching latest organisation package versions
@@ -94,7 +94,7 @@ jobs:
       - deploy:
           command: |
             if [ "$CIRCLE_PROJECT_USERNAME" == "haskell-works" ]; then
-              if [[ "$CIRCLE_BRANCH" =~ .*-branch ]]; then
+              if [[ "$CIRCLE_BRANCH" == master ]]; then
                 when tag autotag
               elif [[ "$CIRCLE_TAG" =~ v.* ]]; then
                 publish
