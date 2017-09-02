@@ -18,8 +18,8 @@ import HaskellWorks.Data.BalancedParens.BalancedParens
 import HaskellWorks.Data.BalancedParens.Simple
 import HaskellWorks.Data.Bits.BitShown
 import HaskellWorks.Data.Bits.BitWise
-import HaskellWorks.Data.Decode
 import HaskellWorks.Data.FromForeignRegion
+import HaskellWorks.Data.Json.DecodeError
 import HaskellWorks.Data.Json.Succinct.Cursor          as C
 import HaskellWorks.Data.Json.Succinct.Index
 import HaskellWorks.Data.Json.Value

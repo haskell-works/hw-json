@@ -58,6 +58,7 @@ library
                       , HaskellWorks.Data.Json.Conduit
                       , HaskellWorks.Data.Json.Conduit.Blank
                       , HaskellWorks.Data.Json.Conduit.Words
+                      , HaskellWorks.Data.Json.DecodeError
                       , HaskellWorks.Data.Json.FromValue
                       , HaskellWorks.Data.Json.LightJson
                       , HaskellWorks.Data.Json.Load

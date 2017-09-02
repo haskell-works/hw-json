@@ -1,10 +1,22 @@
-resolver: lts-8.13
+resolver: lts-9.1
 
 packages:
 - '.'
 
 extra-deps:
-  - hedgehog-0.2
+  - hw-balancedparens-0.2.0.1
+  - hw-bits-0.7.0.1
+  - hw-conduit-0.2.0.2
+  - hw-diagnostics-0.0.0.5
+  - hw-excess-0.2.0.0
+  - hw-int-0.0.0.3
+  - hw-mquery-0.1.0.1
+  - hw-parser-0.0.0.3
+  - hw-prim-0.5.0.0
+  - hw-rankselect-0.10.0.3
+  - hw-rankselect-base-0.2.0.2
+  - hw-string-parse-0.0.0.4
+  - hedgehog-0.5
 
 flags: {}
 

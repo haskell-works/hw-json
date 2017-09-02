@@ -25,9 +25,9 @@ import HaskellWorks.Data.BalancedParens.RangeMinMax
 import HaskellWorks.Data.BalancedParens.RangeMinMax2
 import HaskellWorks.Data.BalancedParens.Simple
 import HaskellWorks.Data.Bits.BitShown
-import HaskellWorks.Data.Decode
 import HaskellWorks.Data.FromByteString
 import HaskellWorks.Data.FromForeignRegion
+import HaskellWorks.Data.Json.DecodeError
 import HaskellWorks.Data.Json.Succinct.Cursor
 import HaskellWorks.Data.Json.Succinct.Index
 import HaskellWorks.Data.Json.Value

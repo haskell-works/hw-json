@@ -3,11 +3,10 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE OverloadedStrings     #-}
 {-# LANGUAGE ScopedTypeVariables   #-}
-{-# LANGUAGE TupleSections         #-}
 
 module HaskellWorks.Data.Json.Value where
 
-import HaskellWorks.Data.Decode
+import HaskellWorks.Data.Json.DecodeError
 import HaskellWorks.Data.Json.Succinct.Index
 import HaskellWorks.Data.Json.Value.Internal
 

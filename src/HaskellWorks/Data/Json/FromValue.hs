@@ -3,7 +3,7 @@
 
 module HaskellWorks.Data.Json.FromValue where
 
-import HaskellWorks.Data.Decode
+import HaskellWorks.Data.Json.DecodeError
 import HaskellWorks.Data.Json.Value
 
 class FromJsonValue a where

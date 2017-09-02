@@ -4,7 +4,6 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE OverloadedStrings     #-}
 {-# LANGUAGE ScopedTypeVariables   #-}
-{-# LANGUAGE TupleSections         #-}
 
 module HaskellWorks.Data.Json.PartialValue
   ( JsonPartialValue(..)
@@ -41,7 +40,7 @@ import qualified Data.Attoparsec.ByteString.Char8 as ABC
 import qualified Data.ByteString                  as BS
 import qualified Data.DList                       as DL
 import qualified HaskellWorks.Data.BalancedParens as BP
-s
+
 data JsonPartialValue
   = JsonPartialString String
   | JsonPartialNumber Double

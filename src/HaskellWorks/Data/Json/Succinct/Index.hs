@@ -9,9 +9,9 @@ module HaskellWorks.Data.Json.Succinct.Index where
 import Control.Arrow
 import Control.Monad
 import HaskellWorks.Data.Bits.BitWise
-import HaskellWorks.Data.Decode
 import HaskellWorks.Data.Drop
 import HaskellWorks.Data.Json.CharLike
+import HaskellWorks.Data.Json.DecodeError
 import HaskellWorks.Data.Json.Succinct
 import HaskellWorks.Data.Positioning
 import HaskellWorks.Data.RankSelect.Base.Rank0
