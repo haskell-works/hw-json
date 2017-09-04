@@ -34,8 +34,8 @@ For an example, see [`app/Main.hs`](../master/app/Main.hs)
 
     Mem (MB) CMD
     -------- ---------------------------------------------------------
-          54 import           Control.DeepSeq
-          64 import           Data.Aeson
+          54 import Control.DeepSeq
+          64 import Data.Aeson
           64 import qualified Data.ByteString.Lazy as BSL
           66 json78m <- BSL.readFile "../data/78mb.json"
          167 let !x = deepseq json78m json78m

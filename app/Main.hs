@@ -4,10 +4,7 @@
 
 module Main where
 
-import qualified Data.ByteString                                  as BS
-import qualified Data.DList                                       as DL
 import           Data.Function
-import qualified Data.Vector.Storable                             as DVS
 import           Data.Word
 import           HaskellWorks.Data.BalancedParens.Simple
 import           HaskellWorks.Data.Bits.BitShown
@@ -19,6 +16,10 @@ import           HaskellWorks.Data.Micro
 import           HaskellWorks.Data.MQuery
 import           HaskellWorks.Diagnostics.Time
 import           Control.Monad
+
+import qualified Data.ByteString                                  as BS
+import qualified Data.DList                                       as DL
+import qualified Data.Vector.Storable                             as DVS
 
 readJson :: String -> IO (JsonCursor BS.ByteString (BitShown (DVS.Vector Word64)) (SimpleBalancedParens (DVS.Vector Word64)))
 readJson path = do
