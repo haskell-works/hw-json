@@ -1,12 +1,9 @@
 # hw-json
 [![master](https://circleci.com/gh/haskell-works/hw-json/tree/master.svg?style=svg)](https://circleci.com/gh/haskell-works/hw-json/tree/master)
 
-Conduits for tokenizing streams.
-
-`hw-json` is a succinct JSON parsing library.  It uses succinct data-structures to allow traversal of
+`hw-json` is a succinct JSON parsing library.
+It uses succinct data-structures to allow traversal of
 large JSON strings with minimal memory overhead.
-
-It is currently considered experimental.
 
 For an example, see [`app/Main.hs`](../master/app/Main.hs)
 
