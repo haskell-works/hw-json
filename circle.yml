@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/hw-json
     docker:
-      - image: fpco/stack-build:latest
+      - image: quay.io/haskell_works/stack-build-cabal:2017-12-27
 
     steps:
       - checkout
