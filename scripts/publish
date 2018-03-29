@@ -12,10 +12,8 @@ if [ "$HACKAGE_USER" == "" ] || [ "$HACKAGE_PASS" == "" ]; then
 fi
 
 _repo_name=$(basename `git rev-parse --show-toplevel`)
-
-_version=$(
-  cat $_repo_name.cabal | grep '^version:' | head | cut -d ':' -f 2 | xargs
-)
+_project="$(cat package.yaml | grep '^name:' | head -n 1 | cut -d : -f 2 | xargs)"
+_version="$(cat package.yaml | grep '^version:' | head -n 1 | cut -d : -f 2 | xargs)"
 
 if [ "v$_version" != "$CIRCLE_TAG" ]; then
   echo "Tag mismatch: "v$_version != $CIRCLE_TAG""
@@ -30,5 +28,6 @@ if [ "$ALLOW_UPLOAD" != "" ]; then
   cabal upload \
     --username=$HACKAGE_USER \
     --password=$HACKAGE_PASS \
-    "dist/${_repo_name}-${_version}.tar.gz"
+    "dist/${_project}-${_version}.tar.gz" \
+    ${PUBLISH+--publish}
 fi

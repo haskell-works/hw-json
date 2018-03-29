@@ -1,0 +1,127 @@
+name: hw-json
+version: '0.6.0.0'
+synopsis: Memory efficient JSON parser
+description: Please see README.md
+category: Data, Conduit
+author: John Ky
+maintainer: newhoggy@gmail.com
+copyright: 2016 John Ky
+license: BSD3
+github: haskell-works/hw-json
+homepage: http://github.com/haskell-works/hw-json#readme
+extra-source-files:
+- README.md
+- corpus/5000B.bp
+- corpus/5000B.ib
+- corpus/5000B.json
+- corpus/issue-0001.bp
+- corpus/issue-0001.ib
+- corpus/issue-0001.json
+- corpus/issue-0001.md
+ghc-options: -Wall
+dependencies:
+- base >=4 && <5
+- bytestring
+- conduit
+- hw-balancedparens >=0.1.0.0
+- hw-bits >=0.4.0.0
+- hw-conduit >=0.1.0.0
+- hw-prim >=0.4.0.0
+- hw-rankselect >=0.8.0.0
+- hw-rankselect-base >=0.2.0.0
+- mmap
+- resourcet
+- vector
+library:
+  source-dirs: src
+  ghc-options:
+  - -O2
+  - -msse4.2
+  exposed-modules:
+  - HaskellWorks.Data.Json
+  - HaskellWorks.Data.Json.CharLike
+  - HaskellWorks.Data.Json.Conduit
+  - HaskellWorks.Data.Json.Conduit.Blank
+  - HaskellWorks.Data.Json.Conduit.Words
+  - HaskellWorks.Data.Json.DecodeError
+  - HaskellWorks.Data.Json.FromValue
+  - HaskellWorks.Data.Json.LightJson
+  - HaskellWorks.Data.Json.Load
+  - HaskellWorks.Data.Json.LoadCursor
+  - HaskellWorks.Data.Json.PartialValue
+  - HaskellWorks.Data.Json.Succinct
+  - HaskellWorks.Data.Json.Succinct.Cursor
+  - HaskellWorks.Data.Json.Succinct.Cursor.BalancedParens
+  - HaskellWorks.Data.Json.Succinct.Cursor.BlankedJson
+  - HaskellWorks.Data.Json.Succinct.Cursor.InterestBits
+  - HaskellWorks.Data.Json.Succinct.Cursor.Internal
+  - HaskellWorks.Data.Json.Succinct.Cursor.Token
+  - HaskellWorks.Data.Json.Succinct.Index
+  - HaskellWorks.Data.Json.Succinct.PartialIndex
+  - HaskellWorks.Data.Json.Token.Tokenize
+  - HaskellWorks.Data.Json.Token.Types
+  - HaskellWorks.Data.Json.Token
+  - HaskellWorks.Data.Json.Type
+  - HaskellWorks.Data.Json.Value
+  - HaskellWorks.Data.Json.Value.Internal
+  dependencies:
+  - array
+  - ansi-wl-pprint
+  - attoparsec
+  - containers
+  - dlist
+  - hw-mquery >=0.1.0.0
+  - hw-parser >=0.0.0.1
+  - mono-traversable
+  - text
+  - word8
+executables:
+  hw-json-example:
+    main: Main.hs
+    source-dirs: app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    - -O2
+    - -msse4.2
+    dependencies:
+    - array
+    - ansi-wl-pprint
+    - attoparsec
+    - containers
+    - criterion
+    - dlist
+    - hw-diagnostics >=0.0.0.5
+    - hw-json
+    - hw-mquery >=0.1.0.0
+    - hw-parser >=0.0.0.1
+    - mono-traversable
+    - text
+    - word8
+tests:
+  hw-json-test:
+    main: Spec.hs
+    source-dirs: test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - attoparsec
+    - containers
+    - hspec
+    - hw-json
+    - parsec
+    - QuickCheck
+    - transformers
+benchmarks:
+  bench:
+    main: Main.hs
+    source-dirs: bench
+    ghc-options:
+    - -O2
+    - -msse4.2
+    dependencies:
+    - criterion
+    - hw-json
