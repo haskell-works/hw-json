@@ -10,10 +10,6 @@ module HaskellWorks.Data.Json.LoadCursor
   , loadJsonWithIndex
   , loadJsonWithPoppy512Index
   , loadJsonWithPoppy512Index2
-  , loadJsonWithPoppy512SIndex
-  , loadJsonWithPoppy512SIndex2
-  , loadJsonWithPoppy512SMinMaxIndex
-  , loadJsonWithPoppy512SMinMax2Index
   ) where
 
 import Control.Monad
@@ -33,7 +29,6 @@ import HaskellWorks.Data.Json.Succinct.Index
 import HaskellWorks.Data.Json.Value
 import HaskellWorks.Data.RankSelect.CsPoppy
 import HaskellWorks.Data.RankSelect.Poppy512
-import HaskellWorks.Data.RankSelect.Poppy512S
 import System.IO
 import System.IO.MMap
 
@@ -95,26 +90,6 @@ loadJsonWithPoppy512Index filename = do
   let cursor = JsonCursor jsonBS (makePoppy512 jsonIb) (SimpleBalancedParens jsonBp) 1
   return cursor
 
-loadJsonWithPoppy512SIndex :: String -> IO (JsonCursor BSI.ByteString Poppy512S (SimpleBalancedParens (DVS.Vector Word64)))
-loadJsonWithPoppy512SIndex filename = do
-  (jsonBS, jsonIb, jsonBp) <- loadJsonRawWithIndex filename
-  let cursor = JsonCursor jsonBS (makePoppy512S jsonIb) (SimpleBalancedParens jsonBp) 1
-  return cursor
-
-loadJsonWithPoppy512SMinMaxIndex :: String -> IO (JsonCursor BSI.ByteString Poppy512S (RangeMinMax Poppy512S))
-loadJsonWithPoppy512SMinMaxIndex filename = do
-  (jsonBS, jsonIb, jsonBp) <- loadJsonRawWithIndex filename
-  let !rangeMinMax = mkRangeMinMax (makePoppy512S jsonBp)
-  let cursorL3 = JsonCursor jsonBS (makePoppy512S jsonIb) rangeMinMax 1
-  return cursorL3
-
-loadJsonWithPoppy512SMinMax2Index :: String -> IO (JsonCursor BSI.ByteString Poppy512S (RangeMinMax2 Poppy512S))
-loadJsonWithPoppy512SMinMax2Index filename = do
-  (jsonBS, jsonIb, jsonBp) <- loadJsonRawWithIndex filename
-  let !rangeMinMax2 = mkRangeMinMax2 (makePoppy512S jsonBp)
-  let cursorMinMaxL2 = JsonCursor jsonBS (makePoppy512S jsonIb) rangeMinMax2 1
-  return cursorMinMaxL2
-
 loadJsonWithCsPoppyIndex :: String -> IO (JsonCursor BSI.ByteString CsPoppy (SimpleBalancedParens (DVS.Vector Word64)))
 loadJsonWithCsPoppyIndex filename = do
   (jsonBS, jsonIb, jsonBp) <- loadJsonRawWithIndex filename
@@ -126,13 +101,6 @@ loadJsonWithPoppy512Index2 filename = do
   (jsonBS, jsonIb, jsonBp) <- loadJsonRawWithIndex filename
   let cursor = JsonCursor jsonBS (makePoppy512 jsonIb) (SimpleBalancedParens (makePoppy512 jsonBp)) 1
                 :: JsonCursor BSI.ByteString Poppy512 (SimpleBalancedParens Poppy512)
-  return cursor
-
-loadJsonWithPoppy512SIndex2 :: String -> IO (JsonCursor BSI.ByteString Poppy512S (SimpleBalancedParens Poppy512S))
-loadJsonWithPoppy512SIndex2 filename = do
-  (jsonBS, jsonIb, jsonBp) <- loadJsonRawWithIndex filename
-  let cursor = JsonCursor jsonBS (makePoppy512S jsonIb) (SimpleBalancedParens (makePoppy512S jsonBp)) 1
-                :: JsonCursor BSI.ByteString Poppy512S (SimpleBalancedParens Poppy512S)
   return cursor
 
 indexJsonCursor :: String -> IO ()

@@ -4,22 +4,22 @@
 
 module Main where
 
-import           Data.Function
-import           Data.Word
-import           HaskellWorks.Data.BalancedParens.Simple
-import           HaskellWorks.Data.Bits.BitShown
-import           HaskellWorks.Data.FromByteString
-import           HaskellWorks.Data.Json.Succinct.Cursor
-import           HaskellWorks.Data.Json.LightJson
-import           HaskellWorks.Data.Json.LoadCursor
-import           HaskellWorks.Data.Micro
-import           HaskellWorks.Data.MQuery
-import           HaskellWorks.Diagnostics.Time
-import           Control.Monad
+import Control.Monad
+import Data.Function
+import Data.Word
+import HaskellWorks.Data.BalancedParens.Simple
+import HaskellWorks.Data.Bits.BitShown
+import HaskellWorks.Data.FromByteString
+import HaskellWorks.Data.Json.LightJson
+import HaskellWorks.Data.Json.LoadCursor
+import HaskellWorks.Data.Json.Succinct.Cursor
+import HaskellWorks.Data.Micro
+import HaskellWorks.Data.MQuery
+import HaskellWorks.Diagnostics.Time
 
-import qualified Data.ByteString                                  as BS
-import qualified Data.DList                                       as DL
-import qualified Data.Vector.Storable                             as DVS
+import qualified Data.ByteString      as BS
+import qualified Data.DList           as DL
+import qualified Data.Vector.Storable as DVS
 
 readJson :: String -> IO (JsonCursor BS.ByteString (BitShown (DVS.Vector Word64)) (SimpleBalancedParens (DVS.Vector Word64)))
 readJson path = do
@@ -44,7 +44,7 @@ readJson path = do
 
 main :: IO ()
 main = do
-  !cursor <- loadJsonWithPoppy512SMinMaxIndex "../data/78mb.json"
+  !cursor <- loadJsonWithCsPoppyIndex "../data/78mb.json"
   -- let ranks = explore (balancedParens cursor) (cursorRank cursor)
   -- putStrLn $ "Ranks: " ++ show (length (ranks []))
 

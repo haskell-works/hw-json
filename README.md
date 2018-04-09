@@ -138,7 +138,7 @@ import           HaskellWorks.Diagnostics
 !cursor <- loadJsonPartial "../data/78mb.json"
 !cursor <- loadJsonWithIndex "../data/78mb.json"
 !cursor <- loadJson "../data/78mb.json"
-!cursor <- loadJsonWithPoppy512SMinMaxIndex "../data/78mb.json"
+!cursor <- loadJsonWithCsPoppyIndex "../data/78mb.json"
 let !json = jsonPartialJsonValueAt cursor
 let q = MQuery (DL.singleton json)
 ```
@@ -174,7 +174,7 @@ import           HaskellWorks.Diagnostics
 !cursor <- loadJsonPartial "../data/78mb.json"
 !cursor <- loadJsonWithIndex "../data/78mb.json"
 !cursor <- loadJson "../data/78mb.json"
-!cursor <- loadJsonWithPoppy512SMinMaxIndex "../data/78mb.json"
+!cursor <- loadJsonWithCsPoppyIndex "../data/78mb.json"
 let !json = lightJsonAt cursor
 let q = MQuery (DL.singleton json)
 ```

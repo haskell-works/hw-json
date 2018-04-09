@@ -1,22 +1,24 @@
-resolver: lts-10.1
+resolver: nightly-2018-03-20
 
 packages:
 - '.'
 
 extra-deps:
+  - bits-extra-0.0.0.2
+  - hedgehog-0.5.3
   - hw-balancedparens-0.2.0.1
   - hw-bits-0.7.0.1
   - hw-conduit-0.2.0.2
   - hw-diagnostics-0.0.0.5
   - hw-excess-0.2.0.0
+  - hw-hspec-hedgehog-0.1.0.3
   - hw-int-0.0.0.3
   - hw-mquery-0.1.0.1
   - hw-parser-0.0.0.3
   - hw-prim-0.5.0.0
-  - hw-rankselect-0.10.0.3
-  - hw-rankselect-base-0.2.0.2
+  - hw-rankselect-0.11.0.0
+  - hw-rankselect-base-0.3.0.0
   - hw-string-parse-0.0.0.4
-  - hedgehog-0.5
 
 flags: {}
 

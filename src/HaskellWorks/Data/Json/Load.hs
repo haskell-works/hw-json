@@ -12,10 +12,6 @@ module HaskellWorks.Data.Json.Load
   , loadJsonWithIndex
   , loadJsonWithPoppy512Index
   , loadJsonWithPoppy512Index2
-  , loadJsonWithPoppy512SIndex
-  , loadJsonWithPoppy512SIndex2
-  , loadJsonWithPoppy512SMinMaxIndex
-  , loadJsonWithPoppy512SMinMax2Index
   ) where
 
 import Control.Monad
@@ -23,8 +19,6 @@ import Data.Word
 import Foreign.ForeignPtr
 import Foreign.Ptr
 import Foreign.Storable
-import HaskellWorks.Data.BalancedParens.RangeMinMax
-import HaskellWorks.Data.BalancedParens.RangeMinMax2
 import HaskellWorks.Data.BalancedParens.Simple
 import HaskellWorks.Data.Bits.BitShown
 import HaskellWorks.Data.FromByteString
@@ -37,7 +31,6 @@ import HaskellWorks.Data.Json.Succinct.PartialIndex
 import HaskellWorks.Data.Json.Value
 import HaskellWorks.Data.RankSelect.CsPoppy
 import HaskellWorks.Data.RankSelect.Poppy512
-import HaskellWorks.Data.RankSelect.Poppy512S
 import System.IO
 import System.IO.MMap
 
@@ -101,29 +94,6 @@ loadJsonWithPoppy512Index filename = do
   let !jsonResult = jsonPartialJsonValueAt (jsonPartialIndexAt cursor)
   return jsonResult
 
-loadJsonWithPoppy512SIndex :: String -> IO JsonPartialValue
-loadJsonWithPoppy512SIndex filename = do
-  (jsonBS, jsonIb, jsonBp) <- loadJsonRawWithIndex filename
-  let cursor = JsonCursor jsonBS (makePoppy512S jsonIb) (SimpleBalancedParens jsonBp) 1
-  let !jsonResult = jsonPartialJsonValueAt (jsonPartialIndexAt cursor)
-  return jsonResult
-
-loadJsonWithPoppy512SMinMaxIndex :: String -> IO JsonPartialValue
-loadJsonWithPoppy512SMinMaxIndex filename = do
-  (jsonBS, jsonIb, jsonBp) <- loadJsonRawWithIndex filename
-  let !rangeMinMax = mkRangeMinMax jsonBp
-  let cursorL3 = JsonCursor jsonBS (makePoppy512S jsonIb) rangeMinMax 1
-  let !jsonResult = jsonPartialJsonValueAt (jsonPartialIndexAt cursorL3)
-  return jsonResult
-
-loadJsonWithPoppy512SMinMax2Index :: String -> IO JsonPartialValue
-loadJsonWithPoppy512SMinMax2Index filename = do
-  (jsonBS, jsonIb, jsonBp) <- loadJsonRawWithIndex filename
-  let !rangeMinMax2 = mkRangeMinMax2 jsonBp
-  let cursorMinMaxL2 = JsonCursor jsonBS (makePoppy512S jsonIb) rangeMinMax2 1
-  let !jsonResult = jsonPartialJsonValueAt (jsonPartialIndexAt cursorMinMaxL2)
-  return jsonResult
-
 loadJsonWithCsPoppyIndex :: String -> IO JsonPartialValue
 loadJsonWithCsPoppyIndex filename = do
   (jsonBS, jsonIb, jsonBp) <- loadJsonRawWithIndex filename
@@ -139,14 +109,6 @@ loadJsonWithPoppy512Index2 filename = do
   let !jsonResult = jsonPartialJsonValueAt (jsonPartialIndexAt cursor)
   return jsonResult
 
-loadJsonWithPoppy512SIndex2 :: String -> IO JsonPartialValue
-loadJsonWithPoppy512SIndex2 filename = do
-  (jsonBS, jsonIb, jsonBp) <- loadJsonRawWithIndex filename
-  let cursor = JsonCursor jsonBS (makePoppy512S jsonIb) (SimpleBalancedParens (makePoppy512S jsonBp)) 1
-                :: JsonCursor BSI.ByteString Poppy512S (SimpleBalancedParens Poppy512S)
-  let !jsonResult = jsonPartialJsonValueAt (jsonPartialIndexAt cursor)
-  return jsonResult
-
 indexJson :: String -> IO ()
 indexJson filename = do
   JsonCursor _ (BitShown ib) (SimpleBalancedParens bp) _ <- readJson filename
@@ -156,7 +118,7 @@ indexJson filename = do
   writeVector (filename ++ ".bp") wbp
 
 loadJson :: String -> IO JsonPartialValue
-loadJson = loadJsonWithPoppy512SMinMaxIndex
+loadJson = loadJsonWithCsPoppyIndex
 
 loadJsonPartial :: String -> IO JsonPartialValue
 loadJsonPartial filename = do

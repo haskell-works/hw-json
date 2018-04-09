@@ -21,6 +21,7 @@ cabal.sandbox.config
 /result
 /deps
 /data
+/corpus
 /*.json
 /*.json.ib
 /*.json.bp
