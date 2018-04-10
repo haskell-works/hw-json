@@ -17,8 +17,6 @@ import Data.Word
 import Foreign.ForeignPtr
 import Foreign.Ptr
 import Foreign.Storable
-import HaskellWorks.Data.BalancedParens.RangeMinMax
-import HaskellWorks.Data.BalancedParens.RangeMinMax2
 import HaskellWorks.Data.BalancedParens.Simple
 import HaskellWorks.Data.Bits.BitShown
 import HaskellWorks.Data.FromByteString
