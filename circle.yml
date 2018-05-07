@@ -38,20 +38,18 @@ jobs:
           paths:
             - ~/.cabal
 
-      ##### Fetching latest organisation package versions
+      - restore_cache:
+          keys:
+            - dot-stack-{{ checksum "stack.yaml" }}-{{ checksum "package.yaml" }}
+            - dot-stack-{{ checksum "stack.yaml" }}-build
+            - dot-stack-{{ checksum "stack.yaml" }}-setup
+
       - run:
           name: Fetching latest organisation package versions
           command: |
             fetch
             echo "== stack-ci.yaml =="
             cat stack-ci.yaml
-
-      ##### Building library
-      - restore_cache:
-          keys:
-            - dot-stack-{{ checksum "stack.yaml" }}-{{ checksum "package.yaml" }}
-            - dot-stack-{{ checksum "stack.yaml" }}-build
-            - dot-stack-{{ checksum "stack.yaml" }}-setup
 
       - restore_cache:
           key: dot-stack-work-{{ checksum "stack.yaml" }}
