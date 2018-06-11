@@ -4,6 +4,9 @@ sudo: false
 git:
   submodules: false  # whether to recursively clone submodules
 
+env:
+  - PACKAGE_NAME=hw-json
+
 cache:
   directories:
     - $HOME/.cabal/packages
@@ -78,10 +81,10 @@ script:
   # test that source-distributions can be generated
   - hpack
   - (cd "." && cabal sdist)
-  - mv "."/dist/$(./scripts/package-name)-*.tar.gz ${DISTDIR}/
+  - mv "."/dist/$PACKAGE_NAME-*.tar.gz ${DISTDIR}/
   - cd ${DISTDIR} || false
   - find . -maxdepth 1 -name '*.tar.gz' -exec tar -xvf '{}' \;
-  - "printf 'packages: $(./scripts/package-name)-*/*.cabal\\n' > cabal.project"
+  - "printf 'packages: $PACKAGE_NAME-*/*.cabal\\n' > cabal.project"
   - cat cabal.project
   # this builds all libraries and executables (without tests/benchmarks)
   - cabal new-build -w ${HC} --disable-tests --disable-benchmarks all
@@ -94,7 +97,7 @@ script:
   - if [ "x$TEST" = "x--enable-tests" ]; then cabal new-test -w ${HC} ${TEST} ${BENCH} all; fi
 
   # cabal check
-  - (cd $(./scripts/package-name)-* && cabal check)
+  - (cd $PACKAGE_NAME-* && cabal check)
 
   # haddock
   - rm -rf ./dist-newstyle
