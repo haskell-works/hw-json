@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+cat package.yaml | grep '^name:' | head -n 1 | cut -d : -f 2 | xargs

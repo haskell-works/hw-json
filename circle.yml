@@ -7,6 +7,8 @@ jobs:
 
     steps:
       - checkout
+      - run: git fetch --unshallow || true
+      - run: grep '^resolver:' stack.yaml > resolver.txt
 
       ##### Copying scripts
       - run:
@@ -14,6 +16,12 @@ jobs:
           command: |
             mkdir -p ~/.local/bin
             cp ./scripts/* ~/.local/bin
+
+      - run:
+          name: Query resolver & ghc version
+          command: |
+            resolver > resolver.version
+            ghc-version $(cat resolver.version) >  ghc.version
 
       ##### Updating cabval package list
       - run:
@@ -40,16 +48,23 @@ jobs:
 
       - restore_cache:
           keys:
-            - dot-stack-{{ checksum "stack.yaml" }}-{{ checksum "package.yaml" }}
-            - dot-stack-{{ checksum "stack.yaml" }}-build
-            - dot-stack-{{ checksum "stack.yaml" }}-setup
+            - stack--{{ checksum "ghc.version" }}--{{ .Environment.CACHE_VERSION }}--{{ checksum "resolver.version" }}--{{ checksum "package.yaml" }}--{{ checksum "stack.yaml" }}
+            - stack--{{ checksum "ghc.version" }}--{{ .Environment.CACHE_VERSION }}--{{ checksum "resolver.version" }}--{{ checksum "package.yaml" }}
+            - stack--{{ checksum "ghc.version" }}--{{ .Environment.CACHE_VERSION }}--{{ checksum "resolver.version" }}--
+            - stack--{{ checksum "ghc.version" }}--X
 
+      ##### Fetching latest organisation package versions
       - run:
           name: Fetching latest organisation package versions
           command: |
             fetch
             echo "== stack-ci.yaml =="
             cat stack-ci.yaml
+
+      - save_cache:
+          key: dot-stack-{{ checksum "resolver.txt" }}
+          paths:
+            - ~/.stack
 
       - restore_cache:
           key: dot-stack-work-{{ checksum "stack.yaml" }}
@@ -59,30 +74,24 @@ jobs:
           command: stack setup
 
       - save_cache:
-          key: dot-stack-{{ checksum "stack.yaml" }}-setup
-          paths:
-            - ~/.stack
+          key:    stack--{{ checksum "ghc.version" }}--X
+          paths:  [~/.stack, ~/project/.stack-work]
 
       - run:
           name: Building dependencies
           command: stack --stack-yaml stack-ci.yaml build --only-dependencies
+
+      - save_cache:
+          key:    stack--{{ checksum "ghc.version" }}--{{ .Environment.CACHE_VERSION }}--{{ checksum "resolver.version" }}--{{ checksum "package.yaml" }}
+          paths:  [~/.stack, ~/project/.stack-work]
 
       - run:
           name: Compiling
           command: stack --stack-yaml stack-ci.yaml build --test --no-run-tests --bench --no-run-benchmarks
 
       - save_cache:
-          key: dot-stack-{{ checksum "stack.yaml" }}-{{ checksum "package.yaml" }}
-          paths:
-            - ~/.stack
-      - save_cache:
-          key: dot-stack-{{ checksum "stack.yaml" }}-build
-          paths:
-            - ~/.stack
-
-      - save_cache:
-          key: dot-stack-work-{{ checksum "stack.yaml" }}
-          paths: ~/project/.stack-work
+          key:    stack--{{ checksum "ghc.version" }}--{{ .Environment.CACHE_VERSION }}--{{ checksum "resolver.version" }}--{{ checksum "package.yaml" }}--{{ checksum "stack.yaml" }}
+          paths:  [~/.stack, ~/project/.stack-work]
 
       ##### Running tests
       - run:
