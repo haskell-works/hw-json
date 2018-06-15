@@ -115,6 +115,8 @@ tests:
     - parsec
     - QuickCheck
     - transformers
+    verbatim:
+      build-tool-depends: hspec-discover:hspec-discover
 benchmarks:
   bench:
     main: Main.hs
