@@ -2,7 +2,7 @@ name: hw-json
 version: '0.7.0.1'
 synopsis: Memory efficient JSON parser
 description: Memory efficient JSON parser. Please see README.md
-category: Data, Conduit
+category: Data
 author: John Ky
 maintainer: newhoggy@gmail.com
 copyright: 2016 John Ky
@@ -22,10 +22,8 @@ ghc-options: -Wall
 dependencies:
 - base >=4 && <5
 - bytestring
-- conduit
 - hw-balancedparens >=0.1.0.0
 - hw-bits >=0.4.0.0
-- hw-conduit >=0.1.0.0
 - hw-prim >=0.4.0.0
 - hw-rankselect >=0.8.0.0
 - hw-rankselect-base >=0.2.0.0
@@ -37,33 +35,6 @@ library:
   ghc-options:
   - -O2
   - -msse4.2
-  exposed-modules:
-  - HaskellWorks.Data.Json
-  - HaskellWorks.Data.Json.CharLike
-  - HaskellWorks.Data.Json.Conduit
-  - HaskellWorks.Data.Json.Conduit.Blank
-  - HaskellWorks.Data.Json.Conduit.Words
-  - HaskellWorks.Data.Json.DecodeError
-  - HaskellWorks.Data.Json.FromValue
-  - HaskellWorks.Data.Json.LightJson
-  - HaskellWorks.Data.Json.Load
-  - HaskellWorks.Data.Json.LoadCursor
-  - HaskellWorks.Data.Json.PartialValue
-  - HaskellWorks.Data.Json.Succinct
-  - HaskellWorks.Data.Json.Succinct.Cursor
-  - HaskellWorks.Data.Json.Succinct.Cursor.BalancedParens
-  - HaskellWorks.Data.Json.Succinct.Cursor.BlankedJson
-  - HaskellWorks.Data.Json.Succinct.Cursor.InterestBits
-  - HaskellWorks.Data.Json.Succinct.Cursor.Internal
-  - HaskellWorks.Data.Json.Succinct.Cursor.Token
-  - HaskellWorks.Data.Json.Succinct.Index
-  - HaskellWorks.Data.Json.Succinct.PartialIndex
-  - HaskellWorks.Data.Json.Token.Tokenize
-  - HaskellWorks.Data.Json.Token.Types
-  - HaskellWorks.Data.Json.Token
-  - HaskellWorks.Data.Json.Type
-  - HaskellWorks.Data.Json.Value
-  - HaskellWorks.Data.Json.Value.Internal
   dependencies:
   - array
   - ansi-wl-pprint

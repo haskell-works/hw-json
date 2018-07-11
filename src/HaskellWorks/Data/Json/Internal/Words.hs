@@ -1,4 +1,4 @@
-module HaskellWorks.Data.Json.Conduit.Words where
+module HaskellWorks.Data.Json.Internal.Words where
 
 import Data.Word
 import Data.Word8

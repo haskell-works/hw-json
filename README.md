@@ -73,7 +73,7 @@ For an example, see [`app/Main.hs`](../master/app/Main.hs)
     cursor <- measure (fromForeignRegion (fptr, offset, size) :: JsonCursor BS.ByteString (BitShown (DVS.Vector Word64)) (SimpleBalancedParens (DVS.Vector Word64)))
     let !bs = BSI.fromForeignPtr (castForeignPtr fptr) offset size
     x <- measure $ jsonBsToInterestBs bs
-    let !y = runListConduit [bs] (unescape' "")
+    let !y = BS.concat (unescape' "" [bs])
 
     import Foreign
     import qualified Data.Vector.Storable as DVS
@@ -84,7 +84,7 @@ For an example, see [`app/Main.hs`](../master/app/Main.hs)
     import System.CPUTime
     (fptr :: ForeignPtr Word8, offset, size) <- mmapFileForeignPtr "/Users/jky/Downloads/part40.json" ReadOnly Nothing
     let !bs = BSI.fromForeignPtr (castForeignPtr fptr) offset size
-    x <- measure $ BS.concat $ runListConduit [bs] (blankJson =$= blankedJsonToInterestBits)
+    x <- measure $ BS.concat $ blankedJsonToInterestBits $ blankJson [bs]
     x <- measure $ jsonBsToInterestBs bs
 
     jsonTokenAt $ J.nextSibling $ J.firstChild $ J.nextSibling $ J.firstChild $ J.firstChild  cursor
@@ -218,11 +218,7 @@ let bp3 = makePoppy512 jsonBp
 * [Semi-Indexing Semi-Structured Data in Tiny Space](http://www.di.unipi.it/~ottavian/files/semi_index_cikm.pdf)
 * [Succinct Data Structures talk by Edward Kmett](https://www.youtube.com/watch?v=uA0Z7_4J7u8)
 * [Typed Tagless Final Interpreters](http://okmij.org/ftp/tagless-final/course/lecture.pdf)
-* [Conduit Overview](https://www.schoolofhaskell.com/school/to-infinity-and-beyond/pick-of-the-week/conduit-overview)
 
 
 ## Special mentions
 * [Sydney Paper Club](http://www.meetup.com/Sydney-Paper-Club/)
-
-
- :set +s
