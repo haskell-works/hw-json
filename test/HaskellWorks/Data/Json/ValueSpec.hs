@@ -49,8 +49,13 @@ spec = describe "HaskellWorks.Data.Json.ValueSpec" $ do
   genSpec "DVS.Vector Word64" (undefined :: JsonCursor BS.ByteString (BitShown (DVS.Vector Word64)) (SimpleBalancedParens (DVS.Vector Word64)))
   genSpec "Poppy512"          (undefined :: JsonCursor BS.ByteString Poppy512 (SimpleBalancedParens (DVS.Vector Word64)))
 
-jsonValueVia  :: JsonIndexAt (JsonCursor BS.ByteString t u)
-              => Maybe (JsonCursor BS.ByteString t u) -> Either DecodeError JsonValue
+jsonValueVia  ::
+  ( BalancedParens u
+  , Rank0 u
+  , Rank1 u
+  , Select1 t
+  , TestBit u)
+  => Maybe (JsonCursor BS.ByteString t u) -> Either DecodeError JsonValue
 jsonValueVia mk = case mk of
   Just k  -> (jsonIndexAt >=> jsonValueAt) k
   Nothing -> Left (DecodeError "No such element")
@@ -66,9 +71,7 @@ genSpec :: forall t u.
   , BalancedParens    u
   , TestBit           u
   , FromForeignRegion (JsonCursor BS.ByteString t u)
-  , IsString          (JsonCursor BS.ByteString t u)
-  , JsonIndexAt       (JsonCursor BS.ByteString t u)
-  )
+  , IsString          (JsonCursor BS.ByteString t u))
   => String -> (JsonCursor BS.ByteString t u) -> SpecWith ()
 genSpec t _ = do
   describe ("Json cursor of type " ++ t) $ do
