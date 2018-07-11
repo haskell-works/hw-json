@@ -29,7 +29,7 @@ interestingWord8s = A.array (0, 255) [
     else 0)
   | w <- [0 .. 255]]
 
-blankedJsonToInterestBits :: Monad m => Conduit BS.ByteString m BS.ByteString
+blankedJsonToInterestBits :: Monad m => ConduitT BS.ByteString BS.ByteString m ()
 blankedJsonToInterestBits = blankedJsonToInterestBits' ""
 
 padRight :: Word8 -> Int -> BS.ByteString -> BS.ByteString
@@ -39,7 +39,7 @@ padRight w n bs = if BS.length bs >= n then bs else fst (BS.unfoldrN n gen bs)
           Just (c, ds) -> Just (c, ds)
           Nothing      -> Just (w, BS.empty)
 
-blankedJsonToInterestBits' :: Monad m => BS.ByteString -> Conduit BS.ByteString m BS.ByteString
+blankedJsonToInterestBits' :: Monad m => BS.ByteString -> ConduitT BS.ByteString BS.ByteString m ()
 blankedJsonToInterestBits' rs = do
   mbs <- await
   case mbs of
@@ -59,14 +59,14 @@ blankedJsonToInterestBits' rs = do
                     , BS.drop 8 as
                     )
 
-blankedJsonToBalancedParens :: Monad m => Conduit BS.ByteString m Bool
+blankedJsonToBalancedParens :: Monad m => ConduitT BS.ByteString Bool m ()
 blankedJsonToBalancedParens = do
   mbs <- await
   case mbs of
     Just bs -> blankedJsonToBalancedParens' bs
     Nothing -> return ()
 
-blankedJsonToBalancedParens' :: Monad m => BS.ByteString -> Conduit BS.ByteString m Bool
+blankedJsonToBalancedParens' :: Monad m => BS.ByteString -> ConduitT BS.ByteString Bool m ()
 blankedJsonToBalancedParens' bs = case BS.uncons bs of
   Just (c, cs) -> do
     case c of
@@ -90,10 +90,10 @@ repartitionMod8 aBS bBS = (BS.take cLen abBS, BS.drop cLen abBS)
         abLen = BS.length abBS
         cLen = (abLen `div` 8) * 8
 
-compressWordAsBit :: Monad m => Conduit BS.ByteString m BS.ByteString
+compressWordAsBit :: Monad m => ConduitT BS.ByteString BS.ByteString m ()
 compressWordAsBit = compressWordAsBit' BS.empty
 
-compressWordAsBit' :: Monad m => BS.ByteString -> Conduit BS.ByteString m BS.ByteString
+compressWordAsBit' :: Monad m => BS.ByteString -> ConduitT BS.ByteString BS.ByteString m ()
 compressWordAsBit' aBS = do
   mbBS <- await
   case mbBS of
@@ -112,7 +112,7 @@ compressWordAsBit' aBS = do
                     , BS.drop 8 xs
                     )
 
-blankedJsonToBalancedParens2 :: Monad m => Conduit BS.ByteString m BS.ByteString
+blankedJsonToBalancedParens2 :: Monad m => ConduitT BS.ByteString BS.ByteString m ()
 blankedJsonToBalancedParens2 = do
   mbs <- await
   case mbs of
@@ -148,7 +148,7 @@ balancedParensOf c = case c of
     d | d == _n             -> MiniTF
     _ -> MiniN
 
-yieldBitsOfWord8 :: Monad m => Word8 -> Conduit BS.ByteString m Bool
+yieldBitsOfWord8 :: Monad m => Word8 -> ConduitT BS.ByteString Bool m ()
 yieldBitsOfWord8 w = do
   yield ((w .&. BITS.bit 0) /= 0)
   yield ((w .&. BITS.bit 1) /= 0)
@@ -159,10 +159,10 @@ yieldBitsOfWord8 w = do
   yield ((w .&. BITS.bit 6) /= 0)
   yield ((w .&. BITS.bit 7) /= 0)
 
-yieldBitsofWord8s :: Monad m => [Word8] -> Conduit BS.ByteString m Bool
+yieldBitsofWord8s :: Monad m => [Word8] -> ConduitT BS.ByteString Bool m ()
 yieldBitsofWord8s = P.foldr ((>>) . yieldBitsOfWord8) (return ())
 
-byteStringToBits :: Monad m => Conduit BS.ByteString m Bool
+byteStringToBits :: Monad m => ConduitT BS.ByteString Bool m ()
 byteStringToBits = do
   mbs <- await
   case mbs of

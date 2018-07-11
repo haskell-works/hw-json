@@ -23,5 +23,5 @@ spec = describe "HaskellWorks.Data.Json.Succinct.Cursor.BalancedParensSpec" $ do
     bp `shouldBe` fromString "11111111 11111111 00000000 11111111 00000000 00000000"
   it "Blanking JSON should not contain strange characters 2" $ do
     let blankedJson = BlankedJson ["[ [],", "[]]"]
-    let bp = BitShown $ BS.concat (runListConduit (blankedJsonToBalancedParens2 =$= compressWordAsBit) (getBlankedJson blankedJson))
+    let bp = BitShown $ BS.concat (runListConduit (blankedJsonToBalancedParens2 .| compressWordAsBit) (getBlankedJson blankedJson))
     bp `shouldBe` fromString "11010000"
