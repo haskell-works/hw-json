@@ -1,3 +1,12 @@
 #!/usr/bin/env bash
 
-cat stack.yaml | grep '^resolver:' | cut -d : -f 2 | xargs echo -n
+if [ $# -eq 0 ]; then
+  cat stack.yaml | grep '^resolver:' | cut -d : -f 2 | xargs echo -n
+elif [ $# -eq 1 ]; then
+  _resolver_alias="$1"
+  _resolver="$(curl -I -Ls -w %{url_effective} -o /dev/null https://www.stackage.org/${_resolver_alias} | cut -d / -f 4)"
+  echo -n "${_resolver}"
+else
+  echo "Invalid arguments"
+  exit 1
+fi

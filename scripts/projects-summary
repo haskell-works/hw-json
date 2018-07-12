@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+find . -name "package.yaml" -o -name "*.cabal" | grep -v '.stack-work/' | sort | xargs grep '^' | grep -v ':version:'
