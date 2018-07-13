@@ -92,6 +92,12 @@ cabalbuild: &cabalbuild
         name: Find all sub-projects
         command: ./scripts/projects-summary > projects.summary
 
+    - run:
+        name: Generate cabal file
+        command: |
+          rm -f *.cabal
+          hpack
+
     ##### Building library
     - restore_cache:
         keys:
