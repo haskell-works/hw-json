@@ -128,7 +128,11 @@ cabalbuild: &cabalbuild
     - run:
         name: Running tests
         command: |
-          cabal new-test --project-file="cabal.project" -j${CABAL_THREADS:-4} all
+          if grep '^test-suite' *.cabal > /dev/null; then
+            cabal new-test --project-file="cabal.project" -j${CABAL_THREADS:-4} all
+          else
+            echo Not tests to run
+          fi
 
 version: 2.0
 jobs:
