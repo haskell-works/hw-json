@@ -3,7 +3,9 @@
 
 module Main where
 
+import Control.Monad
 import Criterion.Main
+import Data.List
 import Data.Word
 import Foreign
 import HaskellWorks.Data.BalancedParens.Simple
@@ -17,6 +19,7 @@ import System.IO.MMap
 import qualified Data.ByteString          as BS
 import qualified Data.ByteString.Internal as BSI
 import qualified Data.Vector.Storable     as DVS
+import qualified System.Directory         as IO
 
 setupEnvJson :: FilePath -> IO BS.ByteString
 setupEnvJson filepath = do
@@ -30,32 +33,47 @@ loadJson bs = fromByteString bs :: JsonCursor BS.ByteString (BitShown (DVS.Vecto
 jsonToInterestBits3 :: [BS.ByteString] -> [BS.ByteString]
 jsonToInterestBits3 = blankedJsonToInterestBits . blankJson
 
-benchRankJson40 :: [Benchmark]
-benchRankJson40 =
-  [ env (setupEnvJson "corpus/part40.json") $ \bs -> bgroup "Json40"
-    [ bench "Run blankJson                    "  (whnf (BS.concat . blankJson          ) [bs])
-    , bench "Run jsonToInterestBits3          "  (whnf (BS.concat . jsonToInterestBits3) [bs])
-    , bench "loadJson                         "  (whnf loadJson                           bs )
+makeBenchBlankJson :: IO [Benchmark]
+makeBenchBlankJson = do
+  entries <- IO.listDirectory "corpus/bench"
+  let files = ("corpus/bench/" ++) <$> (".json" `isSuffixOf`) `filter` entries
+  benchmarks <- forM files $ \file -> return
+    [ env (setupEnvJson file) $ \bs -> bgroup file
+      [ bench "Run blankJson" (whnf (BS.concat . blankJson) [bs])
+      ]
     ]
-  ]
 
-benchRankJson80 :: [Benchmark]
-benchRankJson80 =
-  [ env (setupEnvJson "corpus/part80.json") $ \bs -> bgroup "Json40"
-    [ bench "Run blankJson                    "  (whnf (BS.concat . blankJson          ) [bs])
-    , bench "Run jsonToInterestBits3          "  (whnf (BS.concat . jsonToInterestBits3) [bs])
-    , bench "loadJson" (whnf loadJson bs)
-    ]
-  ]
+  return (join benchmarks)
 
-benchRankJsonBig :: [Benchmark]
-benchRankJsonBig =
-  [ env (setupEnvJson "corpus/78mb.json") $ \bs -> bgroup "JsonBig"
-    [ bench "Run blankJson                    "  (whnf (BS.concat . blankJson          ) [bs])
-    , bench "Run jsonToInterestBits3          "  (whnf (BS.concat . jsonToInterestBits3) [bs])
-    , bench "loadJson" (whnf loadJson bs)
+makeBenchJsonToInterestBits :: IO [Benchmark]
+makeBenchJsonToInterestBits = do
+  entries <- IO.listDirectory "corpus/bench"
+  let files = ("corpus/bench/" ++) <$> (".json" `isSuffixOf`) `filter` entries
+  benchmarks <- forM files $ \file -> return
+    [ env (setupEnvJson file) $ \bs -> bgroup file
+      [ bench "Run blankJson" (whnf (BS.concat . jsonToInterestBits3) [bs])
+      ]
     ]
-  ]
+
+  return (join benchmarks)
+
+makeBenchLoadJson :: IO [Benchmark]
+makeBenchLoadJson = do
+  entries <- IO.listDirectory "corpus/bench"
+  let files = ("corpus/bench/" ++) <$> (".json" `isSuffixOf`) `filter` entries
+  benchmarks <- forM files $ \file -> return
+    [ env (setupEnvJson file) $ \bs -> bgroup file
+      [ bench "Run blankJson" (whnf loadJson bs)
+      ]
+    ]
+
+  return (join benchmarks)
 
 main :: IO ()
-main = defaultMain benchRankJson40
+main = do
+  benchmarks <- mconcat <$> sequence
+    [ makeBenchBlankJson
+    , makeBenchJsonToInterestBits
+    , makeBenchLoadJson
+    ]
+  defaultMain benchmarks

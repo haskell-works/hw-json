@@ -17,7 +17,7 @@
       "taskName": "stack build",
       "isBuildCommand": true,
       "args": [
-        "echo START_STACK_BUILD && cd ${workspaceRoot} && stack build && echo END_STACK_BUILD "
+        "echo START_STACK_BUILD && cd ${workspaceRoot} && ./run-stack.sh build && echo END_STACK_BUILD "
       ],
       "problemMatcher": {
         "owner": "haskell",
@@ -79,7 +79,7 @@
       "isBackground": true,
       "taskName": "stack watch",
       "args": [
-        "echo START_STACK_WATCH && cd ${workspaceRoot} && stack build --test --no-run-tests --file-watch && echo END_STACK_WATCH "
+        "echo START_STACK_WATCH && cd ${workspaceRoot} && stack build --test --no-run-tests --bench --no-run-benchmarks --file-watch && echo END_STACK_WATCH "
       ],
       "problemMatcher": {
         "owner": "haskell",

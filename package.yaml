@@ -83,6 +83,7 @@ benchmarks:
     - -msse4.2
     dependencies:
     - criterion
+    - directory
     - hw-json
 
 when:
