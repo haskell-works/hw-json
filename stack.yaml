@@ -4,3 +4,6 @@ packages:
 - '.'
 
 extra-package-dbs: []
+
+extra-deps:
+- hw-parser-0.1.0.0

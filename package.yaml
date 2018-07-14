@@ -41,7 +41,7 @@ library:
   - containers
   - dlist
   - hw-mquery         >= 0.1.0.0
-  - hw-parser         >= 0.0.0.1
+  - hw-parser         >= 0.1.0.0
   - text
   - word8
 executables:
