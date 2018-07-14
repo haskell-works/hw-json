@@ -1,5 +1,5 @@
 name: hw-json
-version: '0.7.0.1'
+version: '0.8.0.0'
 synopsis: Memory efficient JSON parser
 description: Memory efficient JSON parser. Please see README.md
 category: Data
