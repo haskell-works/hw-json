@@ -87,6 +87,7 @@ cabalbuild: &cabalbuild
         name: GHC version
         command: |
           echo "$GHC" > ghc.version
+          date +%Y-%m > month.version
 
     - run:
         name: Find all sub-projects
@@ -103,6 +104,7 @@ cabalbuild: &cabalbuild
         keys:
           - cabal--{{ checksum "ghc.version" }}--{{ .Environment.CACHE_VERSION }}--{{ checksum "projects.summary" }}--extra
           - cabal--{{ checksum "ghc.version" }}--{{ .Environment.CACHE_VERSION }}--{{ checksum "projects.summary" }}--
+          - cabal--{{ checksum "ghc.version" }}--{{ .Environment.CACHE_VERSION }}--{{ checksum "month.version"}}
 
     - run:
         name: Building build dependencies
@@ -123,6 +125,10 @@ cabalbuild: &cabalbuild
 
     - save_cache:
         key:    cabal--{{ checksum "ghc.version" }}--{{ .Environment.CACHE_VERSION }}--{{ checksum "projects.summary" }}--extra
+        paths:  [~/.cabal/packages, ~/.cabal/store]
+
+    - save_cache:
+        key:    cabal--{{ checksum "ghc.version" }}--{{ .Environment.CACHE_VERSION }}--{{ checksum "month.version"}}
         paths:  [~/.cabal/packages, ~/.cabal/store]
 
     - run:
