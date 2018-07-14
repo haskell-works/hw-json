@@ -24,22 +24,22 @@ import qualified Data.Attoparsec.Combinator       as AC
 import qualified Data.Attoparsec.Types            as T
 import qualified Data.ByteString                  as BS
 
-hexDigitNumeric :: P.Parser t => T.Parser t Int
+hexDigitNumeric :: P.Parser t u => T.Parser t Int
 hexDigitNumeric = do
   c <- satisfyChar (\c -> '0' <= c && c <= '9')
   return $ ord c - ord '0'
 
-hexDigitAlphaLower :: P.Parser t => T.Parser t Int
+hexDigitAlphaLower :: P.Parser t u => T.Parser t Int
 hexDigitAlphaLower = do
   c <- satisfyChar (\c -> 'a' <= c && c <= 'z')
   return $ ord c - ord 'a' + 10
 
-hexDigitAlphaUpper :: P.Parser t => T.Parser t Int
+hexDigitAlphaUpper :: P.Parser t u => T.Parser t Int
 hexDigitAlphaUpper = do
   c <- satisfyChar (\c -> 'A' <= c && c <= 'Z')
   return $ ord c - ord 'A' + 10
 
-hexDigit :: P.Parser t => T.Parser t Int
+hexDigit :: P.Parser t u => T.Parser t Int
 hexDigit = hexDigitNumeric <|> hexDigitAlphaLower <|> hexDigitAlphaUpper
 
 class ParseJson t s d where

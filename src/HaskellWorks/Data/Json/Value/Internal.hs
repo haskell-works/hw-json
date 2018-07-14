@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleContexts      #-}
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE InstanceSigs          #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
@@ -16,25 +17,25 @@ import HaskellWorks.Data.Parser as P
 import qualified Data.Attoparsec.ByteString.Char8 as ABC
 import qualified Data.Attoparsec.Types            as T
 
-parseHexDigitNumeric :: P.Parser t => T.Parser t Int
+parseHexDigitNumeric :: P.Parser t u => T.Parser t Int
 parseHexDigitNumeric = do
   c <- satisfyChar (\c -> '0' <= c && c <= '9')
   return $ ord c - ord '0'
 
-parseHexDigitAlphaLower :: P.Parser t => T.Parser t Int
+parseHexDigitAlphaLower :: P.Parser t u => T.Parser t Int
 parseHexDigitAlphaLower = do
   c <- satisfyChar (\c -> 'a' <= c && c <= 'z')
   return $ ord c - ord 'a' + 10
 
-parseHexDigitAlphaUpper :: P.Parser t => T.Parser t Int
+parseHexDigitAlphaUpper :: P.Parser t u => T.Parser t Int
 parseHexDigitAlphaUpper = do
   c <- satisfyChar (\c -> 'A' <= c && c <= 'Z')
   return $ ord c - ord 'A' + 10
 
-parseHexDigit :: P.Parser t => T.Parser t Int
+parseHexDigit :: P.Parser t u => T.Parser t Int
 parseHexDigit = parseHexDigitNumeric <|> parseHexDigitAlphaLower <|> parseHexDigitAlphaUpper
 
-parseJsonString :: (P.Parser t, IsString t) => T.Parser t String
+parseJsonString :: (P.Parser t u, IsString t) => T.Parser t String
 parseJsonString = do
   _ <- string "\""
   value <- many (verbatimChar <|> escapedChar <|> escapedCode)
