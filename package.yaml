@@ -20,15 +20,14 @@ extra-source-files:
 - corpus/issue-0001.md
 ghc-options: -Wall
 dependencies:
-- base >=4 && <5
+- base                >= 4 && <5
 - bytestring
-- hw-balancedparens >=0.1.0.0
-- hw-bits >=0.4.0.0
-- hw-prim >=0.4.0.0
-- hw-rankselect >=0.8.0.0
-- hw-rankselect-base >=0.2.0.0
+- hw-balancedparens   >= 0.1.0.0
+- hw-bits             >= 0.4.0.0
+- hw-prim             >= 0.4.0.0
+- hw-rankselect       >= 0.8.0.0
+- hw-rankselect-base  >= 0.2.0.0
 - mmap
-- resourcet
 - vector
 library:
   source-dirs: src
@@ -41,9 +40,8 @@ library:
   - attoparsec
   - containers
   - dlist
-  - hw-mquery >=0.1.0.0
-  - hw-parser >=0.0.0.1
-  - mono-traversable
+  - hw-mquery         >= 0.1.0.0
+  - hw-parser         >= 0.0.0.1
   - text
   - word8
 executables:
@@ -57,19 +55,10 @@ executables:
     - -O2
     - -msse4.2
     dependencies:
-    - array
-    - ansi-wl-pprint
-    - attoparsec
-    - containers
     - criterion
     - dlist
-    - hw-diagnostics >=0.0.0.5
     - hw-json
-    - hw-mquery >=0.1.0.0
-    - hw-parser >=0.0.0.1
-    - mono-traversable
-    - text
-    - word8
+    - hw-mquery         >= 0.1.0.0
 tests:
   hw-json-test:
     main: Spec.hs
@@ -83,9 +72,6 @@ tests:
     - containers
     - hspec
     - hw-json
-    - parsec
-    - QuickCheck
-    - transformers
     verbatim:
       build-tool-depends: hspec-discover:hspec-discover
 benchmarks:
