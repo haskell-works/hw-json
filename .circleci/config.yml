@@ -39,7 +39,7 @@ defaults: &defaults
         command: stack setup --resolver ${LTS}
 
     - save_cache:
-        key:    stack--nAz6PsL--{{ checksum "ghc.version" }}--X
+        key:    stack--nAz6PsL--{{ checksum "ghc.version" }}--{{ .Environment.CACHE_VERSION }}--X
         paths:  [~/.stack, ~/project/.stack-work]
 
     - run:
@@ -161,12 +161,20 @@ jobs:
       - LTS: "lts-12"
     <<: *defaults
 
-  release:
+  checked-builds:
     docker:
-      - image: quay.io/haskell_works/stack-build-cabal:2018-01-29
+      - image: quay.io/haskell_works/ghc-8.4.3
 
     steps:
       - checkout
+
+      - run:
+          name: Add GHC tools to PATH
+          command: |
+            echo "HOME=$HOME"
+            echo "BASH_ENV=$BASH_ENV"
+            echo "PATH=$PATH"
+            echo 'export PATH="$PATH:/opt/ghc/bin/"' >> $BASH_ENV
 
       - run:
           name: Copying scripts
@@ -176,6 +184,7 @@ jobs:
 
       - deploy:
           command: |
+            hpack
             if [ "$CIRCLE_PROJECT_USERNAME" == "haskell-works" ]; then
               if [[ "$CIRCLE_BRANCH" == master ]]; then
                 when tag autotag
@@ -184,6 +193,38 @@ jobs:
               fi
             fi
 
+  release:
+    docker:
+      - image: quay.io/haskell_works/ghc-8.4.3
+
+    steps:
+      - checkout
+
+      - run:
+          name: Add GHC tools to PATH
+          command: |
+            echo "HOME=$HOME"
+            echo "BASH_ENV=$BASH_ENV"
+            echo "PATH=$PATH"
+            echo 'export PATH="$PATH:/opt/ghc/bin/"' >> $BASH_ENV
+
+      - run:
+          name: Copying scripts
+          command: |
+            mkdir -p ~/.local/bin
+            cp ./scripts/* ~/.local/bin
+
+      - deploy:
+          command: |
+            hpack
+            if [ "$CIRCLE_PROJECT_USERNAME" == "haskell-works" ]; then
+              if [[ "$CIRCLE_BRANCH" == master ]]; then
+                when tag autotag
+              elif [[ "$CIRCLE_TAG" =~ v.* ]]; then
+                publish
+              fi
+            fi
+  
 workflows:
   version: 2
   multiple-ghcs:
@@ -191,9 +232,18 @@ workflows:
       - ghc-8.4.3
       - ghc-8.2.2
       - lts-12
-      - release:
+      - checked-builds:
           requires:
             - lts-12
           filters:
             branches:
               only: master
+
+  tagged-release:
+    jobs:
+      - release:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
