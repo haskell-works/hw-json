@@ -1,17 +1,14 @@
 {-# LANGUAGE BangPatterns #-}
 
-module HaskellWorks.Data.Json.Conduit.Blank
+module HaskellWorks.Data.Json.Internal.Blank
   ( blankJson
   ) where
 
-import Control.Monad
-import Control.Monad.Trans.Resource         (MonadThrow)
-import Data.ByteString                      as BS
-import Data.Conduit
+import Data.ByteString                       as BS
 import Data.Word
 import Data.Word8
-import HaskellWorks.Data.Json.Conduit.Words
-import Prelude                              as P
+import HaskellWorks.Data.Json.Internal.Words
+import Prelude                               as P
 
 data BlankState
   = Escaped
@@ -20,18 +17,15 @@ data BlankState
   | InNumber
   | InIdent
 
-blankJson :: MonadThrow m => ConduitT BS.ByteString BS.ByteString m ()
+blankJson :: [BS.ByteString] -> [BS.ByteString]
 blankJson = blankJson' InJson
 
-blankJson' :: MonadThrow m => BlankState -> ConduitT BS.ByteString BS.ByteString m ()
-blankJson' lastState = do
-  mbs <- await
-  case mbs of
-    Just bs -> do
-      let (!cs, Just (!nextState, _)) = unfoldrN (BS.length bs) blankByteString (lastState, bs)
-      yield cs
-      blankJson' nextState
-    Nothing -> return ()
+blankJson' :: BlankState -> [BS.ByteString] -> [BS.ByteString]
+blankJson' lastState as = case as of
+  (bs:bss) ->
+      let (!cs, Just (!nextState, _)) = unfoldrN (BS.length bs) blankByteString (lastState, bs) in
+      cs:blankJson' nextState bss
+  [] -> []
   where
     blankByteString :: (BlankState, ByteString) -> Maybe (Word8, (BlankState, ByteString))
     blankByteString (InJson, bs) = case BS.uncons bs of

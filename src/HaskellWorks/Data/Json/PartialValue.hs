@@ -24,7 +24,7 @@ import Control.Arrow
 import HaskellWorks.Data.AtLeastSize
 import HaskellWorks.Data.Bits.BitWise
 import HaskellWorks.Data.Entry
-import HaskellWorks.Data.Json.Succinct.Cursor
+import HaskellWorks.Data.Json.Succinct.Cursor.Internal
 import HaskellWorks.Data.Json.Succinct.PartialIndex
 import HaskellWorks.Data.Json.Value.Internal
 import HaskellWorks.Data.Micro

@@ -20,7 +20,8 @@ import HaskellWorks.Data.Bits.BitShow
 import HaskellWorks.Data.Bits.BitShown
 import HaskellWorks.Data.Bits.BitWise
 import HaskellWorks.Data.FromForeignRegion
-import HaskellWorks.Data.Json.Succinct.Cursor          as C
+import HaskellWorks.Data.Json.Succinct.Cursor.Internal
+import HaskellWorks.Data.Json.Succinct.Cursor.Token
 import HaskellWorks.Data.Json.Succinct.Index
 import HaskellWorks.Data.Json.Token
 import HaskellWorks.Data.RankSelect.Base.Rank0

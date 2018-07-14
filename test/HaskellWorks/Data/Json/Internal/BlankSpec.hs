@@ -1,9 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module HaskellWorks.Data.Json.Conduit.BlankSpec (spec) where
+module HaskellWorks.Data.Json.Internal.BlankSpec (spec) where
 
-import HaskellWorks.Data.Conduit.List
-import HaskellWorks.Data.Json.Conduit.Blank
+import HaskellWorks.Data.Json.Internal.Blank
 import Test.Hspec
 
 import qualified Data.ByteString as BS
@@ -13,10 +12,10 @@ import qualified Data.ByteString as BS
 whenBlankedJsonShouldBe :: BS.ByteString -> BS.ByteString -> Spec
 whenBlankedJsonShouldBe original expected = do
   it (show original ++ " when blanked json should be " ++ show expected) $ do
-    BS.concat (runListConduit blankJson [original]) `shouldBe` expected
+    BS.concat (blankJson [original]) `shouldBe` expected
 
 spec :: Spec
-spec = describe "HaskellWorks.Data.Json.Conduit.BlankSpec" $ do
+spec = describe "HaskellWorks.Data.Json.Internal.BlankSpec" $ do
   describe "Can blank json" $ do
     "\"\""                                `whenBlankedJsonShouldBe` "()"
     "\"\\\\\""                            `whenBlankedJsonShouldBe` "(  )"

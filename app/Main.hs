@@ -12,10 +12,9 @@ import HaskellWorks.Data.Bits.BitShown
 import HaskellWorks.Data.FromByteString
 import HaskellWorks.Data.Json.LightJson
 import HaskellWorks.Data.Json.LoadCursor
-import HaskellWorks.Data.Json.Succinct.Cursor
+import HaskellWorks.Data.Json.Succinct.Cursor.Internal
 import HaskellWorks.Data.Micro
 import HaskellWorks.Data.MQuery
-import HaskellWorks.Diagnostics.Time
 
 import qualified Data.ByteString      as BS
 import qualified Data.DList           as DL
@@ -25,7 +24,7 @@ readJson :: String -> IO (JsonCursor BS.ByteString (BitShown (DVS.Vector Word64)
 readJson path = do
   bs <- BS.readFile path
   print ("Read file" :: String)
-  !cursor <- measure (fromByteString bs :: JsonCursor BS.ByteString (BitShown (DVS.Vector Word64)) (SimpleBalancedParens (DVS.Vector Word64)))
+  let !cursor = fromByteString bs :: JsonCursor BS.ByteString (BitShown (DVS.Vector Word64)) (SimpleBalancedParens (DVS.Vector Word64))
   print ("Created cursor" :: String)
   return cursor
 
@@ -51,4 +50,4 @@ main = do
   let !json = lightJsonAt cursor
   let q = MQuery (DL.singleton json)
 
-  measureIO $ putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> entry >=> named "price_currency_code" >=> asString) & count
+  putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> entry >=> named "price_currency_code" >=> asString) & count

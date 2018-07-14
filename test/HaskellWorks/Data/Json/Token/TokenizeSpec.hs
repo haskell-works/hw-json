@@ -14,7 +14,7 @@ parseJsonToken' :: ByteString -> Either String (JsonToken String Double)
 parseJsonToken' = BC.parseOnly parseJsonToken
 
 spec :: Spec
-spec = describe "Data.Conduit.Succinct.JsonSpec" $ do
+spec = describe "HaskellWorks.Data.Json.Token.TokenizeSpec" $ do
   describe "When parsing single token at beginning of text" $ do
     it "Empty Json should produce no bits" $
       parseJsonToken' "" `shouldBe` Left "not enough input"

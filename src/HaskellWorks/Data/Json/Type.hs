@@ -11,12 +11,12 @@ import Data.Char
 import Data.Word8
 import HaskellWorks.Data.Bits.BitWise
 import HaskellWorks.Data.Drop
-import HaskellWorks.Data.Json.Succinct
+import HaskellWorks.Data.Json.Succinct.Cursor.Internal
 import HaskellWorks.Data.Positioning
 import HaskellWorks.Data.RankSelect.Base.Rank0
 import HaskellWorks.Data.RankSelect.Base.Rank1
 import HaskellWorks.Data.RankSelect.Base.Select1
-import Prelude                                   hiding (drop)
+import Prelude                                         hiding (drop)
 
 import qualified Data.ByteString                  as BS
 import qualified HaskellWorks.Data.BalancedParens as BP

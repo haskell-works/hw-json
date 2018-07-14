@@ -12,9 +12,8 @@ import Control.Applicative
 import Data.ByteString.Internal
 import Data.Word
 import HaskellWorks.Data.Bits.BitShown
-import HaskellWorks.Data.Conduit.List
 import HaskellWorks.Data.FromByteString
-import HaskellWorks.Data.Json.Conduit
+import HaskellWorks.Data.Json.Internal.MakeIndex
 import HaskellWorks.Data.Json.Succinct.Cursor.BlankedJson
 import HaskellWorks.Data.RankSelect.Poppy512
 
@@ -27,7 +26,7 @@ getJsonInterestBits :: JsonInterestBits a -> a
 getJsonInterestBits (JsonInterestBits a) = a
 
 blankedJsonBssToInterestBitsBs :: [ByteString] -> ByteString
-blankedJsonBssToInterestBitsBs bss = BS.concat $ runListConduit blankedJsonToInterestBits bss
+blankedJsonBssToInterestBitsBs bss = BS.concat $ blankedJsonToInterestBits bss
 
 genInterest :: ByteString -> Maybe (Word8, ByteString)
 genInterest = BS.uncons
@@ -36,7 +35,7 @@ genInterestForever :: ByteString -> Maybe (Word8, ByteString)
 genInterestForever bs = BS.uncons bs <|> Just (0, bs)
 
 instance FromBlankedJson (JsonInterestBits (BitShown [Bool])) where
-  fromBlankedJson = JsonInterestBits . fromByteString . BS.concat . runListConduit blankedJsonToInterestBits . getBlankedJson
+  fromBlankedJson = JsonInterestBits . fromByteString . BS.concat . blankedJsonToInterestBits . getBlankedJson
 
 instance FromBlankedJson (JsonInterestBits (BitShown BS.ByteString)) where
   fromBlankedJson = JsonInterestBits . BitShown . BS.unfoldr genInterest . blankedJsonBssToInterestBitsBs . getBlankedJson
