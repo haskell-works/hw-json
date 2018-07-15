@@ -23,9 +23,9 @@ import HaskellWorks.Data.BalancedParens.Simple
 import HaskellWorks.Data.Bits.BitShown
 import HaskellWorks.Data.FromByteString
 import HaskellWorks.Data.FromForeignRegion
+import HaskellWorks.Data.Json.Cursor
 import HaskellWorks.Data.Json.DecodeError
 import HaskellWorks.Data.Json.PartialValue
-import HaskellWorks.Data.Json.Succinct.Cursor.Internal
 import HaskellWorks.Data.Json.Succinct.Index
 import HaskellWorks.Data.Json.Succinct.PartialIndex
 import HaskellWorks.Data.Json.Value

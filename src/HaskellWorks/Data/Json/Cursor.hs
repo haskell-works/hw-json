@@ -4,7 +4,7 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE ScopedTypeVariables   #-}
 
-module HaskellWorks.Data.Json.Succinct.Cursor.Internal
+module HaskellWorks.Data.Json.Cursor
   ( JsonCursor(..)
   , jsonCursorPos
   ) where

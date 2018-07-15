@@ -17,8 +17,8 @@ import HaskellWorks.Data.Bits.BitWise
 import HaskellWorks.Data.Drop
 import HaskellWorks.Data.Entry
 import HaskellWorks.Data.Json.CharLike
+import HaskellWorks.Data.Json.Cursor
 import HaskellWorks.Data.Json.Internal.Words
-import HaskellWorks.Data.Json.Succinct.Cursor.Internal
 import HaskellWorks.Data.Micro
 import HaskellWorks.Data.Mini
 import HaskellWorks.Data.MQuery
@@ -29,7 +29,7 @@ import HaskellWorks.Data.RankSelect.Base.Select1
 import HaskellWorks.Data.Row
 import HaskellWorks.Data.TreeCursor
 import HaskellWorks.Data.Uncons
-import Prelude                                         hiding (drop)
+import Prelude                                   hiding (drop)
 import Text.PrettyPrint.ANSI.Leijen
 
 import qualified Data.Attoparsec.ByteString.Char8 as ABC

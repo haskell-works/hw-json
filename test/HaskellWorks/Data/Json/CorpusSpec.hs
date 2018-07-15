@@ -17,7 +17,7 @@ import HaskellWorks.Data.BalancedParens.Simple
 import HaskellWorks.Data.Bits.BitShown
 import HaskellWorks.Data.Bits.FromBitTextByteString
 import HaskellWorks.Data.FromByteString
-import HaskellWorks.Data.Json.Succinct.Cursor.Internal
+import HaskellWorks.Data.Json.Cursor
 import Test.Hspec
 
 import qualified Data.ByteString      as BS

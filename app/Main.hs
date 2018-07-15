@@ -10,9 +10,9 @@ import Data.Word
 import HaskellWorks.Data.BalancedParens.Simple
 import HaskellWorks.Data.Bits.BitShown
 import HaskellWorks.Data.FromByteString
+import HaskellWorks.Data.Json.Cursor
 import HaskellWorks.Data.Json.LightJson
 import HaskellWorks.Data.Json.LoadCursor
-import HaskellWorks.Data.Json.Succinct.Cursor.Internal
 import HaskellWorks.Data.Micro
 import HaskellWorks.Data.MQuery
 

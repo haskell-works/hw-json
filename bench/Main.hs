@@ -11,9 +11,9 @@ import Foreign
 import HaskellWorks.Data.BalancedParens.Simple
 import HaskellWorks.Data.Bits.BitShown
 import HaskellWorks.Data.FromByteString
+import HaskellWorks.Data.Json.Cursor
 import HaskellWorks.Data.Json.Internal.Blank
 import HaskellWorks.Data.Json.Internal.MakeIndex
-import HaskellWorks.Data.Json.Succinct.Cursor.Internal
 import System.IO.MMap
 
 import qualified Data.ByteString          as BS
