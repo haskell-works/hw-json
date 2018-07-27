@@ -20,4 +20,4 @@ class FromBlankedJson a where
   fromBlankedJson :: BlankedJson -> a
 
 instance FromByteString BlankedJson where
-  fromByteString bs = BlankedJson (blankJson (chunkedBy 4064 bs))
+  fromByteString bs = BlankedJson (blankJson (chunkedBy 4096 bs))
