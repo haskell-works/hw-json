@@ -1,4 +1,4 @@
-module HaskellWorks.Data.Json.CharLike where
+module HaskellWorks.Data.Json.Internal.CharLike where
 
 import Data.Word
 import Data.Word8

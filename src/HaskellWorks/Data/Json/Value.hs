@@ -7,8 +7,8 @@
 module HaskellWorks.Data.Json.Value where
 
 import HaskellWorks.Data.Json.DecodeError
-import HaskellWorks.Data.Json.Succinct.Index
-import HaskellWorks.Data.Json.Value.Internal
+import HaskellWorks.Data.Json.Internal.Index
+import HaskellWorks.Data.Json.Internal.Value
 
 import qualified Data.Attoparsec.ByteString.Char8 as ABC
 import qualified Data.ByteString                  as BS

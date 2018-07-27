@@ -4,15 +4,15 @@
 {-# LANGUAGE InstanceSigs          #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 
-module HaskellWorks.Data.Json.Succinct.Index where
+module HaskellWorks.Data.Json.Internal.Index where
 
 import Control.Arrow
 import Control.Monad
 import HaskellWorks.Data.Bits.BitWise
 import HaskellWorks.Data.Drop
-import HaskellWorks.Data.Json.CharLike
 import HaskellWorks.Data.Json.Cursor
 import HaskellWorks.Data.Json.DecodeError
+import HaskellWorks.Data.Json.Internal.CharLike
 import HaskellWorks.Data.Positioning
 import HaskellWorks.Data.RankSelect.Base.Rank0
 import HaskellWorks.Data.RankSelect.Base.Rank1

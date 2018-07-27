@@ -4,7 +4,7 @@
 {-# LANGUAGE OverloadedStrings     #-}
 {-# LANGUAGE TypeSynonymInstances  #-}
 
-module HaskellWorks.Data.Json.Token.Tokenize
+module HaskellWorks.Data.Json.Internal.Token.Tokenize
     ( IsChar(..)
     , JsonToken(..)
     , ParseJson(..)
@@ -16,27 +16,28 @@ import Data.Char
 import Data.Word
 import Data.Word8
 import HaskellWorks.Data.Char.IsChar
-import HaskellWorks.Data.Json.Token.Types
-import HaskellWorks.Data.Parser           as P
+import HaskellWorks.Data.Json.Internal.Token.Types
+import HaskellWorks.Data.Parser                    ((<?>))
 
 import qualified Data.Attoparsec.ByteString.Char8 as BC
 import qualified Data.Attoparsec.Combinator       as AC
 import qualified Data.Attoparsec.Types            as T
 import qualified Data.ByteString                  as BS
+import qualified HaskellWorks.Data.Parser         as P
 
 hexDigitNumeric :: P.Parser t u => T.Parser t Int
 hexDigitNumeric = do
-  c <- satisfyChar (\c -> '0' <= c && c <= '9')
+  c <- P.satisfyChar (\c -> '0' <= c && c <= '9')
   return $ ord c - ord '0'
 
 hexDigitAlphaLower :: P.Parser t u => T.Parser t Int
 hexDigitAlphaLower = do
-  c <- satisfyChar (\c -> 'a' <= c && c <= 'z')
+  c <- P.satisfyChar (\c -> 'a' <= c && c <= 'z')
   return $ ord c - ord 'a' + 10
 
 hexDigitAlphaUpper :: P.Parser t u => T.Parser t Int
 hexDigitAlphaUpper = do
-  c <- satisfyChar (\c -> 'A' <= c && c <= 'Z')
+  c <- P.satisfyChar (\c -> 'A' <= c && c <= 'Z')
   return $ ord c - ord 'A' + 10
 
 hexDigit :: P.Parser t u => T.Parser t Int
@@ -70,35 +71,35 @@ class ParseJson t s d where
     parseJsonTokenDouble
 
 instance ParseJson BS.ByteString String Double where
-  parseJsonTokenBraceL = string "{" >> return JsonTokenBraceL
-  parseJsonTokenBraceR = string "}" >> return JsonTokenBraceR
-  parseJsonTokenBracketL = string "[" >> return JsonTokenBracketL
-  parseJsonTokenBracketR = string "]" >> return JsonTokenBracketR
-  parseJsonTokenComma = string "," >> return JsonTokenComma
-  parseJsonTokenColon = string ":" >> return JsonTokenColon
-  parseJsonTokenNull = string "null" >> return JsonTokenNull
-  parseJsonTokenDouble = JsonTokenNumber <$> rational
+  parseJsonTokenBraceL    = P.string "{" >> return JsonTokenBraceL
+  parseJsonTokenBraceR    = P.string "}" >> return JsonTokenBraceR
+  parseJsonTokenBracketL  = P.string "[" >> return JsonTokenBracketL
+  parseJsonTokenBracketR  = P.string "]" >> return JsonTokenBracketR
+  parseJsonTokenComma     = P.string "," >> return JsonTokenComma
+  parseJsonTokenColon     = P.string ":" >> return JsonTokenColon
+  parseJsonTokenNull      = P.string "null" >> return JsonTokenNull
+  parseJsonTokenDouble    = JsonTokenNumber <$> P.rational
 
   parseJsonTokenString = do
-    _ <- string "\""
+    _ <- P.string "\""
     value <- many (verbatimChar <|> escapedChar <|> escapedCode)
-    _ <- string "\""
+    _ <- P.string "\""
     return $ JsonTokenString value
     where
-      verbatimChar  = satisfyChar (BC.notInClass "\"\\") <?> "invalid string character"
+      verbatimChar  = P.satisfyChar (BC.notInClass "\"\\") <?> "invalid string character"
       escapedChar   = do
-        _ <- string "\\"
-        (   char '"'  >> return '"'  ) <|>
-          ( char 'b'  >> return '\b' ) <|>
-          ( char 'n'  >> return '\n' ) <|>
-          ( char 'f'  >> return '\f' ) <|>
-          ( char 'r'  >> return '\r' ) <|>
-          ( char 't'  >> return '\t' ) <|>
-          ( char '\\' >> return '\\' ) <|>
-          ( char '\'' >> return '\'' ) <|>
-          ( char '/'  >> return '/'  )
+        _ <- P.string "\\"
+        (   P.char '"'  >> return '"'  ) <|>
+          ( P.char 'b'  >> return '\b' ) <|>
+          ( P.char 'n'  >> return '\n' ) <|>
+          ( P.char 'f'  >> return '\f' ) <|>
+          ( P.char 'r'  >> return '\r' ) <|>
+          ( P.char 't'  >> return '\t' ) <|>
+          ( P.char '\\' >> return '\\' ) <|>
+          ( P.char '\'' >> return '\'' ) <|>
+          ( P.char '/'  >> return '/'  )
       escapedCode   = do
-        _ <- string "\\u"
+        _ <- P.string "\\u"
         a <- hexDigit
         b <- hexDigit
         c <- hexDigit
@@ -106,37 +107,36 @@ instance ParseJson BS.ByteString String Double where
         return $ chr $ a `shift` 24 .|. b `shift` 16 .|. c `shift` 8 .|. d
 
   parseJsonTokenWhitespace = do
-    _ <- AC.many1' $ BC.choice [string " ", string "\t", string "\n", string "\r"]
+    _ <- AC.many1' $ BC.choice [P.string " ", P.string "\t", P.string "\n", P.string "\r"]
     return JsonTokenWhitespace
 
   parseJsonTokenBoolean = true <|> false
-    where
-      true  = string "true"   >> return (JsonTokenBoolean True)
-      false = string "false"  >> return (JsonTokenBoolean False)
+    where true  = P.string "true"   >> return (JsonTokenBoolean True)
+          false = P.string "false"  >> return (JsonTokenBoolean False)
 
 instance ParseJson BS.ByteString BS.ByteString Double where
-  parseJsonTokenBraceL = string "{" >> return JsonTokenBraceL
-  parseJsonTokenBraceR = string "}" >> return JsonTokenBraceR
-  parseJsonTokenBracketL = string "[" >> return JsonTokenBracketL
-  parseJsonTokenBracketR = string "]" >> return JsonTokenBracketR
-  parseJsonTokenComma = string "," >> return JsonTokenComma
-  parseJsonTokenColon = string ":" >> return JsonTokenColon
-  parseJsonTokenNull = string "null" >> return JsonTokenNull
-  parseJsonTokenDouble = JsonTokenNumber <$> rational
+  parseJsonTokenBraceL    = P.string "{" >> return JsonTokenBraceL
+  parseJsonTokenBraceR    = P.string "}" >> return JsonTokenBraceR
+  parseJsonTokenBracketL  = P.string "[" >> return JsonTokenBracketL
+  parseJsonTokenBracketR  = P.string "]" >> return JsonTokenBracketR
+  parseJsonTokenComma     = P.string "," >> return JsonTokenComma
+  parseJsonTokenColon     = P.string ":" >> return JsonTokenColon
+  parseJsonTokenNull      = P.string "null" >> return JsonTokenNull
+  parseJsonTokenDouble    = JsonTokenNumber <$> P.rational
 
   parseJsonTokenString = do
-    _ <- string "\""
+    _ <- P.string "\""
     value <- many (verbatimChar <|> escapedChar <|> escapedCode)
-    _ <- string "\""
+    _ <- P.string "\""
     return $ JsonTokenString $ BS.pack value
     where
       word :: Word8 -> T.Parser BS.ByteString Word8
-      word w = satisfy (== w)
+      word w = P.satisfy (== w)
       verbatimChar :: T.Parser BS.ByteString Word8
-      verbatimChar  = satisfy (\w -> w /= _quotedbl && w /= _backslash) -- <?> "invalid string character"
+      verbatimChar  = P.satisfy (\w -> w /= _quotedbl && w /= _backslash) -- <?> "invalid string character"
       escapedChar :: T.Parser BS.ByteString Word8
       escapedChar   = do
-        _ <- string "\\"
+        _ <- P.string "\\"
         (   word _quotedbl    >> return _quotedbl       ) <|>
           ( word _b           >> return 0x08            ) <|>
           ( word _n           >> return _lf             ) <|>
@@ -148,7 +148,7 @@ instance ParseJson BS.ByteString BS.ByteString Double where
           ( word _slash       >> return _slash          )
       escapedCode :: T.Parser BS.ByteString Word8
       escapedCode   = do
-        _ <- string "\\u"
+        _ <- P.string "\\u"
         a <- hexDigit
         b <- hexDigit
         c <- hexDigit
@@ -156,10 +156,10 @@ instance ParseJson BS.ByteString BS.ByteString Double where
         return $ fromIntegral $ a `shift` 24 .|. b `shift` 16 .|. c `shift` 8 .|. d
 
   parseJsonTokenWhitespace = do
-    _ <- AC.many1' $ BC.choice [string " ", string "\t", string "\n", string "\r"]
+    _ <- AC.many1' $ BC.choice [P.string " ", P.string "\t", P.string "\n", P.string "\r"]
     return JsonTokenWhitespace
 
   parseJsonTokenBoolean = true <|> false
     where
-      true  = string "true"   >> return (JsonTokenBoolean True)
-      false = string "false"  >> return (JsonTokenBoolean False)
+      true  = P.string "true"   >> return (JsonTokenBoolean True)
+      false = P.string "false"  >> return (JsonTokenBoolean False)

@@ -6,7 +6,7 @@
 {-# LANGUAGE ScopedTypeVariables   #-}
 {-# LANGUAGE TupleSections         #-}
 
-module HaskellWorks.Data.Json.Value.Internal where
+module HaskellWorks.Data.Json.Internal.Value where
 
 import Control.Applicative
 import Data.Bits

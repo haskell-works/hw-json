@@ -2,8 +2,8 @@
 
 module HaskellWorks.Data.Json.Token.TokenizeSpec (spec) where
 
-import Data.ByteString                       as BS
-import HaskellWorks.Data.Json.Token.Tokenize
+import Data.ByteString                                (ByteString)
+import HaskellWorks.Data.Json.Internal.Token.Tokenize
 import Test.Hspec
 
 import qualified Data.Attoparsec.ByteString.Char8 as BC

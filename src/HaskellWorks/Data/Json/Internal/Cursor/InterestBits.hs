@@ -3,7 +3,7 @@
 {-# LANGUAGE InstanceSigs          #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 
-module HaskellWorks.Data.Json.Succinct.Cursor.InterestBits
+module HaskellWorks.Data.Json.Internal.Cursor.InterestBits
   ( JsonInterestBits(..)
   , getJsonInterestBits
   ) where
@@ -13,8 +13,8 @@ import Data.ByteString.Internal
 import Data.Word
 import HaskellWorks.Data.Bits.BitShown
 import HaskellWorks.Data.FromByteString
+import HaskellWorks.Data.Json.Internal.Cursor.BlankedJson
 import HaskellWorks.Data.Json.Internal.MakeIndex
-import HaskellWorks.Data.Json.Succinct.Cursor.BlankedJson
 import HaskellWorks.Data.RankSelect.Poppy512
 
 import qualified Data.ByteString      as BS

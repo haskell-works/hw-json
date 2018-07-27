@@ -12,6 +12,7 @@ import Data.Word8
 import HaskellWorks.Data.Bits.BitWise
 import HaskellWorks.Data.Drop
 import HaskellWorks.Data.Json.Cursor
+import HaskellWorks.Data.Json.Internal.Words
 import HaskellWorks.Data.Positioning
 import HaskellWorks.Data.RankSelect.Base.Rank0
 import HaskellWorks.Data.RankSelect.Base.Rank1
@@ -22,9 +23,6 @@ import qualified Data.ByteString                  as BS
 import qualified HaskellWorks.Data.BalancedParens as BP
 
 {-# ANN module ("HLint: Reduce duplication" :: String) #-}
-
-wIsJsonNumberDigit :: Word8 -> Bool
-wIsJsonNumberDigit w = (w >= _0 && w <= _9) || w == _hyphen
 
 data JsonType
   = JsonTypeArray

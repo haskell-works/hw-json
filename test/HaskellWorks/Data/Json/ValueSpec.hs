@@ -21,7 +21,7 @@ import HaskellWorks.Data.Bits.BitWise
 import HaskellWorks.Data.FromForeignRegion
 import HaskellWorks.Data.Json.Cursor
 import HaskellWorks.Data.Json.DecodeError
-import HaskellWorks.Data.Json.Succinct.Index
+import HaskellWorks.Data.Json.Internal.Index
 import HaskellWorks.Data.Json.Value
 import HaskellWorks.Data.RankSelect.Base.Rank0
 import HaskellWorks.Data.RankSelect.Base.Rank1

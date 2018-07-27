@@ -5,8 +5,8 @@ module HaskellWorks.Data.Json.Succinct.Cursor.BalancedParensSpec(spec) where
 
 import Data.String
 import HaskellWorks.Data.Bits.BitShown
+import HaskellWorks.Data.Json.Internal.Cursor.BlankedJson
 import HaskellWorks.Data.Json.Internal.MakeIndex
-import HaskellWorks.Data.Json.Succinct.Cursor.BlankedJson
 import Test.Hspec
 
 import qualified Data.ByteString as BS

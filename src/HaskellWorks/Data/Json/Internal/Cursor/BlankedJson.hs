@@ -1,5 +1,5 @@
 
-module HaskellWorks.Data.Json.Succinct.Cursor.BlankedJson
+module HaskellWorks.Data.Json.Internal.Cursor.BlankedJson
   ( BlankedJson(..)
   , FromBlankedJson(..)
   , getBlankedJson
