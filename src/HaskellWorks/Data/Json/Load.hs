@@ -25,9 +25,9 @@ import HaskellWorks.Data.FromByteString
 import HaskellWorks.Data.FromForeignRegion
 import HaskellWorks.Data.Json.Cursor
 import HaskellWorks.Data.Json.DecodeError
+import HaskellWorks.Data.Json.Internal.Index
+import HaskellWorks.Data.Json.Internal.PartialIndex
 import HaskellWorks.Data.Json.PartialValue
-import HaskellWorks.Data.Json.Succinct.Index
-import HaskellWorks.Data.Json.Succinct.PartialIndex
 import HaskellWorks.Data.Json.Value
 import HaskellWorks.Data.RankSelect.CsPoppy
 import HaskellWorks.Data.RankSelect.Poppy512

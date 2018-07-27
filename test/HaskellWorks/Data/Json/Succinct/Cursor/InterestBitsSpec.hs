@@ -8,8 +8,8 @@ import Data.String
 import Data.Word
 import HaskellWorks.Data.Bits.BitShown
 import HaskellWorks.Data.FromByteString
-import HaskellWorks.Data.Json.Succinct.Cursor.BlankedJson
-import HaskellWorks.Data.Json.Succinct.Cursor.InterestBits
+import HaskellWorks.Data.Json.Internal.Cursor.BlankedJson
+import HaskellWorks.Data.Json.Internal.Cursor.InterestBits
 import Test.Hspec
 
 import qualified Data.ByteString      as BS

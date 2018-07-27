@@ -1,4 +1,4 @@
-module HaskellWorks.Data.Json.Token.Types (JsonToken(..)) where
+module HaskellWorks.Data.Json.Internal.Token.Types (JsonToken(..)) where
 
 data JsonToken s d
   = JsonTokenBraceL

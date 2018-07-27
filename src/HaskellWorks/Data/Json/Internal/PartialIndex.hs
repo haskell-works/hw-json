@@ -5,13 +5,13 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE ScopedTypeVariables   #-}
 
-module HaskellWorks.Data.Json.Succinct.PartialIndex where
+module HaskellWorks.Data.Json.Internal.PartialIndex where
 
 import Control.Arrow
 import HaskellWorks.Data.Bits.BitWise
 import HaskellWorks.Data.Drop
-import HaskellWorks.Data.Json.CharLike
 import HaskellWorks.Data.Json.Cursor
+import HaskellWorks.Data.Json.Internal.CharLike
 import HaskellWorks.Data.Positioning
 import HaskellWorks.Data.RankSelect.Base.Rank0
 import HaskellWorks.Data.RankSelect.Base.Rank1

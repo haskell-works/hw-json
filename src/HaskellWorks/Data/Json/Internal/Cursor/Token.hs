@@ -1,17 +1,17 @@
 
-module HaskellWorks.Data.Json.Succinct.Cursor.Token
+module HaskellWorks.Data.Json.Internal.Cursor.Token
   ( jsonTokenAt
   ) where
 
-import Data.ByteString.Internal                  as BSI
+import Data.ByteString.Internal                       as BSI
 import HaskellWorks.Data.Bits.BitWise
 import HaskellWorks.Data.Drop
 import HaskellWorks.Data.Json.Cursor
-import HaskellWorks.Data.Json.Token.Tokenize
+import HaskellWorks.Data.Json.Internal.Token.Tokenize
 import HaskellWorks.Data.Positioning
 import HaskellWorks.Data.RankSelect.Base.Rank1
 import HaskellWorks.Data.RankSelect.Base.Select1
-import Prelude                                   hiding (drop)
+import Prelude                                        hiding (drop)
 
 import qualified Data.Attoparsec.ByteString.Char8 as ABC
 

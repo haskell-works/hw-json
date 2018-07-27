@@ -3,7 +3,7 @@
 {-# LANGUAGE InstanceSigs          #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 
-module HaskellWorks.Data.Json.Succinct.Cursor.BalancedParens
+module HaskellWorks.Data.Json.Internal.Cursor.BalancedParens
   ( JsonBalancedParens(..)
   , getJsonBalancedParens
   ) where
@@ -11,8 +11,8 @@ module HaskellWorks.Data.Json.Succinct.Cursor.BalancedParens
 import Control.Applicative
 import Data.Word
 import HaskellWorks.Data.BalancedParens                   as BP
+import HaskellWorks.Data.Json.Internal.Cursor.BlankedJson
 import HaskellWorks.Data.Json.Internal.MakeIndex
-import HaskellWorks.Data.Json.Succinct.Cursor.BlankedJson
 
 import qualified Data.ByteString      as BS
 import qualified Data.Vector.Storable as DVS

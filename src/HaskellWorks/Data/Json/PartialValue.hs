@@ -25,8 +25,8 @@ import HaskellWorks.Data.AtLeastSize
 import HaskellWorks.Data.Bits.BitWise
 import HaskellWorks.Data.Entry
 import HaskellWorks.Data.Json.Cursor
-import HaskellWorks.Data.Json.Succinct.PartialIndex
-import HaskellWorks.Data.Json.Value.Internal
+import HaskellWorks.Data.Json.Internal.PartialIndex
+import HaskellWorks.Data.Json.Internal.Value
 import HaskellWorks.Data.Micro
 import HaskellWorks.Data.Mini
 import HaskellWorks.Data.MQuery

@@ -16,8 +16,8 @@ import Foreign.ForeignPtr
 import HaskellWorks.Data.Bits.BitShown
 import HaskellWorks.Data.FromByteString
 import HaskellWorks.Data.FromForeignRegion
-import HaskellWorks.Data.Json.Succinct.Cursor.BlankedJson
-import HaskellWorks.Data.Json.Succinct.Cursor.InterestBits
+import HaskellWorks.Data.Json.Internal.Cursor.BlankedJson
+import HaskellWorks.Data.Json.Internal.Cursor.InterestBits
 import HaskellWorks.Data.Positioning
 import HaskellWorks.Data.RankSelect.Base.Rank0
 import HaskellWorks.Data.RankSelect.Base.Rank1
@@ -29,7 +29,7 @@ import qualified Data.ByteString                                       as BS
 import qualified Data.ByteString.Char8                                 as BSC
 import qualified Data.Vector.Storable                                  as DVS
 import qualified HaskellWorks.Data.BalancedParens                      as BP
-import qualified HaskellWorks.Data.Json.Succinct.Cursor.BalancedParens as CBP
+import qualified HaskellWorks.Data.Json.Internal.Cursor.BalancedParens as CBP
 
 data JsonCursor t v w = JsonCursor
   { cursorText     :: !t

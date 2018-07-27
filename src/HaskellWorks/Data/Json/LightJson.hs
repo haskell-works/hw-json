@@ -16,8 +16,8 @@ import HaskellWorks.Data.AtLeastSize
 import HaskellWorks.Data.Bits.BitWise
 import HaskellWorks.Data.Drop
 import HaskellWorks.Data.Entry
-import HaskellWorks.Data.Json.CharLike
 import HaskellWorks.Data.Json.Cursor
+import HaskellWorks.Data.Json.Internal.CharLike
 import HaskellWorks.Data.Json.Internal.Words
 import HaskellWorks.Data.Micro
 import HaskellWorks.Data.Mini

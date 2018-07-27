@@ -11,3 +11,6 @@ isTrailingDigit w = w == _plus || w == _hyphen || (w >= _0 && w <= _9) || w == _
 
 isAlphabetic :: Word8 -> Bool
 isAlphabetic w = (w >= _A && w <= _Z) || (w >= _a && w <= _z)
+
+wIsJsonNumberDigit :: Word8 -> Bool
+wIsJsonNumberDigit w = (w >= _0 && w <= _9) || w == _hyphen
