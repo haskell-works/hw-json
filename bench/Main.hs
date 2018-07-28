@@ -9,7 +9,6 @@ import Data.List
 import Data.Word
 import Foreign
 import HaskellWorks.Data.BalancedParens.Simple
-import HaskellWorks.Data.Bits.BitShown
 import HaskellWorks.Data.FromByteString
 import HaskellWorks.Data.Json.Cursor
 import HaskellWorks.Data.Json.Internal.Blank
@@ -27,8 +26,8 @@ setupEnvJson filepath = do
   let !bs = BSI.fromForeignPtr (castForeignPtr fptr) offset size
   return bs
 
-loadJson :: BS.ByteString -> JsonCursor BS.ByteString (BitShown (DVS.Vector Word64)) (SimpleBalancedParens (DVS.Vector Word64))
-loadJson bs = fromByteString bs :: JsonCursor BS.ByteString (BitShown (DVS.Vector Word64)) (SimpleBalancedParens (DVS.Vector Word64))
+loadJson :: BS.ByteString -> JsonCursor BS.ByteString (DVS.Vector Word64) (SimpleBalancedParens (DVS.Vector Word64))
+loadJson bs = fromByteString bs :: JsonCursor BS.ByteString (DVS.Vector Word64) (SimpleBalancedParens (DVS.Vector Word64))
 
 jsonToInterestBits3 :: [BS.ByteString] -> [BS.ByteString]
 jsonToInterestBits3 = blankedJsonToInterestBits . blankJson

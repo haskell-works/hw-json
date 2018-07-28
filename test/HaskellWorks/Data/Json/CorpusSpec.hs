@@ -14,7 +14,6 @@ module HaskellWorks.Data.Json.CorpusSpec(spec) where
 
 import Data.Word
 import HaskellWorks.Data.BalancedParens.Simple
-import HaskellWorks.Data.Bits.BitShown
 import HaskellWorks.Data.Bits.FromBitTextByteString
 import HaskellWorks.Data.FromByteString
 import HaskellWorks.Data.Json.Cursor
@@ -35,12 +34,12 @@ spec = describe "HaskellWorks.Data.Json.Corpus" $ do
     inInterestBalancedParensBS  <- BS.readFile "corpus/5000B.bp"
     let inInterestBits            = fromBitTextByteString inInterestBitsBS
     let inInterestBalancedParens  = fromBitTextByteString inInterestBalancedParensBS
-    let !cursor = fromByteString inJsonBS :: JsonCursor BS.ByteString (BitShown (DVS.Vector Word64)) (SimpleBalancedParens (DVS.Vector Word64))
+    let !cursor = fromByteString inJsonBS :: JsonCursor BS.ByteString (DVS.Vector Word64) (SimpleBalancedParens (DVS.Vector Word64))
     let text                    = cursorText      cursor
     let ib                      = interests       cursor
     let SimpleBalancedParens bp = balancedParens  cursor
     text `shouldBe` inJsonBS
-    ib `shouldBe` BitShown inInterestBits
+    ib `shouldBe` inInterestBits
     bp `shouldBe` inInterestBalancedParens
   it "issue-0001 loads properly" $ do
     inJsonBS                    <- BS.readFile "corpus/issue-0001.json"
@@ -48,10 +47,10 @@ spec = describe "HaskellWorks.Data.Json.Corpus" $ do
     inInterestBalancedParensBS  <- BS.readFile "corpus/issue-0001.bp"
     let inInterestBits            = fromBitTextByteString inInterestBitsBS
     let inInterestBalancedParens  = fromBitTextByteString inInterestBalancedParensBS
-    let !cursor = fromByteString inJsonBS :: JsonCursor BS.ByteString (BitShown (DVS.Vector Word64)) (SimpleBalancedParens (DVS.Vector Word64))
+    let !cursor = fromByteString inJsonBS :: JsonCursor BS.ByteString (DVS.Vector Word64) (SimpleBalancedParens (DVS.Vector Word64))
     let text                    = cursorText      cursor
     let ib                      = interests       cursor
     let SimpleBalancedParens bp = balancedParens  cursor
     text `shouldBe` inJsonBS
-    ib `shouldBe` BitShown inInterestBits
+    ib `shouldBe` inInterestBits
     bp `shouldBe` inInterestBalancedParens

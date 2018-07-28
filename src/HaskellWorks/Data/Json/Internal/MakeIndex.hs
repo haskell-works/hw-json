@@ -5,7 +5,6 @@ module HaskellWorks.Data.Json.Internal.MakeIndex
   ( blankedJsonToInterestBits
   , byteStringToBits
   , blankedJsonToBalancedParens
-  , blankedJsonToBalancedParens2
   , compressWordAsBit
   , interestingWord8s
   ) where
@@ -57,29 +56,6 @@ blankedJsonToInterestBits' rs as = case as of
                     , BS.drop 8 ds
                     )
 
-blankedJsonToBalancedParens :: [BS.ByteString] -> [Bool]
-blankedJsonToBalancedParens (as) = case as of
-    (bs:bss) -> blankedJsonToBalancedParens' bs bss []
-    []       -> []
-
-blankedJsonToBalancedParens' :: BS.ByteString -> [BS.ByteString] -> ([Bool] -> [Bool])
-blankedJsonToBalancedParens' bs = case BS.uncons bs of
-  Just (c, cs) -> do
-    let t = case c of
-          d | d == _braceleft     -> (True:)
-          d | d == _braceright    -> (False:)
-          d | d == _bracketleft   -> (True:)
-          d | d == _bracketright  -> (False:)
-          d | d == _parenleft     -> (True:)
-          d | d == _parenright    -> (False:)
-          d | d == _t             -> (True:) . (False:)
-          d | d == _f             -> (True:) . (False:)
-          d | d == _1             -> (True:) . (False:)
-          d | d == _n             -> (True:) . (False:)
-          _ -> id
-    (t .) . blankedJsonToBalancedParens' cs
-  Nothing -> const id
-
 repartitionMod8 :: BS.ByteString -> BS.ByteString -> (BS.ByteString, BS.ByteString)
 repartitionMod8 aBS bBS = (BS.take cLen abBS, BS.drop cLen abBS)
   where abBS = BS.concat [aBS, bBS]
@@ -105,11 +81,11 @@ compressWordAsBit' aBS as = case as of
                     , BS.drop 8 xs
                     )
 
-blankedJsonToBalancedParens2 :: [BS.ByteString] -> [BS.ByteString]
-blankedJsonToBalancedParens2 as = case as of
+blankedJsonToBalancedParens :: [BS.ByteString] -> [BS.ByteString]
+blankedJsonToBalancedParens as = case as of
   (bs:bss) ->
     let (cs, _) = BS.unfoldrN (BS.length bs * 2) gen (Nothing, bs) in
-    cs:blankedJsonToBalancedParens2 bss
+    cs:blankedJsonToBalancedParens bss
   [] -> []
   where gen :: (Maybe Bool, ByteString) -> Maybe (Word8, (Maybe Bool, ByteString))
         gen (Just True  , bs) = Just (0xFF, (Nothing, bs))

@@ -55,7 +55,7 @@ For an example, see [`app/Main.hs`](../master/app/Main.hs)
           82 import           HaskellWorks.Diagnostics
           83 import           System.IO.MMap
           88 (fptr :: ForeignPtr Word8, offset, size) <- mmapFileForeignPtr "../data/78mbs.json" ReadOnly Nothing
-         276 cursor <- measure (fromForeignRegion (fptr, offset, size) :: JsonCursor BS.ByteString (BitShown (DVS.Vector Word64)) (SimpleBalancedParens (DVS.Vector Word64)))
+         276 cursor <- measure (fromForeignRegion (fptr, offset, size) :: JsonCursor BS.ByteString (DVS.Vector Word64) (SimpleBalancedParens (DVS.Vector Word64)))
 
 ## Examples
 
@@ -70,7 +70,7 @@ For an example, see [`app/Main.hs`](../master/app/Main.hs)
     import Data.Word
     import System.CPUTime
     (fptr :: ForeignPtr Word8, offset, size) <- mmapFileForeignPtr "/Users/jky/Downloads/78mbs.json" ReadOnly Nothing
-    cursor <- measure (fromForeignRegion (fptr, offset, size) :: JsonCursor BS.ByteString (BitShown (DVS.Vector Word64)) (SimpleBalancedParens (DVS.Vector Word64)))
+    cursor <- measure (fromForeignRegion (fptr, offset, size) :: JsonCursor BS.ByteString (DVS.Vector Word64) (SimpleBalancedParens (DVS.Vector Word64)))
     let !bs = BSI.fromForeignPtr (castForeignPtr fptr) offset size
     x <- measure $ jsonBsToInterestBs bs
     let !y = BS.concat (unescape' "" [bs])
@@ -111,9 +111,8 @@ import           System.IO.MMap
 let fc = TC.firstChild
 let ns = TC.nextSibling
 let pn = TC.parent
-let cd = TC.depth
 let ss = TC.subtreeSize
-let cursor = "[null, {\"field\": 1}]" :: JsonCursor BS.ByteString (BitShown (DVS.Vector Word64)) (SimpleBalancedParens (DVS.Vector Word64))
+let cursor = "[null, {\"field\": 1}]" :: JsonCursor BS.ByteString (DVS.Vector Word64) (SimpleBalancedParens (DVS.Vector Word64))
 cursor
 fc cursor
 (fc >=> ns) cursor

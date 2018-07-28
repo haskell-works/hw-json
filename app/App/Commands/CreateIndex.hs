@@ -7,23 +7,22 @@ module App.Commands.CreateIndex
 
 import App.Commands.Types
 import Control.Lens
-import Data.Semigroup                          ((<>))
+import Data.Semigroup      ((<>))
 import Data.Word
 import Foreign
-import HaskellWorks.Data.BalancedParens.Simple
-import Options.Applicative                     hiding (columns)
+import Options.Applicative hiding (columns)
 
-import qualified App.Lens                                              as L
-import qualified Data.ByteString.Builder                               as B
-import qualified Data.ByteString.Internal                              as BSI
-import qualified Data.ByteString.Lazy                                  as LBS
-import qualified Data.Vector.Storable                                  as DVS
-import qualified HaskellWorks.Data.Json.Internal.Blank                 as J
-import qualified HaskellWorks.Data.Json.Internal.Cursor.BalancedParens as J
-import qualified HaskellWorks.Data.Json.Internal.Cursor.BlankedJson    as J
-import qualified HaskellWorks.Data.Json.Internal.MakeIndex             as J
-import qualified System.IO                                             as IO
-import qualified System.IO.MMap                                        as IO
+import qualified App.Lens                                           as L
+import qualified Data.ByteString.Builder                            as B
+import qualified Data.ByteString.Internal                           as BSI
+import qualified Data.ByteString.Lazy                               as LBS
+import qualified Data.Vector.Storable                               as DVS
+import qualified HaskellWorks.Data.Json.Internal.Blank              as J
+import qualified HaskellWorks.Data.Json.Internal.BlankedJson        as J
+import qualified HaskellWorks.Data.Json.Internal.MakeIndex          as J
+import qualified HaskellWorks.Data.Json.Internal.ToBalancedParens64 as J
+import qualified System.IO                                          as IO
+import qualified System.IO.MMap                                     as IO
 
 runCreateIndex :: CreateIndexOptions -> IO ()
 runCreateIndex opts = do
@@ -32,7 +31,7 @@ runCreateIndex opts = do
   let !bs = BSI.fromForeignPtr (castForeignPtr fptr) offset size
   let blankedJson = J.blankJson [bs]
   let ibs = LBS.fromChunks (J.blankedJsonToInterestBits blankedJson)
-  let SimpleBalancedParens bps = J.getJsonBalancedParens (J.fromBlankedJson (J.BlankedJson blankedJson)) :: SimpleBalancedParens (DVS.Vector Word64)
+  let bps = J.toBalancedParens64 (J.BlankedJson blankedJson)
   let vb = DVS.foldl (\b a -> b <> B.word64LE a) mempty bps
   LBS.writeFile (filePath <> ".ib.idx") ibs
   h <- IO.openFile (filePath <> ".bp.idx") IO.WriteMode

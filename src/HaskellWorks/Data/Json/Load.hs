@@ -50,11 +50,11 @@ hPutVector h v = withForeignPtr fp $ \p -> hPutBuf h (p `plusPtr` offset) sz
 writeVector :: forall a. Storable a => FilePath -> DVS.Vector a -> IO ()
 writeVector fp v = withFile fp WriteMode $ \h -> hPutVector h v
 
-readJson :: String -> IO (JsonCursor BS.ByteString (BitShown (DVS.Vector Word64)) (SimpleBalancedParens (DVS.Vector Word64)))
+readJson :: String -> IO (JsonCursor BS.ByteString (DVS.Vector Word64) (SimpleBalancedParens (DVS.Vector Word64)))
 readJson path = do
   bs <- loadByteString path
   putStrLn "Read file"
-  let !cursor = fromByteString bs :: JsonCursor BS.ByteString (BitShown (DVS.Vector Word64)) (SimpleBalancedParens (DVS.Vector Word64))
+  let !cursor = fromByteString bs :: JsonCursor BS.ByteString (DVS.Vector Word64) (SimpleBalancedParens (DVS.Vector Word64))
   putStrLn "Created cursor"
   return cursor
 
@@ -111,7 +111,7 @@ loadJsonWithPoppy512Index2 filename = do
 
 indexJson :: String -> IO ()
 indexJson filename = do
-  JsonCursor _ (BitShown ib) (SimpleBalancedParens bp) _ <- readJson filename
+  JsonCursor _ ib (SimpleBalancedParens bp) _ <- readJson filename
   let wib = DVS.unsafeCast ib :: DVS.Vector Word8
   let wbp = DVS.unsafeCast bp :: DVS.Vector Word8
   writeVector (filename ++ ".ib") wib
