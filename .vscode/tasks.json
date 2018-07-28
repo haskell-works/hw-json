@@ -54,58 +54,6 @@
           }
         ]
       }
-    },
-    {
-      "isBackground": true,
-      "taskName": "stack watch",
-      "args": [
-        "echo START_STACK_WATCH && cd ${workspaceRoot} && stack build --test --no-run-tests --bench --no-run-benchmarks --file-watch && echo END_STACK_WATCH "
-      ],
-      "problemMatcher": {
-        "owner": "haskell",
-        "fileLocation": "absolute",
-        "pattern": [
-          {
-            "regexp": "^(.+?):(\\d+):(\\d+):\\s+(error|warning|info):.*$",
-            "file": 1, "line": 2, "column": 3, "severity": 4
-          },
-          {
-            "regexp": "\\s*(.*)$",
-            "message": 1
-          }
-        ],
-        "watching": {
-          "activeOnStart": true,
-          "beginsPattern": "^.*\\(local file changes:\\s",
-          "endsPattern": "(ExitFailure|ExitSuccess)"
-        }
-      }
-    },
-        {
-      "isBackground": true,
-      "taskName": "stack watch & test",
-      "args": [
-        "echo START_STACK_WATCH && cd ${workspaceRoot} && stack build --test --file-watch && echo END_STACK_WATCH "
-      ],
-      "problemMatcher": {
-        "owner": "haskell",
-        "fileLocation": [ "relative", "${workspaceRoot}" ],
-        "pattern": [
-          {
-            "regexp": "^\\s+(.+):(\\d+):.*$",
-            "file": 1, "line": 2
-          },
-          {
-            "regexp": "^.*\\.(.+)\\s*$",
-            "message": 1
-          }
-        ],
-        "watching": {
-          "activeOnStart": true,
-          "beginsPattern": "^.*\\(local file changes:.*$",
-          "endsPattern": "(ExitFailure|ExitSuccess)"
-        }
-      }
     }
   ]
 }

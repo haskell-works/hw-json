@@ -39,8 +39,47 @@ data JsonCursor t v w = JsonCursor
   }
   deriving (Eq, Show)
 
-instance  (FromBlankedJson (JsonInterestBits a), FromBlankedJson (CBP.JsonBalancedParens b))
-          => FromByteString (JsonCursor BS.ByteString a b) where
+instance FromByteString (JsonCursor BS.ByteString (BitShown (DVS.Vector Word8)) (BP.SimpleBalancedParens (DVS.Vector Word8))) where
+  fromByteString bs   = JsonCursor
+    { cursorText      = bs
+    , interests       = getJsonInterestBits (fromBlankedJson blankedJson)
+    , balancedParens  = CBP.getJsonBalancedParens (fromBlankedJson blankedJson)
+    , cursorRank      = 1
+    }
+    where blankedJson :: BlankedJson
+          blankedJson = fromByteString bs
+
+instance FromByteString (JsonCursor BS.ByteString (BitShown (DVS.Vector Word16)) (BP.SimpleBalancedParens (DVS.Vector Word16))) where
+  fromByteString bs   = JsonCursor
+    { cursorText      = bs
+    , interests       = getJsonInterestBits (fromBlankedJson blankedJson)
+    , balancedParens  = CBP.getJsonBalancedParens (fromBlankedJson blankedJson)
+    , cursorRank      = 1
+    }
+    where blankedJson :: BlankedJson
+          blankedJson = fromByteString bs
+
+instance FromByteString (JsonCursor BS.ByteString (BitShown (DVS.Vector Word32)) (BP.SimpleBalancedParens (DVS.Vector Word32))) where
+  fromByteString bs   = JsonCursor
+    { cursorText      = bs
+    , interests       = getJsonInterestBits (fromBlankedJson blankedJson)
+    , balancedParens  = CBP.getJsonBalancedParens (fromBlankedJson blankedJson)
+    , cursorRank      = 1
+    }
+    where blankedJson :: BlankedJson
+          blankedJson = fromByteString bs
+
+instance FromByteString (JsonCursor BS.ByteString (BitShown (DVS.Vector Word64)) (BP.SimpleBalancedParens (DVS.Vector Word64))) where
+  fromByteString bs   = JsonCursor
+    { cursorText      = bs
+    , interests       = getJsonInterestBits (fromBlankedJson blankedJson)
+    , balancedParens  = CBP.getJsonBalancedParens (fromBlankedJson blankedJson)
+    , cursorRank      = 1
+    }
+    where blankedJson :: BlankedJson
+          blankedJson = fromByteString bs
+
+instance FromByteString (JsonCursor BS.ByteString Poppy512 (BP.SimpleBalancedParens (DVS.Vector Word64))) where
   fromByteString bs   = JsonCursor
     { cursorText      = bs
     , interests       = getJsonInterestBits (fromBlankedJson blankedJson)
