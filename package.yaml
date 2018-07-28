@@ -50,7 +50,7 @@ library:
   - word8             >= 0.1        && < 0.2
 
 executables:
-  hw-json-example:
+  hw-json:
     main: Main.hs
     source-dirs: app
     ghc-options:
