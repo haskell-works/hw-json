@@ -9,30 +9,15 @@ module App.Commands.Demo
 import App.Commands.Types
 import Control.Lens
 import Control.Monad
-import Data.Semigroup                          ((<>))
-import Data.Word
-import HaskellWorks.Data.BalancedParens.Simple
-import HaskellWorks.Data.Bits.BitShown
-import HaskellWorks.Data.FromByteString
-import HaskellWorks.Data.Json.Cursor
+import Data.Semigroup                    ((<>))
 import HaskellWorks.Data.Json.LightJson
 import HaskellWorks.Data.Json.LoadCursor
 import HaskellWorks.Data.Micro
 import HaskellWorks.Data.MQuery
-import Options.Applicative                     hiding (columns)
+import Options.Applicative               hiding (columns)
 
-import qualified App.Lens             as L
-import qualified Data.ByteString      as BS
-import qualified Data.DList           as DL
-import qualified Data.Vector.Storable as DVS
-
-readJson :: String -> IO (JsonCursor BS.ByteString (BitShown (DVS.Vector Word64)) (SimpleBalancedParens (DVS.Vector Word64)))
-readJson path = do
-  bs <- BS.readFile path
-  print ("Read file" :: String)
-  let !cursor = fromByteString bs :: JsonCursor BS.ByteString (BitShown (DVS.Vector Word64)) (SimpleBalancedParens (DVS.Vector Word64))
-  print ("Created cursor" :: String)
-  return cursor
+import qualified App.Lens   as L
+import qualified Data.DList as DL
 
 runDemo :: DemoOptions -> IO ()
 runDemo opts = do
