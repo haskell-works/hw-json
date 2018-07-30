@@ -18,7 +18,6 @@ import Foreign.ForeignPtr
 import Foreign.Ptr
 import Foreign.Storable
 import HaskellWorks.Data.BalancedParens.Simple
-import HaskellWorks.Data.Bits.BitShown
 import HaskellWorks.Data.FromByteString
 import HaskellWorks.Data.FromForeignRegion
 import HaskellWorks.Data.Json.Cursor
@@ -46,11 +45,11 @@ hPutVector h v = withForeignPtr fp $ \p -> hPutBuf h (p `plusPtr` offset) sz
 writeVector :: forall a. Storable a => FilePath -> DVS.Vector a -> IO ()
 writeVector fp v = withFile fp WriteMode $ \h -> hPutVector h v
 
-readJson :: String -> IO (JsonCursor BS.ByteString (BitShown (DVS.Vector Word64)) (SimpleBalancedParens (DVS.Vector Word64)))
+readJson :: String -> IO (JsonCursor BS.ByteString (DVS.Vector Word64) (SimpleBalancedParens (DVS.Vector Word64)))
 readJson path = do
   bs <- BS.readFile path
   putStrLn "Read file"
-  let !cursor = fromByteString bs :: JsonCursor BS.ByteString (BitShown (DVS.Vector Word64)) (SimpleBalancedParens (DVS.Vector Word64))
+  let !cursor = fromByteString bs :: JsonCursor BS.ByteString (DVS.Vector Word64) (SimpleBalancedParens (DVS.Vector Word64))
   putStrLn "Created cursor"
   return cursor
 
@@ -76,10 +75,10 @@ loadJsonRawWithIndex filename = do
   let jsonBp  = fromForeignRegion jsonBpFr  :: DVS.Vector Word64
   return (jsonBS, jsonIb, jsonBp)
 
-loadJsonWithIndex :: String -> IO (JsonCursor BSI.ByteString (BitShown (DVS.Vector Word64)) (SimpleBalancedParens (DVS.Vector Word64)))
+loadJsonWithIndex :: String -> IO (JsonCursor BSI.ByteString (DVS.Vector Word64) (SimpleBalancedParens (DVS.Vector Word64)))
 loadJsonWithIndex filename = do
   (jsonBS, jsonIb, jsonBp) <- loadJsonRawWithIndex filename
-  let cursor = JsonCursor jsonBS (BitShown jsonIb) (SimpleBalancedParens jsonBp) 1
+  let cursor = JsonCursor jsonBS jsonIb (SimpleBalancedParens jsonBp) 1
   return cursor
 
 loadJsonWithPoppy512Index :: String -> IO (JsonCursor BSI.ByteString Poppy512 (SimpleBalancedParens (DVS.Vector Word64)))
@@ -103,7 +102,7 @@ loadJsonWithPoppy512Index2 filename = do
 
 indexJsonCursor :: String -> IO ()
 indexJsonCursor filename = do
-  JsonCursor _ (BitShown ib) (SimpleBalancedParens bp) _ <- readJson filename
+  JsonCursor _  ib (SimpleBalancedParens bp) _ <- readJson filename
   let wib = DVS.unsafeCast ib :: DVS.Vector Word8
   let wbp = DVS.unsafeCast bp :: DVS.Vector Word8
   writeVector (filename ++ ".ib") wib
