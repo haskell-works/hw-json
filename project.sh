@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 
-STACK_FLAGS="--flag bits-extra:bmi2 --flag hw-rankselect-base:bmi2 --flag hw-rankselect:bmi2 --flag hw-json:bmi2"
+STACK_FLAGS="
+  --flag bits-extra:bmi2
+  --flag hw-rankselect-base:bmi2
+  --flag hw-rankselect:bmi2
+  --flag hw-simd:bmi2
+  --flag hw-simd:avx2
+"
 
 case $1 in
   build)
@@ -8,6 +14,7 @@ case $1 in
       --test --no-run-tests --bench --no-run-benchmarks \
       $STACK_FLAGS
     ;;
+
   test)
     stack test \
       $STACK_FLAGS
@@ -18,18 +25,8 @@ case $1 in
       $STACK_FLAGS
     ;;
 
-  install)
-    stack install \
-      $STACK_FLAGS
-    ;;
-
   repl)
     stack repl \
-      $STACK_FLAGS
-    ;;
-
-  bench)
-    stack bench \
       $STACK_FLAGS
     ;;
 esac
