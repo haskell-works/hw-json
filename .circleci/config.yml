@@ -1,7 +1,7 @@
 defaults: &defaults
   working_directory: ~/project
   docker:
-    - image: quay.io/haskell_works/stack-build-cabal:2018-01-29
+    - image: quay.io/haskell_works/stack-build-cabal:18.04_2018-06-09
 
   steps:
     - checkout
