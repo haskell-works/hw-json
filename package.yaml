@@ -28,7 +28,7 @@ dependencies:
 - hw-balancedparens   >= 0.2.0.1    && < 0.3
 - hw-bits             >= 0.7.0.2    && < 0.8
 - hw-prim             >= 0.6.2.0    && < 0.7
-- hw-rankselect       >= 0.10       && < 0.11
+- hw-rankselect       >= 0.10       && < 0.13
 - hw-rankselect-base  >= 0.3        && < 0.4
 - mmap                >= 0.5        && < 0.6
 - vector              >= 0.12       && < 0.13
@@ -42,7 +42,7 @@ library:
   - array             >= 0.5        && < 0.6
   - ansi-wl-pprint    >= 0.6.8.2    && < 0.7
   - attoparsec        >= 0.13       && < 0.14
-  - containers        >= 0.5        && < 0.6
+  - containers        >= 0.5        && < 0.7
   - dlist             >= 0.8        && < 0.9
   - hw-mquery         >= 0.1        && < 0.2
   - hw-parser         >= 0.1        && < 0.2
@@ -79,7 +79,7 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - attoparsec        >= 0.13       && < 0.14
-    - containers        >= 0.5        && < 0.6
+    - containers        >= 0.5        && < 0.7
     - hspec             >= 2.5        && < 2.6
     - hw-json
     verbatim:
