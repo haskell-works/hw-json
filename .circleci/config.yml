@@ -135,13 +135,20 @@ cabalbuild: &cabalbuild
         name: Running tests
         command: |
           if grep '^test-suite' *.cabal > /dev/null; then
-            cabal new-test --project-file="cabal.project" -j${CABAL_THREADS:-4} all
+            cabal new-test --enable-tests --project-file="cabal.project" -j${CABAL_THREADS:-4} all
           else
             echo Not tests to run
           fi
 
 version: 2.0
 jobs:
+  ghc-8.6.1:
+    environment:
+      - GHC: "ghc8.6.1"
+    docker:
+      - image: quay.io/haskell_works/ghc-8.6.1
+    <<: *cabalbuild
+
   ghc-8.4.3:
     environment:
       - GHC: "ghc8.4.3"
@@ -229,6 +236,7 @@ workflows:
   version: 2
   multiple-ghcs:
     jobs:
+      - ghc-8.6.1
       - ghc-8.4.3
       - ghc-8.2.2
       - lts-12
