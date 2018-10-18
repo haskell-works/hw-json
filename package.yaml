@@ -66,6 +66,10 @@ executables:
     - hw-mquery             >= 0.1        && < 0.2
     - lens                  >= 4          && < 5
     - optparse-applicative  >= 0.14       && < 0.15
+    when:
+    - condition: (impl(ghc < 8))
+      dependencies:
+      - semigroups          >= 0.16       && < 0.19
 
 tests:
   hw-json-test:
