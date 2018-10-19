@@ -1,5 +1,3 @@
-{-# LANGUAGE DuplicateRecordFields #-}
-
 module App.Commands.Types
   ( CreateIndexOptions(..)
   , DemoOptions(..)
