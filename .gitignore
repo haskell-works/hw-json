@@ -27,3 +27,5 @@ cabal.sandbox.config
 /*.json.bp
 /snapshot.yaml
 /stack-ci.yaml
+/cbits
+*.idx
