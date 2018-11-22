@@ -22,24 +22,18 @@ module HaskellWorks.Data.Json.PartialValue
 
 import Control.Arrow
 import HaskellWorks.Data.AtLeastSize
-import HaskellWorks.Data.Bits.BitWise
 import HaskellWorks.Data.Entry
-import HaskellWorks.Data.Json.Cursor
 import HaskellWorks.Data.Json.Internal.PartialIndex
 import HaskellWorks.Data.Json.Internal.Value
 import HaskellWorks.Data.Micro
 import HaskellWorks.Data.Mini
 import HaskellWorks.Data.MQuery
-import HaskellWorks.Data.RankSelect.Base.Rank0
-import HaskellWorks.Data.RankSelect.Base.Rank1
-import HaskellWorks.Data.RankSelect.Base.Select1
 import HaskellWorks.Data.Row
 import Text.PrettyPrint.ANSI.Leijen
 
 import qualified Data.Attoparsec.ByteString.Char8 as ABC
 import qualified Data.ByteString                  as BS
 import qualified Data.DList                       as DL
-import qualified HaskellWorks.Data.BalancedParens as BP
 
 data JsonPartialValue
   = JsonPartialString String
@@ -83,9 +77,6 @@ instance JsonPartialValueAt JsonPartialIndex where
             ABC.Fail    {}  -> JsonPartialError ("Invalid field: '" ++ show (BS.take 20 bs) ++ "...'")
             ABC.Partial _   -> JsonPartialError "Unexpected end of field"
             ABC.Done    _ s -> JsonPartialString s
-
-instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => JsonPartialValueAt (JsonCursor BS.ByteString v w) where
-  jsonPartialJsonValueAt = jsonPartialJsonValueAt . jsonPartialIndexAt
 
 toJsonPartialField :: (String, JsonPartialValue) -> JsonPartialField
 toJsonPartialField (k, v) = JsonPartialField k v
