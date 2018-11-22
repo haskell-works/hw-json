@@ -4,7 +4,7 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE ScopedTypeVariables   #-}
 
-module HaskellWorks.Data.Json.Cursor.Standard
+module HaskellWorks.Data.Json.Backend.Standard.Cursor
   ( JsonCursor(..)
   , jsonCursorPos
   ) where
