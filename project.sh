@@ -4,8 +4,6 @@ STACK_FLAGS="
   --flag bits-extra:bmi2
   --flag hw-rankselect-base:bmi2
   --flag hw-rankselect:bmi2
-  --flag hw-simd:bmi2
-  --flag hw-simd:avx2
 "
 
 case $1 in
