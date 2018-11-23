@@ -2,7 +2,7 @@
 
 module HaskellWorks.Data.Json.Internal.BlankSpec (spec) where
 
-import HaskellWorks.Data.Json.Internal.Blank
+import HaskellWorks.Data.Json.Internal.Backend.Standard.Blank
 import Test.Hspec
 
 import qualified Data.ByteString as BS

@@ -9,7 +9,7 @@
 
 {-# OPTIONS_GHC -fno-warn-missing-signatures #-}
 
-module HaskellWorks.Data.Json.Succinct.CursorSpec(spec) where
+module HaskellWorks.Data.Json.Backend.Standard.Succinct.CursorSpec(spec) where
 
 import Control.Monad
 import Data.String
@@ -19,7 +19,7 @@ import HaskellWorks.Data.BalancedParens.Simple
 import HaskellWorks.Data.Bits.BitWise
 import HaskellWorks.Data.FromForeignRegion
 import HaskellWorks.Data.Json.Cursor
-import HaskellWorks.Data.Json.Internal.Cursor.Token
+import HaskellWorks.Data.Json.Internal.Backend.Standard.Cursor.Token
 import HaskellWorks.Data.Json.Internal.Index
 import HaskellWorks.Data.Json.Internal.Token
 import HaskellWorks.Data.RankSelect.Base.Rank0

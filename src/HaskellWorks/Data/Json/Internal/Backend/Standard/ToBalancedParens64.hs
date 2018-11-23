@@ -3,17 +3,17 @@
 {-# LANGUAGE InstanceSigs          #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 
-module HaskellWorks.Data.Json.Internal.ToBalancedParens64
+module HaskellWorks.Data.Json.Internal.Backend.Standard.ToBalancedParens64
   ( ToBalancedParens64(..)
   ) where
 
 import Control.Applicative
 import Data.Word
-import HaskellWorks.Data.Json.Internal.MakeIndex
+import HaskellWorks.Data.Json.Internal.Backend.Standard.MakeIndex
 
-import qualified Data.ByteString.Lazy                        as LBS
-import qualified Data.Vector.Storable                        as DVS
-import qualified HaskellWorks.Data.Json.Internal.BlankedJson as J
+import qualified Data.ByteString.Lazy                                         as LBS
+import qualified Data.Vector.Storable                                         as DVS
+import qualified HaskellWorks.Data.Json.Internal.Backend.Standard.BlankedJson as J
 
 genBitWordsForever :: LBS.ByteString -> Maybe (Word8, LBS.ByteString)
 genBitWordsForever bs = LBS.uncons bs <|> Just (0, bs)

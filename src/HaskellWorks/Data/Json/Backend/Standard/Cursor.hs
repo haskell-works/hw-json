@@ -39,12 +39,12 @@ import HaskellWorks.Data.TreeCursor
 import HaskellWorks.Data.Uncons
 import Prelude                                      hiding (drop)
 
-import qualified Data.ByteString                      as BS
-import qualified Data.ByteString.Char8                as BSC
-import qualified Data.List                            as L
-import qualified Data.Vector.Storable                 as DVS
-import qualified HaskellWorks.Data.BalancedParens     as BP
-import qualified HaskellWorks.Data.Json.Internal.IbBp as J
+import qualified Data.ByteString                                       as BS
+import qualified Data.ByteString.Char8                                 as BSC
+import qualified Data.List                                             as L
+import qualified Data.Vector.Storable                                  as DVS
+import qualified HaskellWorks.Data.BalancedParens                      as BP
+import qualified HaskellWorks.Data.Json.Internal.Backend.Standard.IbBp as J
 
 data JsonCursor t v w = JsonCursor
   { cursorText     :: !t
