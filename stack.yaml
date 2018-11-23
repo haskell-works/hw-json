@@ -2,6 +2,7 @@ resolver: lts-12.14
 
 packages:
 - '.'
+- ../hw-prim
 
 extra-package-dbs: []
 

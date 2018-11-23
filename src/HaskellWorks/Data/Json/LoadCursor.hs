@@ -4,7 +4,6 @@
 
 module HaskellWorks.Data.Json.LoadCursor
   ( indexJsonCursor
-  , loadByteString
   , loadJsonStrict
   , loadJsonWithCsPoppyIndex
   , loadJsonWithIndex
@@ -36,8 +35,7 @@ import qualified Data.Vector.Storable     as DVS
 -- | Write out a vector verbatim into an open file handle.
 hPutVector :: forall a. Storable a => Handle -> DVS.Vector a -> IO ()
 hPutVector h v = withForeignPtr fp $ \p -> hPutBuf h (p `plusPtr` offset) sz
-      where
-        (fp, offset, n) = DVS.unsafeToForeignPtr v
+  where (fp, offset, n) = DVS.unsafeToForeignPtr v
         eltsize = sizeOf (undefined :: a)
         sz = n * eltsize
 
@@ -58,12 +56,6 @@ loadJsonStrict filename = do
   !cursor <- readJson filename
   let !jsonResult = (jsonIndexAt >=> jsonValueAt) cursor
   return $ (:[]) `fmap` jsonResult
-
-loadByteString :: FilePath -> IO BS.ByteString
-loadByteString filepath = do
-  (fptr :: ForeignPtr Word8, offset, size) <- mmapFileForeignPtr filepath ReadOnly Nothing
-  let !bs = BSI.fromForeignPtr (castForeignPtr fptr) offset size
-  return bs
 
 loadJsonRawWithIndex :: String -> IO (BS.ByteString, DVS.Vector Word64, DVS.Vector Word64)
 loadJsonRawWithIndex filename = do
