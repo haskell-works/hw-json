@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RankNTypes        #-}
 
-module HaskellWorks.Data.Json.Internal.MakeIndex
+module HaskellWorks.Data.Json.Internal.Backend.Standard.MakeIndex
   ( blankedJsonToInterestBits
   , byteStringToBits
   , blankedJsonToBalancedParens
@@ -102,17 +102,17 @@ data MiniBP = MiniN | MiniT | MiniF | MiniTF
 
 balancedParensOf :: Word8 -> MiniBP
 balancedParensOf c = case c of
-    d | d == _braceleft     -> MiniT
-    d | d == _braceright    -> MiniF
-    d | d == _bracketleft   -> MiniT
-    d | d == _bracketright  -> MiniF
-    d | d == _parenleft     -> MiniT
-    d | d == _parenright    -> MiniF
-    d | d == _t             -> MiniTF
-    d | d == _f             -> MiniTF
-    d | d == _1             -> MiniTF
-    d | d == _n             -> MiniTF
-    _ -> MiniN
+    d | d == _braceleft    -> MiniT
+    d | d == _braceright   -> MiniF
+    d | d == _bracketleft  -> MiniT
+    d | d == _bracketright -> MiniF
+    d | d == _parenleft    -> MiniT
+    d | d == _parenright   -> MiniF
+    d | d == _t            -> MiniTF
+    d | d == _f            -> MiniTF
+    d | d == _1            -> MiniTF
+    d | d == _n            -> MiniTF
+    _                      -> MiniN
 
 yieldBitsOfWord8 :: Word8 -> [Bool] -> [Bool]
 yieldBitsOfWord8 w =

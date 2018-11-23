@@ -4,7 +4,7 @@
 {-# LANGUAGE OverloadedStrings     #-}
 {-# LANGUAGE TypeSynonymInstances  #-}
 
-module HaskellWorks.Data.Json.Internal.Token.Tokenize
+module HaskellWorks.Data.Json.Internal.Backend.Standard.Token.Tokenize
     ( IsChar(..)
     , JsonToken(..)
     , ParseJson(..)

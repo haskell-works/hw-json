@@ -5,11 +5,11 @@ module HaskellWorks.Data.Json.Succinct.Cursor.BalancedParensSpec(spec) where
 
 import Data.String
 import HaskellWorks.Data.Bits.BitShown
-import HaskellWorks.Data.Json.Internal.MakeIndex
+import HaskellWorks.Data.Json.Internal.Backend.Standard.MakeIndex
 import Test.Hspec
 
-import qualified Data.ByteString                             as BS
-import qualified HaskellWorks.Data.Json.Internal.BlankedJson as J
+import qualified Data.ByteString                                              as BS
+import qualified HaskellWorks.Data.Json.Internal.Backend.Standard.BlankedJson as J
 
 {-# ANN module ("HLint: Ignore Redundant do"        :: String) #-}
 

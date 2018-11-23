@@ -1,12 +1,12 @@
 
-module HaskellWorks.Data.Json.Internal.BlankedJson
+module HaskellWorks.Data.Json.Internal.Backend.Standard.BlankedJson
   ( BlankedJson(..)
   , ToBlankedJson(..)
   , toBlankedJsonTyped
   ) where
 
 import HaskellWorks.Data.ByteString
-import HaskellWorks.Data.Json.Internal.Blank
+import HaskellWorks.Data.Json.Internal.Backend.Standard.Blank
 
 import qualified Data.ByteString as BS
 

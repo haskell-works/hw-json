@@ -3,18 +3,18 @@
 {-# LANGUAGE InstanceSigs          #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 
-module HaskellWorks.Data.Json.Internal.ToInterestBits64
+module HaskellWorks.Data.Json.Internal.Backend.Standard.ToInterestBits64
   ( ToInterestBits64(..)
   ) where
 
 import Control.Applicative
 import Data.ByteString.Internal
 import Data.Word
-import HaskellWorks.Data.Json.Internal.MakeIndex
+import HaskellWorks.Data.Json.Internal.Backend.Standard.MakeIndex
 
-import qualified Data.ByteString                             as BS
-import qualified Data.Vector.Storable                        as DVS
-import qualified HaskellWorks.Data.Json.Internal.BlankedJson as J
+import qualified Data.ByteString                                              as BS
+import qualified Data.Vector.Storable                                         as DVS
+import qualified HaskellWorks.Data.Json.Internal.Backend.Standard.BlankedJson as J
 
 class ToInterestBits64 a where
   toInterestBits64 :: a -> DVS.Vector Word64

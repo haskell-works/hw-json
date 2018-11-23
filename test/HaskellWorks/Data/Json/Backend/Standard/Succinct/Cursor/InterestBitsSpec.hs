@@ -2,17 +2,17 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 
-module HaskellWorks.Data.Json.Succinct.Cursor.InterestBitsSpec(spec) where
+module HaskellWorks.Data.Json.Backend.Standard.Succinct.Cursor.InterestBitsSpec(spec) where
 
 import Data.String
 import Data.Word
 import HaskellWorks.Data.Bits.BitShown
 import Test.Hspec
 
-import qualified Data.ByteString                                  as BS
-import qualified Data.Vector.Storable                             as DVS
-import qualified HaskellWorks.Data.Json.Internal.BlankedJson      as J
-import qualified HaskellWorks.Data.Json.Internal.ToInterestBits64 as J
+import qualified Data.ByteString                                                   as BS
+import qualified Data.Vector.Storable                                              as DVS
+import qualified HaskellWorks.Data.Json.Internal.Backend.Standard.BlankedJson      as J
+import qualified HaskellWorks.Data.Json.Internal.Backend.Standard.ToInterestBits64 as J
 
 {-# ANN module ("HLint: ignore Redundant do"        :: String) #-}
 
