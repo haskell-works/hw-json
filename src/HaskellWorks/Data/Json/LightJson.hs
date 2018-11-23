@@ -14,7 +14,7 @@ import Data.Word
 import Data.Word8
 import HaskellWorks.Data.AtLeastSize
 import HaskellWorks.Data.Entry
-import HaskellWorks.Data.Json.Internal.Words
+import HaskellWorks.Data.Json.Internal.Word8
 import HaskellWorks.Data.Micro
 import HaskellWorks.Data.Mini
 import HaskellWorks.Data.MQuery
