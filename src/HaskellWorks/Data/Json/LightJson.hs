@@ -13,23 +13,13 @@ import Data.String
 import Data.Word
 import Data.Word8
 import HaskellWorks.Data.AtLeastSize
-import HaskellWorks.Data.Bits.BitWise
-import HaskellWorks.Data.Drop
 import HaskellWorks.Data.Entry
-import HaskellWorks.Data.Json.Cursor
-import HaskellWorks.Data.Json.Internal.CharLike
 import HaskellWorks.Data.Json.Internal.Words
 import HaskellWorks.Data.Micro
 import HaskellWorks.Data.Mini
 import HaskellWorks.Data.MQuery
-import HaskellWorks.Data.Positioning
-import HaskellWorks.Data.RankSelect.Base.Rank0
-import HaskellWorks.Data.RankSelect.Base.Rank1
-import HaskellWorks.Data.RankSelect.Base.Select1
 import HaskellWorks.Data.Row
-import HaskellWorks.Data.TreeCursor
-import HaskellWorks.Data.Uncons
-import Prelude                                   hiding (drop)
+import Prelude                               hiding (drop)
 import Text.PrettyPrint.ANSI.Leijen
 
 import qualified Data.Attoparsec.ByteString.Char8 as ABC
@@ -37,7 +27,6 @@ import qualified Data.ByteString                  as BS
 import qualified Data.ByteString.Char8            as BSC
 import qualified Data.DList                       as DL
 import qualified Data.List                        as L
-import qualified HaskellWorks.Data.BalancedParens as BP
 
 data LightJson c
   = LightJsonString String
@@ -55,12 +44,6 @@ instance Eq (LightJson c) where
   (==) (LightJsonBool   a) (LightJsonBool   b) = a == b
   (==)  LightJsonNull       LightJsonNull      = True
   (==)  _                   _                  = False
-
--- instance Ord (LightJson c) where
---   compare (LightJsonString a) (LightJsonString b)  = a `compare` b
---   compare (LightJsonNumber a) (LightJsonNumber b)  = a `compare` b
---   compare (LightJsonBool   a) (LightJsonBool   b)  = a `compare` b
---   compare  LightJsonNull       LightJsonNull       = True
 
 data (LightJsonField c) = LightJsonField String (LightJson c)
 
@@ -81,15 +64,15 @@ slurpByteString :: BS.ByteString -> BS.ByteString
 slurpByteString bs = let (!cs, _) = BS.unfoldrN (BS.length bs) genString (InJson, bs) in cs
   where genString :: (JsonState, BS.ByteString) -> Maybe (Word8, (JsonState, BS.ByteString))
         genString (InJson, cs) = case BS.uncons cs of
-          Just (!e, !es) | e == _quotedbl     -> genString            (InString , es)
+          Just (!e, !es) | e == _quotedbl -> genString            (InString , es)
           -- TODO: Only match whitespace
-          Just (!_, !es) -> genString            (InJson   , es)
-          Nothing        -> Nothing
+          Just (!_, !es)                  -> genString            (InJson   , es)
+          Nothing                         -> Nothing
         genString (InString, ds) = case BS.uncons ds of
-          Just (!e, !es) | e == _backslash    -> genString            (Escaped  , es)
-          Just (!e, !_ ) | e == _quotedbl     -> Nothing
-          Just (e , !es) -> Just (e            , (InString , es))
-          Nothing        -> Nothing
+          Just (!e, !es) | e == _backslash -> genString            (Escaped  , es)
+          Just (!e, !_ ) | e == _quotedbl  -> Nothing
+          Just (e , !es)                   -> Just (e            , (InString , es))
+          Nothing                          -> Nothing
         genString (Escaped, ds) = case BS.uncons ds of
           Just (_ , !es) -> Just (_period      , (InString , es))
           Nothing        -> Nothing
@@ -99,14 +82,14 @@ slurpString :: BS.ByteString -> String
 slurpString bs = L.unfoldr genString (InJson, BSC.unpack bs)
   where genString :: (JsonState, String) -> Maybe (Char, (JsonState, String))
         genString (InJson, ds) = case ds of
-          (e:es) | e == '"'  -> genString  (InString , es)
-          (_:es) -> genString  (InJson   , es)
-          _      -> Nothing
+          (e:es) | e == '"' -> genString  (InString , es)
+          (_:es)            -> genString  (InJson   , es)
+          _                 -> Nothing
         genString (InString, ds) = case ds of
-          (e:es) | e == '\\'  -> genString  (Escaped  , es)
-          (e:_ ) | e == '"'   -> Nothing
-          (e:es) -> Just (e,   (InString , es))
-          _      -> Nothing
+          (e:es) | e == '\\' -> genString  (Escaped  , es)
+          (e:_ ) | e == '"'  -> Nothing
+          (e:es)             -> Just (e,   (InString , es))
+          _                  -> Nothing
         genString (Escaped, ds) = case ds of
           (_:es) -> Just ('.', (InString , es))
           _      -> Nothing
@@ -116,37 +99,15 @@ slurpNumber :: BS.ByteString -> BS.ByteString
 slurpNumber bs = let (!cs, _) = BS.unfoldrN (BS.length bs) genNumber (InJson, bs) in cs
     where genNumber :: (JsonState, BS.ByteString) -> Maybe (Word8, (JsonState, BS.ByteString))
           genNumber (InJson, cs) = case BS.uncons cs of
-            Just (!d, !ds) | isLeadingDigit d   -> Just (d           , (InNumber , ds))
-            Just (!d, !ds) -> Just (d           , (InJson   , ds))
-            Nothing        -> Nothing
+            Just (!d, !ds) | isLeadingDigit d -> Just (d           , (InNumber , ds))
+            Just (!d, !ds)                    -> Just (d           , (InJson   , ds))
+            Nothing                           -> Nothing
           genNumber (InNumber, cs) = case BS.uncons cs of
-            Just (!d, !ds) | isTrailingDigit d  -> Just (d           , (InNumber , ds))
-            Just (!d, !ds) | d == _quotedbl     -> Just (_parenleft  , (InString , ds))
-            _              -> Nothing
+            Just (!d, !ds) | isTrailingDigit d -> Just (d           , (InNumber , ds))
+            Just (!d, !ds) | d == _quotedbl    -> Just (_parenleft  , (InString , ds))
+            _                                  -> Nothing
           genNumber (_, _) = Nothing
 
-instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => LightJsonAt (JsonCursor BS.ByteString v w) where
-  lightJsonAt k = case uncons remainder of
-    Just (!c, _) | isLeadingDigit2 c  -> LightJsonNumber  (slurpNumber remainder)
-    Just (!c, _) | isQuotDbl c        -> LightJsonString  (slurpString remainder)
-    Just (!c, _) | isChar_t c         -> LightJsonBool    True
-    Just (!c, _) | isChar_f c         -> LightJsonBool    False
-    Just (!c, _) | isChar_n c         -> LightJsonNull
-    Just (!c, _) | isBraceLeft c      -> LightJsonObject (mapValuesFrom   (firstChild k))
-    Just (!c, _) | isBracketLeft c    -> LightJsonArray  (arrayValuesFrom (firstChild k))
-    Just _       -> LightJsonError "Invalid Json Type"
-    Nothing      -> LightJsonError "End of data"
-    where ik                = interests k
-          bpk               = balancedParens k
-          p                 = lastPositionOf (select1 ik (rank1 bpk (cursorRank k)))
-          remainder         = drop (toCount p) (cursorText k)
-          arrayValuesFrom   = L.unfoldr (fmap (id &&& nextSibling))
-          mapValuesFrom j   = pairwise (arrayValuesFrom j) >>= asField
-          pairwise (a:b:rs) = (a, b) : pairwise rs
-          pairwise _        = []
-          asField (a, b)    = case lightJsonAt a of
-                                LightJsonString s -> [(s, b)]
-                                _                 -> []
 
 toLightJsonField :: (String, LightJson c) -> LightJsonField c
 toLightJsonField (k, v) = LightJsonField k v

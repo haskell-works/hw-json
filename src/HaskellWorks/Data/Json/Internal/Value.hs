@@ -4,7 +4,6 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE OverloadedStrings     #-}
 {-# LANGUAGE ScopedTypeVariables   #-}
-{-# LANGUAGE TupleSections         #-}
 
 module HaskellWorks.Data.Json.Internal.Value where
 
