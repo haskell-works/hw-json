@@ -4,7 +4,6 @@
 
 module HaskellWorks.Data.Json.Load
   ( indexJson
-  , loadByteString
   , loadJson
   , loadJsonPartial
   , loadJsonStrict
@@ -16,9 +15,6 @@ module HaskellWorks.Data.Json.Load
 
 import Control.Monad
 import Data.Word
-import Foreign.ForeignPtr
-import Foreign.Ptr
-import Foreign.Storable
 import HaskellWorks.Data.BalancedParens.Simple
 import HaskellWorks.Data.Bits.BitShown
 import HaskellWorks.Data.FromByteString
@@ -31,31 +27,17 @@ import HaskellWorks.Data.Json.PartialValue
 import HaskellWorks.Data.Json.Value
 import HaskellWorks.Data.RankSelect.CsPoppy
 import HaskellWorks.Data.RankSelect.Poppy512
-import System.IO
 import System.IO.MMap
 
-import qualified Data.ByteString          as BS
-import qualified Data.ByteString.Internal as BSI
-import qualified Data.Vector.Storable     as DVS
-
--- | Write out a vector verbatim into an open file handle.
-hPutVector :: forall a. Storable a => Handle -> DVS.Vector a -> IO ()
-hPutVector h v = withForeignPtr fp $ \p -> hPutBuf h (p `plusPtr` offset) sz
-      where
-        (fp, offset, n) = DVS.unsafeToForeignPtr v
-        eltsize = sizeOf (undefined :: a)
-        sz = n * eltsize
-
--- | Write the vector verbatim to a file.
-writeVector :: forall a. Storable a => FilePath -> DVS.Vector a -> IO ()
-writeVector fp v = withFile fp WriteMode $ \h -> hPutVector h v
+import qualified Data.ByteString              as BS
+import qualified Data.ByteString.Internal     as BSI
+import qualified Data.Vector.Storable         as DVS
+import qualified HaskellWorks.Data.ByteString as BS
 
 readJson :: String -> IO (JsonCursor BS.ByteString (DVS.Vector Word64) (SimpleBalancedParens (DVS.Vector Word64)))
 readJson path = do
-  bs <- loadByteString path
-  putStrLn "Read file"
+  bs <- BS.mmap path
   let !cursor = fromByteString bs :: JsonCursor BS.ByteString (DVS.Vector Word64) (SimpleBalancedParens (DVS.Vector Word64))
-  putStrLn "Created cursor"
   return cursor
 
 loadJsonStrict :: String -> IO (Either DecodeError [JsonValue])
@@ -63,12 +45,6 @@ loadJsonStrict filename = do
   !cursor <- readJson filename
   let !jsonResult = (jsonIndexAt >=> jsonValueAt) cursor
   return $ (:[]) `fmap` jsonResult
-
-loadByteString :: FilePath -> IO BS.ByteString
-loadByteString filepath = do
-  (fptr :: ForeignPtr Word8, offset, size) <- mmapFileForeignPtr filepath ReadOnly Nothing
-  let !bs = BSI.fromForeignPtr (castForeignPtr fptr) offset size
-  return bs
 
 loadJsonRawWithIndex :: String -> IO (BS.ByteString, DVS.Vector Word64, DVS.Vector Word64)
 loadJsonRawWithIndex filename = do
@@ -114,8 +90,8 @@ indexJson filename = do
   JsonCursor _ ib (SimpleBalancedParens bp) _ <- readJson filename
   let wib = DVS.unsafeCast ib :: DVS.Vector Word8
   let wbp = DVS.unsafeCast bp :: DVS.Vector Word8
-  writeVector (filename ++ ".ib") wib
-  writeVector (filename ++ ".bp") wbp
+  BS.writeFile (filename ++ ".ib") (BS.toByteString wib)
+  BS.writeFile (filename ++ ".bp") (BS.toByteString wbp)
 
 loadJson :: String -> IO JsonPartialValue
 loadJson = loadJsonWithCsPoppyIndex
