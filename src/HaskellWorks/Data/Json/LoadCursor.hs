@@ -32,9 +32,7 @@ import qualified HaskellWorks.Data.ByteString as BS
 readJson :: String -> IO (JsonCursor BS.ByteString (DVS.Vector Word64) (SimpleBalancedParens (DVS.Vector Word64)))
 readJson path = do
   bs <- BS.readFile path
-  putStrLn "Read file"
   let !cursor = fromByteString bs :: JsonCursor BS.ByteString (DVS.Vector Word64) (SimpleBalancedParens (DVS.Vector Word64))
-  putStrLn "Created cursor"
   return cursor
 
 loadJsonStrict :: String -> IO (Either DecodeError [JsonValue])

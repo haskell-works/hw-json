@@ -2,11 +2,11 @@ resolver: lts-12.14
 
 packages:
 - '.'
-- ../hw-prim
 
 extra-package-dbs: []
 
 extra-deps:
 - hw-parser-0.1.0.0
+- hw-prim-0.6.2.20
 - hw-rankselect-0.12.0.4
 - hw-simd-0.1.1.2

@@ -15,7 +15,6 @@ module HaskellWorks.Data.Json.Load
 
 import Control.Monad
 import Data.Word
-import Foreign.ForeignPtr
 import HaskellWorks.Data.BalancedParens.Simple
 import HaskellWorks.Data.Bits.BitShown
 import HaskellWorks.Data.FromByteString
@@ -38,9 +37,7 @@ import qualified HaskellWorks.Data.ByteString as BS
 readJson :: String -> IO (JsonCursor BS.ByteString (DVS.Vector Word64) (SimpleBalancedParens (DVS.Vector Word64)))
 readJson path = do
   bs <- BS.mmap path
-  putStrLn "Read file"
   let !cursor = fromByteString bs :: JsonCursor BS.ByteString (DVS.Vector Word64) (SimpleBalancedParens (DVS.Vector Word64))
-  putStrLn "Created cursor"
   return cursor
 
 loadJsonStrict :: String -> IO (Either DecodeError [JsonValue])
