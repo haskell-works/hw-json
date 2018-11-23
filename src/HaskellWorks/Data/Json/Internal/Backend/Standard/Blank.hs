@@ -7,7 +7,7 @@ module HaskellWorks.Data.Json.Internal.Backend.Standard.Blank
 import Data.ByteString                       as BS
 import Data.Word
 import Data.Word8
-import HaskellWorks.Data.Json.Internal.Words
+import HaskellWorks.Data.Json.Internal.Word8
 import Prelude                               as P
 
 data BlankState

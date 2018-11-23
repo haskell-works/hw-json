@@ -26,7 +26,7 @@ import HaskellWorks.Data.Json.DecodeError
 import HaskellWorks.Data.Json.Internal.CharLike
 import HaskellWorks.Data.Json.Internal.Index
 import HaskellWorks.Data.Json.Internal.PartialIndex
-import HaskellWorks.Data.Json.Internal.Words
+import HaskellWorks.Data.Json.Internal.Word8
 import HaskellWorks.Data.Json.LightJson
 import HaskellWorks.Data.Json.PartialValue
 import HaskellWorks.Data.Json.Type
