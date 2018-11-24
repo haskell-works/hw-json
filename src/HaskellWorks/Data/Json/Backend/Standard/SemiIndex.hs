@@ -7,6 +7,7 @@ module HaskellWorks.Data.Json.Backend.Standard.SemiIndex
   ( semiIndexBuilder
   , SemiIndex(..)
   , buildSemiIndex
+  , stateMachine
   ) where
 
 import Control.Monad.ST
@@ -28,7 +29,7 @@ import qualified HaskellWorks.Data.Json.Internal.Word8                          
 {-# ANN module ("HLint: ignore Reduce duplication"  :: String) #-}
 {-# ANN module ("HLint: ignore Redundant do"        :: String) #-}
 
-data Context = InJson | InString | InEscape | InValue deriving (Eq, Enum, Bounded, Show)
+data State = InJson | InString | InEscape | InValue deriving (Eq, Enum, Bounded, Show)
 
 data SemiIndex v = SemiIndex
   { semiIndexIb :: !v
@@ -50,13 +51,13 @@ buildSemiIndex bs = DVS.createT $ do
   buildFromByteString mib mbp bs 0 InJson
 {-# INLINE buildSemiIndex #-}
 
-buildFromByteString :: W.Writer s -> W.Writer s -> BS.ByteString -> Int -> Context -> ST s (SemiIndex (DVS.MVector s Word64))
+buildFromByteString :: W.Writer s -> W.Writer s -> BS.ByteString -> Int -> State -> ST s (SemiIndex (DVS.MVector s Word64))
 buildFromByteString ib bp bs i = go
-  where go context = if i < BS.length bs
+  where go state = if i < BS.length bs
           then do
             let c = BSU.unsafeIndex bs i
             -- let bp0 = bp
-            case context of
+            case state of
               InJson -> if
                 | c == W8.openBracket || c == W8.openBrace -> do
                   W.unsafeWriteBit ib 1
@@ -97,3 +98,18 @@ buildFromByteString ib bp bs i = go
             bpv <- W.written bp
             return (SemiIndex ibv bpv)
 {-# INLINE buildFromByteString #-}
+
+stateMachine :: State -> Word8 -> (State, Bool, Bool)
+stateMachine InJson   c | W8.isOpen c         = (InJson  , True  , True  )
+stateMachine InJson   c | W8.isClose c        = (InJson  , False , False )
+stateMachine InJson   c | W8.isDelim c        = (InJson  , False , False )
+stateMachine InJson   c | W8.isValueChar c    = (InValue , True  , False )
+stateMachine InJson   c | W8.isDoubleQuote c  = (InString, True  , False )
+stateMachine InJson   _ | otherwise           = (InJson  , False , False )
+stateMachine InString c | W8.isDoubleQuote c  = (InJson  , False , False )
+stateMachine InString c | W8.isBackSlash c    = (InEscape, False , False )
+stateMachine InString _ | otherwise           = (InString, False , False )
+stateMachine InEscape _ | otherwise           = (InString, False , False )
+stateMachine InValue  c | W8.isValueChar c    = (InValue , False , False )
+stateMachine InValue  c | otherwise           = stateMachine InJson c
+{-# INLINE stateMachine #-}

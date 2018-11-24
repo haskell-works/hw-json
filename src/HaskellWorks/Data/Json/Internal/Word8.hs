@@ -1,8 +1,9 @@
 module HaskellWorks.Data.Json.Internal.Word8 where
 
-import Data.Char
 import Data.Word
-import Data.Word8
+import Data.Word8 hiding (isDigit)
+
+import qualified Data.Char as C
 
 isLeadingDigit :: Word8 -> Bool
 isLeadingDigit w = w == _hyphen || (w >= _0 && w <= _9)
@@ -20,28 +21,28 @@ wIsJsonNumberDigit :: Word8 -> Bool
 wIsJsonNumberDigit w = (w >= _0 && w <= _9) || w == _hyphen
 
 doubleQuote :: Word8
-doubleQuote = fromIntegral (ord '"')
+doubleQuote = fromIntegral (C.ord '"')
 
 backSlash :: Word8
-backSlash = fromIntegral (ord '\\')
+backSlash = fromIntegral (C.ord '\\')
 
 openBrace :: Word8
-openBrace = fromIntegral (ord '{')
+openBrace = fromIntegral (C.ord '{')
 
 closeBrace :: Word8
-closeBrace = fromIntegral (ord '}')
+closeBrace = fromIntegral (C.ord '}')
 
 openBracket :: Word8
-openBracket = fromIntegral (ord '[')
+openBracket = fromIntegral (C.ord '[')
 
 closeBracket :: Word8
-closeBracket = fromIntegral (ord ']')
+closeBracket = fromIntegral (C.ord ']')
 
 comma :: Word8
-comma = fromIntegral (ord ',')
+comma = fromIntegral (C.ord ',')
 
 colon :: Word8
-colon = fromIntegral (ord ':')
+colon = fromIntegral (C.ord ':')
 
 isPeriod :: Word8 -> Bool
 isPeriod w = w == 46
@@ -51,3 +52,21 @@ isMinus w = w == 45
 
 isPlus :: Word8 -> Bool
 isPlus w = w == 43
+
+isValueChar :: Word8 -> Bool
+isValueChar c = isAlphabetic c || isDigit c || isPeriod c || isMinus c || isPlus c
+
+isOpen :: Word8 -> Bool
+isOpen c = c == openBracket || c == openBrace
+
+isClose :: Word8 -> Bool
+isClose c = c == closeBracket || c == closeBrace
+
+isDelim :: Word8 -> Bool
+isDelim c = c == comma || c == colon
+
+isDoubleQuote :: Word8 -> Bool
+isDoubleQuote c = c == doubleQuote
+
+isBackSlash :: Word8 -> Bool
+isBackSlash c = c == backSlash
