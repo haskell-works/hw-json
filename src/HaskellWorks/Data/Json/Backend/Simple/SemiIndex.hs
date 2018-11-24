@@ -40,7 +40,6 @@ buildFromByteString :: W.Writer s -> W.Writer s -> BS.ByteString -> Int -> Conte
 buildFromByteString ib bp bs i context = if i < BS.length bs
   then do
     let c = BSU.unsafeIndex bs i
-    -- let bp0 = bp
     case context of
       InJson -> if
         | c == W8.openBracket || c == W8.openBrace -> do

@@ -121,16 +121,18 @@ fc cursor
 ### Querying example
 
 ```
-import           Control.Monad
+import Control.Monad
+import Data.Function
+import Data.List
+import HaskellWorks.Data.Json.Backend.Standard.Load
+import HaskellWorks.Data.Json.LoadCursor
+import HaskellWorks.Data.Json.PartialValue
+import HaskellWorks.Data.MQuery
+import HaskellWorks.Data.MQuery.Micro
+import HaskellWorks.Data.MQuery.Row
+import HaskellWorks.Diagnostics
+
 import qualified Data.DList as DL
-import           Data.Function
-import           Data.List
-import           HaskellWorks.Data.Json.LoadCursor
-import           HaskellWorks.Data.Micro
-import           HaskellWorks.Data.MQuery
-import           HaskellWorks.Data.Json.PartialValue
-import           HaskellWorks.Data.Row
-import           HaskellWorks.Diagnostics
 ```
 
 ```
