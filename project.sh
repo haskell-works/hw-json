@@ -7,6 +7,12 @@ STACK_FLAGS="
 "
 
 case $1 in
+  install)
+    stack install \
+      --test --no-run-tests --bench --no-run-benchmarks \
+      $STACK_FLAGS
+    ;;
+
   build)
     stack build \
       --test --no-run-tests --bench --no-run-benchmarks \

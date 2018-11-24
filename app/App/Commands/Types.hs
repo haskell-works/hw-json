@@ -6,6 +6,7 @@ module App.Commands.Types
 data CreateIndexOptions = CreateIndexOptions
   { _createIndexOptionsFilePath     :: FilePath
   , _createIndexOptionsBackend      :: String
+  , _createIndexOptionsMethod       :: String
   , _createIndexOptionsOutputIbFile :: Maybe FilePath
   , _createIndexOptionsOutputBpFile :: Maybe FilePath
   } deriving (Eq, Show)
