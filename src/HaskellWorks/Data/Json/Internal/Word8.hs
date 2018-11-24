@@ -13,6 +13,9 @@ isTrailingDigit w = w == _plus || w == _hyphen || (w >= _0 && w <= _9) || w == _
 isAlphabetic :: Word8 -> Bool
 isAlphabetic w = (w >= _A && w <= _Z) || (w >= _a && w <= _z)
 
+isDigit :: Word8 -> Bool
+isDigit w = w >= _0 && w <= _9
+
 wIsJsonNumberDigit :: Word8 -> Bool
 wIsJsonNumberDigit w = (w >= _0 && w <= _9) || w == _hyphen
 
@@ -39,3 +42,12 @@ comma = fromIntegral (ord ',')
 
 colon :: Word8
 colon = fromIntegral (ord ':')
+
+isPeriod :: Word8 -> Bool
+isPeriod w = w == 46
+
+isMinus :: Word8 -> Bool
+isMinus w = w == 45
+
+isPlus :: Word8 -> Bool
+isPlus w = w == 43
