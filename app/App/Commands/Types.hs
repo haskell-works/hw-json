@@ -3,8 +3,11 @@ module App.Commands.Types
   , DemoOptions(..)
   ) where
 
-newtype CreateIndexOptions = CreateIndexOptions
-  { _createIndexOptionsFilePath  :: FilePath
+data CreateIndexOptions = CreateIndexOptions
+  { _createIndexOptionsFilePath     :: FilePath
+  , _createIndexOptionsBackend      :: String
+  , _createIndexOptionsOutputIbFile :: Maybe FilePath
+  , _createIndexOptionsOutputBpFile :: Maybe FilePath
   } deriving (Eq, Show)
 
 newtype DemoOptions = DemoOptions
