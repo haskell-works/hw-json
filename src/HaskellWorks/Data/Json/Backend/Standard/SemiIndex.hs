@@ -28,7 +28,7 @@ import qualified HaskellWorks.Data.Json.Internal.Word8                          
 {-# ANN module ("HLint: ignore Reduce duplication"  :: String) #-}
 {-# ANN module ("HLint: ignore Redundant do"        :: String) #-}
 
-data Context = InJson | InString | InEscape | InValue deriving (Eq, Show)
+data Context = InJson | InString | InEscape | InValue deriving (Eq, Enum, Bounded, Show)
 
 data SemiIndex v = SemiIndex
   { semiIndexIb :: !v
