@@ -40,7 +40,6 @@ runCreateIndexStandard opts = do
   let outputBpFile = opts ^. L.outputBpFile & fromMaybe (filePath <> ".bp.idx")
   case opts ^. L.method of
     "original" -> do
-      IO.hPutStrLn IO.stderr "original"
       (fptr :: ForeignPtr Word8, offset, size) <- IO.mmapFileForeignPtr filePath IO.ReadOnly Nothing
       let !bs = BSI.fromForeignPtr (castForeignPtr fptr) offset size
       let STSI.SemiIndex _ ib bp = STSI.buildSemiIndex bs
@@ -50,7 +49,6 @@ runCreateIndexStandard opts = do
       B.hPutBuilder h vb
       IO.hClose h
     "alternate" -> do
-      IO.hPutStrLn IO.stderr "alternate"
       (fptr :: ForeignPtr Word8, offset, size) <- IO.mmapFileForeignPtr filePath IO.ReadOnly Nothing
       let !bs = BSI.fromForeignPtr (castForeignPtr fptr) offset size
       let STSI.SemiIndex _ ib bp = STSI.buildSemiIndex bs
