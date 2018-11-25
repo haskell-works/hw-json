@@ -27,7 +27,7 @@ dependencies:
 - bytestring          >= 0.10.6     && < 0.11
 - hw-balancedparens   >= 0.2.0.1    && < 0.3
 - hw-bits             >= 0.7.0.2    && < 0.8
-- hw-prim             >= 0.6.2.0    && < 0.7
+- hw-prim             >= 0.6.2.21   && < 0.7
 - hw-rankselect       >= 0.10       && < 0.13
 - hw-rankselect-base  >= 0.3        && < 0.4
 - hw-simd             >= 0.1.1.2    && < 0.2
