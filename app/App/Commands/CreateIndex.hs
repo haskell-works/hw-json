@@ -14,10 +14,8 @@ import Foreign
 import Options.Applicative hiding (columns)
 
 import qualified App.Lens                                                            as L
-import qualified Data.ByteString.Builder                                             as B
 import qualified Data.ByteString.Internal                                            as BSI
 import qualified Data.ByteString.Lazy                                                as LBS
-import qualified Data.Vector.Storable                                                as DVS
 import qualified HaskellWorks.Data.ByteString.Lazy                                   as LBS
 import qualified HaskellWorks.Data.Json.Backend.Simple.SemiIndex                     as SISI
 import qualified HaskellWorks.Data.Json.Internal.Backend.Standard.Blank              as J
@@ -39,11 +37,8 @@ runCreateIndexStandard opts = do
   let blankedJson = J.blankJson [bs]
   let ibs = LBS.fromChunks (J.blankedJsonToInterestBits blankedJson)
   let bps = J.toBalancedParens64 (J.BlankedJson blankedJson)
-  let vb = DVS.foldl (\b a -> b <> B.word64LE a) mempty bps
   LBS.writeFile outputIbFile ibs
-  h <- IO.openFile outputBpFile IO.WriteMode
-  B.hPutBuilder h vb
-  IO.hClose h
+  LBS.writeFile outputBpFile (LBS.toLazyByteString bps)
 
 runCreateIndexSimple :: CreateIndexOptions -> IO ()
 runCreateIndexSimple opts = do
