@@ -8,7 +8,7 @@ fi
 
 _repo_name=$(basename `git rev-parse --show-toplevel`)
 
-_version="$(cat package.yaml | grep '^version:' | head -n 1 | cut -d : -f 2 | xargs)"
+_version="$(cat $(ls *.cabal | head -n 1) | grep '^version:' | head -n 1 | cut -d : -f 2 | xargs)"
 
 _branch=$(git rev-parse --abbrev-ref HEAD)
 _branch_prefix=${_branch%-branch}
