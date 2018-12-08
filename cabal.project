@@ -1,0 +1,18 @@
+packages: .
+
+optimization: 2
+
+package bits-extra
+  flags: +bmi2
+
+package hw-rankselect
+  flags: +bmi2
+
+package hw-rankselect-base
+  flags: +bmi2
+
+package hw-simd
+  flags: +bmi2
+
+package hw-json-simd
+  flags: +avx2
