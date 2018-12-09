@@ -11,7 +11,7 @@
 
 module HaskellWorks.Data.Json.Backend.Standard.Succinct.CursorSpec(spec) where
 
-import Data.Proxy
+import Data.String
 import Data.Word
 import HaskellWorks.Data.BalancedParens.Simple
 import HaskellWorks.Data.Json.Backend.Standard.Succinct.GenCursorTest
@@ -28,5 +28,5 @@ import qualified Data.Vector.Storable as DVS
 
 spec :: Spec
 spec = describe "HaskellWorks.Data.Json.Succinct.CursorSpec" $ do
-  genTest "DVS.Vector Word64" (Proxy :: Proxy (JsonCursor BS.ByteString (DVS.Vector Word64) (SimpleBalancedParens (DVS.Vector Word64))))
-  genTest "Poppy512"          (Proxy :: Proxy (JsonCursor BS.ByteString Poppy512 (SimpleBalancedParens (DVS.Vector Word64))))
+  genTest "DVS.Vector Word64" (fromString :: String -> JsonCursor BS.ByteString (DVS.Vector Word64) (SimpleBalancedParens (DVS.Vector Word64)))
+  genTest "Poppy512"          (fromString :: String -> JsonCursor BS.ByteString Poppy512 (SimpleBalancedParens (DVS.Vector Word64)))
