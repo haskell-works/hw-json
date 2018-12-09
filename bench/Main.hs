@@ -8,26 +8,21 @@ import Criterion.Main
 import Data.List
 import Data.Word
 import Foreign
-import HaskellWorks.Data.BalancedParens.Simple
-import HaskellWorks.Data.FromByteString
-import HaskellWorks.Data.Json.Cursor
 import HaskellWorks.Data.Json.Internal.Backend.Standard.Blank
 import HaskellWorks.Data.Json.Internal.Backend.Standard.MakeIndex
 import System.IO.MMap
 
-import qualified Data.ByteString          as BS
-import qualified Data.ByteString.Internal as BSI
-import qualified Data.Vector.Storable     as DVS
-import qualified System.Directory         as IO
+import qualified Data.ByteString                              as BS
+import qualified Data.ByteString.Internal                     as BSI
+import qualified HaskellWorks.Data.Json.Backend.Standard.Fast as FAST
+import qualified HaskellWorks.Data.Json.Backend.Standard.Slow as SLOW
+import qualified System.Directory                             as IO
 
 setupEnvJson :: FilePath -> IO BS.ByteString
 setupEnvJson filepath = do
   (fptr :: ForeignPtr Word8, offset, size) <- mmapFileForeignPtr filepath ReadOnly Nothing
   let !bs = BSI.fromForeignPtr (castForeignPtr fptr) offset size
   return bs
-
-loadJson :: BS.ByteString -> JsonCursor BS.ByteString (DVS.Vector Word64) (SimpleBalancedParens (DVS.Vector Word64))
-loadJson bs = fromByteString bs :: JsonCursor BS.ByteString (DVS.Vector Word64) (SimpleBalancedParens (DVS.Vector Word64))
 
 jsonToInterestBits3 :: [BS.ByteString] -> [BS.ByteString]
 jsonToInterestBits3 = blankedJsonToInterestBits . blankJson
@@ -56,13 +51,14 @@ makeBenchJsonToInterestBits = do
 
   return (join benchmarks)
 
-makeBenchLoadJson :: IO [Benchmark]
-makeBenchLoadJson = do
+makeBenchMakeCursor :: IO [Benchmark]
+makeBenchMakeCursor = do
   entries <- IO.listDirectory "corpus/bench"
   let files = ("corpus/bench/" ++) <$> (".json" `isSuffixOf`) `filter` entries
   benchmarks <- forM files $ \file -> return
     [ env (setupEnvJson file) $ \bs -> bgroup file
-      [ bench "Run blankJson" (whnf loadJson bs)
+      [ bench "Run slow make cursor" (whnf SLOW.makeCursor bs)
+      , bench "Run fast make cursor" (whnf FAST.makeCursor bs)
       ]
     ]
 
@@ -73,6 +69,6 @@ main = do
   benchmarks <- mconcat <$> sequence
     [ makeBenchBlankJson
     , makeBenchJsonToInterestBits
-    , makeBenchLoadJson
+    , makeBenchMakeCursor
     ]
   defaultMain benchmarks
