@@ -12,6 +12,7 @@
 module HaskellWorks.Data.Json.TypeSpec (spec) where
 
 import Control.Monad
+import Data.Proxy
 import Data.String
 import Data.Word
 import HaskellWorks.Data.BalancedParens.BalancedParens
@@ -39,8 +40,8 @@ ns = TC.nextSibling
 
 spec :: Spec
 spec = describe "HaskellWorks.Data.Json.Succinct.CursorSpec" $ do
-  genSpec "DVS.Vector Word64" (undefined :: JsonCursor BS.ByteString (DVS.Vector Word64) (SimpleBalancedParens (DVS.Vector Word64)))
-  genSpec "Poppy512"          (undefined :: JsonCursor BS.ByteString Poppy512 (SimpleBalancedParens (DVS.Vector Word64)))
+  genSpec "DVS.Vector Word64" (Proxy :: Proxy (JsonCursor BS.ByteString (DVS.Vector Word64) (SimpleBalancedParens (DVS.Vector Word64))))
+  genSpec "Poppy512"          (Proxy :: Proxy (JsonCursor BS.ByteString Poppy512 (SimpleBalancedParens (DVS.Vector Word64))))
 
 genSpec :: forall t u.
   ( Eq                t
@@ -54,7 +55,7 @@ genSpec :: forall t u.
   , TestBit           u
   , FromForeignRegion (JsonCursor BS.ByteString t u)
   , IsString          (JsonCursor BS.ByteString t u))
-  => String -> (JsonCursor BS.ByteString t u) -> SpecWith ()
+  => String -> Proxy (JsonCursor BS.ByteString t u) -> SpecWith ()
 genSpec t _ = do
   describe ("Json cursor of type " ++ t) $ do
     let forJson (cursor :: JsonCursor BS.ByteString t u) f = describe ("of value " ++ show cursor) (f cursor)

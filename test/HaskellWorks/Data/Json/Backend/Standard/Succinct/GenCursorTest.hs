@@ -12,6 +12,7 @@
 module HaskellWorks.Data.Json.Backend.Standard.Succinct.GenCursorTest(genTest) where
 
 import Control.Monad
+import Data.Proxy
 import Data.String
 import HaskellWorks.Data.BalancedParens.BalancedParens
 import HaskellWorks.Data.Bits.BitWise
@@ -49,8 +50,8 @@ genTest :: forall t u.
   , TestBit           u
   , FromForeignRegion (JsonCursor BS.ByteString t u)
   , IsString          (JsonCursor BS.ByteString t u))
-  => String -> (JsonCursor BS.ByteString t u) -> SpecWith ()
-genTest t _ = do
+  => String -> Proxy (JsonCursor BS.ByteString t u) -> SpecWith ()
+genTest t Proxy = do
   describe ("Json cursor of type " ++ t) $ do
     describe "For empty json array" $ do
       let cursor =  "[null]" :: JsonCursor BS.ByteString t u
