@@ -14,8 +14,8 @@ case "$cmd" in
     ;;
 
   build)
-    cabal new-build \
-      --test --no-run-tests --bench --no-run-benchmarks \
+    cabal new-build all \
+      --disable-tests --disable-benchmarks \
       $CABAL_FLAGS "$@"
     ;;
 

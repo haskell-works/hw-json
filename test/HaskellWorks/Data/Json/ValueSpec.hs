@@ -12,12 +12,8 @@
 module HaskellWorks.Data.Json.ValueSpec (spec) where
 
 import Control.Monad
-import Data.String
-import Data.Word
 import HaskellWorks.Data.BalancedParens.BalancedParens
-import HaskellWorks.Data.BalancedParens.Simple
 import HaskellWorks.Data.Bits.BitWise
-import HaskellWorks.Data.FromForeignRegion
 import HaskellWorks.Data.Json.Cursor
 import HaskellWorks.Data.Json.DecodeError
 import HaskellWorks.Data.Json.Internal.Index
@@ -25,12 +21,12 @@ import HaskellWorks.Data.Json.Value
 import HaskellWorks.Data.RankSelect.Base.Rank0
 import HaskellWorks.Data.RankSelect.Base.Rank1
 import HaskellWorks.Data.RankSelect.Base.Select1
-import HaskellWorks.Data.RankSelect.Poppy512
 import Test.Hspec
 
-import qualified Data.ByteString              as BS
-import qualified Data.Vector.Storable         as DVS
-import qualified HaskellWorks.Data.TreeCursor as TC
+import qualified Data.ByteString                              as BS
+import qualified HaskellWorks.Data.Json.Backend.Standard.Fast as FAST
+import qualified HaskellWorks.Data.Json.Backend.Standard.Slow as SLOW
+import qualified HaskellWorks.Data.TreeCursor                 as TC
 
 {-# ANN module ("HLint: ignore Redundant do"        :: String) #-}
 {-# ANN module ("HLint: ignore Reduce duplication"  :: String) #-}
@@ -41,8 +37,8 @@ ns = TC.nextSibling
 
 spec :: Spec
 spec = describe "HaskellWorks.Data.Json.ValueSpec" $ do
-  genSpec "DVS.Vector Word64" (undefined :: JsonCursor BS.ByteString (DVS.Vector Word64) (SimpleBalancedParens (DVS.Vector Word64)))
-  genSpec "Poppy512"          (undefined :: JsonCursor BS.ByteString Poppy512 (SimpleBalancedParens (DVS.Vector Word64)))
+  genSpec "DVS.Vector Word64" SLOW.makeCursor
+  genSpec "Poppy512"          FAST.makeCursor
 
 jsonValueVia  ::
   ( BalancedParens u
@@ -64,13 +60,11 @@ genSpec :: forall t u.
   , Rank0             u
   , Rank1             u
   , BalancedParens    u
-  , TestBit           u
-  , FromForeignRegion (JsonCursor BS.ByteString t u)
-  , IsString          (JsonCursor BS.ByteString t u))
-  => String -> (JsonCursor BS.ByteString t u) -> SpecWith ()
-genSpec t _ = do
+  , TestBit           u)
+  => String -> (String -> JsonCursor BS.ByteString t u) -> SpecWith ()
+genSpec t makeCursor = do
   describe ("Json cursor of type " ++ t) $ do
-    let forJson (cursor :: JsonCursor BS.ByteString t u) f = describe ("of value " ++ show cursor) (f cursor)
+    let forJson s f = describe ("of value " ++ show s) (f (makeCursor s))
     forJson "{}" $ \cursor -> do
       it "should have correct value"      $ jsonValueVia (Just cursor) `shouldBe` Right (JsonObject [])
     forJson " {}" $ \cursor -> do
@@ -95,15 +89,15 @@ genSpec t _ = do
         jsonValueVia ((fc >=> ns)   cursor) `shouldBe` Right (                     JsonObject [("field", JsonNumber 1)] )
         jsonValueVia (Just          cursor) `shouldBe` Right (JsonArray [JsonNull, JsonObject [("field", JsonNumber 1)]])
     describe "For empty json array" $ do
-      let cursor =  "[]" :: JsonCursor BS.ByteString t u
+      let cursor = makeCursor "[]"
       it "can navigate down and forwards" $ do
         jsonValueVia (Just cursor) `shouldBe` Right (JsonArray [])
     describe "For empty json array" $ do
-      let cursor =  "[null]" :: JsonCursor BS.ByteString t u
+      let cursor = makeCursor "[null]"
       it "can navigate down and forwards" $ do
         jsonValueVia (Just cursor) `shouldBe` Right (JsonArray [JsonNull])
     describe "For sample Json" $ do
-      let cursor =  "{ \
+      let cursor = makeCursor "{ \
                     \    \"widget\": { \
                     \        \"debug\": \"on\", \
                     \        \"window\": { \

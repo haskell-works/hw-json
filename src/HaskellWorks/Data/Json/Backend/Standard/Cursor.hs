@@ -12,16 +12,11 @@ module HaskellWorks.Data.Json.Backend.Standard.Cursor
 
 import Control.Arrow
 import Control.Monad
-import Data.ByteString.Internal                     as BSI
 import Data.Char
 import Data.String
-import Data.Word
 import Data.Word8
-import Foreign.ForeignPtr
 import HaskellWorks.Data.Bits.BitWise
 import HaskellWorks.Data.Drop
-import HaskellWorks.Data.FromByteString
-import HaskellWorks.Data.FromForeignRegion
 import HaskellWorks.Data.Json.DecodeError
 import HaskellWorks.Data.Json.Internal.CharLike
 import HaskellWorks.Data.Json.Internal.Index
@@ -34,17 +29,13 @@ import HaskellWorks.Data.Positioning
 import HaskellWorks.Data.RankSelect.Base.Rank0
 import HaskellWorks.Data.RankSelect.Base.Rank1
 import HaskellWorks.Data.RankSelect.Base.Select1
-import HaskellWorks.Data.RankSelect.Poppy512
 import HaskellWorks.Data.TreeCursor
 import HaskellWorks.Data.Uncons
 import Prelude                                      hiding (drop)
 
-import qualified Data.ByteString                                       as BS
-import qualified Data.ByteString.Char8                                 as BSC
-import qualified Data.List                                             as L
-import qualified Data.Vector.Storable                                  as DVS
-import qualified HaskellWorks.Data.BalancedParens                      as BP
-import qualified HaskellWorks.Data.Json.Internal.Backend.Standard.IbBp as J
+import qualified Data.ByteString                  as BS
+import qualified Data.List                        as L
+import qualified HaskellWorks.Data.BalancedParens as BP
 
 data JsonCursor t v w = JsonCursor
   { cursorText     :: !t
@@ -53,36 +44,6 @@ data JsonCursor t v w = JsonCursor
   , cursorRank     :: !Count
   }
   deriving (Eq, Show)
-
-instance FromByteString (JsonCursor BS.ByteString (DVS.Vector Word64) (BP.SimpleBalancedParens (DVS.Vector Word64))) where
-  fromByteString bs = JsonCursor
-    { cursorText      = bs
-    , interests       = ib
-    , balancedParens  = BP.SimpleBalancedParens bp
-    , cursorRank      = 1
-    }
-    where J.IbBp ib bp = J.toIbBp bs
-
-instance FromByteString (JsonCursor BS.ByteString Poppy512 (BP.SimpleBalancedParens (DVS.Vector Word64))) where
-  fromByteString bs = JsonCursor
-    { cursorText      = bs
-    , interests       = makePoppy512 ib
-    , balancedParens  = BP.SimpleBalancedParens bp
-    , cursorRank      = 1
-    }
-    where J.IbBp ib bp = J.toIbBp bs
-
-instance IsString (JsonCursor BS.ByteString (DVS.Vector Word64) (BP.SimpleBalancedParens (DVS.Vector Word64))) where
-  fromString = fromByteString . BSC.pack
-
-instance IsString (JsonCursor BS.ByteString Poppy512 (BP.SimpleBalancedParens (DVS.Vector Word64))) where
-  fromString = fromByteString . BSC.pack
-
-instance FromForeignRegion (JsonCursor BS.ByteString (DVS.Vector Word64) (BP.SimpleBalancedParens (DVS.Vector Word64))) where
-  fromForeignRegion (fptr, offset, size) = fromByteString (BSI.fromForeignPtr (castForeignPtr fptr) offset size)
-
-instance FromForeignRegion (JsonCursor BS.ByteString Poppy512 (BP.SimpleBalancedParens (DVS.Vector Word64))) where
-  fromForeignRegion (fptr, offset, size) = fromByteString (BSI.fromForeignPtr (castForeignPtr fptr) offset size)
 
 instance (BP.BalancedParens u, Rank1 u, Rank0 u) => TreeCursor (JsonCursor t v u) where
   firstChild :: JsonCursor t v u -> Maybe (JsonCursor t v u)

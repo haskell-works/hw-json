@@ -19,8 +19,9 @@ import HaskellWorks.Data.FromByteString
 import HaskellWorks.Data.Json.Cursor
 import Test.Hspec
 
-import qualified Data.ByteString      as BS
-import qualified Data.Vector.Storable as DVS
+import qualified Data.ByteString                              as BS
+import qualified Data.Vector.Storable                         as DVS
+import qualified HaskellWorks.Data.Json.Backend.Standard.Slow as SLOW
 
 {-# ANN module ("HLint: ignore Redundant do"        :: String) #-}
 {-# ANN module ("HLint: ignore Reduce duplication"  :: String) #-}
@@ -34,7 +35,7 @@ spec = describe "HaskellWorks.Data.Json.Corpus" $ do
     inInterestBalancedParensBS  <- BS.readFile "corpus/5000B.bp"
     let inInterestBits            = fromBitTextByteString inInterestBitsBS
     let inInterestBalancedParens  = fromBitTextByteString inInterestBalancedParensBS
-    let !cursor = fromByteString inJsonBS :: JsonCursor BS.ByteString (DVS.Vector Word64) (SimpleBalancedParens (DVS.Vector Word64))
+    let !cursor = SLOW.makeCursor inJsonBS
     let text                    = cursorText      cursor
     let ib                      = interests       cursor
     let SimpleBalancedParens bp = balancedParens  cursor
@@ -47,7 +48,7 @@ spec = describe "HaskellWorks.Data.Json.Corpus" $ do
     inInterestBalancedParensBS  <- BS.readFile "corpus/issue-0001.bp"
     let inInterestBits            = fromBitTextByteString inInterestBitsBS
     let inInterestBalancedParens  = fromBitTextByteString inInterestBalancedParensBS
-    let !cursor = fromByteString inJsonBS :: JsonCursor BS.ByteString (DVS.Vector Word64) (SimpleBalancedParens (DVS.Vector Word64))
+    let !cursor = SLOW.makeCursor inJsonBS
     let text                    = cursorText      cursor
     let ib                      = interests       cursor
     let SimpleBalancedParens bp = balancedParens  cursor
