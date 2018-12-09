@@ -70,9 +70,11 @@ library
       HaskellWorks.Data.Json
       HaskellWorks.Data.Json.Backend.Simple.SemiIndex
       HaskellWorks.Data.Json.Backend.Standard.Cursor
+      HaskellWorks.Data.Json.Backend.Standard.Fast
       HaskellWorks.Data.Json.Backend.Standard.Load
       HaskellWorks.Data.Json.Backend.Standard.LoadCursor
       HaskellWorks.Data.Json.Backend.Standard.SemiIndex
+      HaskellWorks.Data.Json.Backend.Standard.Slow
       HaskellWorks.Data.Json.Cursor
       HaskellWorks.Data.Json.DecodeError
       HaskellWorks.Data.Json.FromValue
