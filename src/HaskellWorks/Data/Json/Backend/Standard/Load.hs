@@ -17,7 +17,6 @@ import Control.Monad
 import Data.Word
 import HaskellWorks.Data.BalancedParens.Simple
 import HaskellWorks.Data.Bits.BitShown
-import HaskellWorks.Data.FromByteString
 import HaskellWorks.Data.FromForeignRegion
 import HaskellWorks.Data.Json.Cursor
 import HaskellWorks.Data.Json.DecodeError
@@ -29,15 +28,16 @@ import HaskellWorks.Data.RankSelect.CsPoppy
 import HaskellWorks.Data.RankSelect.Poppy512
 import System.IO.MMap
 
-import qualified Data.ByteString              as BS
-import qualified Data.ByteString.Internal     as BSI
-import qualified Data.Vector.Storable         as DVS
-import qualified HaskellWorks.Data.ByteString as BS
+import qualified Data.ByteString                              as BS
+import qualified Data.ByteString.Internal                     as BSI
+import qualified Data.Vector.Storable                         as DVS
+import qualified HaskellWorks.Data.ByteString                 as BS
+import qualified HaskellWorks.Data.Json.Backend.Standard.Slow as SLOW
 
 readJson :: String -> IO (JsonCursor BS.ByteString (DVS.Vector Word64) (SimpleBalancedParens (DVS.Vector Word64)))
 readJson path = do
   bs <- BS.mmap path
-  let !cursor = fromByteString bs :: JsonCursor BS.ByteString (DVS.Vector Word64) (SimpleBalancedParens (DVS.Vector Word64))
+  let !cursor = SLOW.makeCursor bs
   return cursor
 
 loadJsonStrict :: String -> IO (Either DecodeError [JsonValue])

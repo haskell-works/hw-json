@@ -12,10 +12,8 @@
 module HaskellWorks.Data.Json.Backend.Standard.Succinct.GenCursorTest(genTest) where
 
 import Control.Monad
-import Data.String
 import HaskellWorks.Data.BalancedParens.BalancedParens
 import HaskellWorks.Data.Bits.BitWise
-import HaskellWorks.Data.FromForeignRegion
 import HaskellWorks.Data.Json.Cursor
 import HaskellWorks.Data.Json.Internal.Backend.Standard.Cursor.Token
 import HaskellWorks.Data.Json.Internal.Index
@@ -46,9 +44,7 @@ genTest :: forall t u.
   , Rank0             u
   , Rank1             u
   , BalancedParens    u
-  , TestBit           u
-  , FromForeignRegion (JsonCursor BS.ByteString t u)
-  , IsString          (JsonCursor BS.ByteString t u))
+  , TestBit           u)
   => String -> (String -> JsonCursor BS.ByteString t u) -> SpecWith ()
 genTest t mkCursor = do
   describe ("Json cursor of type " ++ t) $ do

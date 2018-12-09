@@ -27,9 +27,11 @@ import HaskellWorks.Data.RankSelect.Base.Select1
 import HaskellWorks.Data.RankSelect.Poppy512
 import Test.Hspec
 
-import qualified Data.ByteString              as BS
-import qualified Data.Vector.Storable         as DVS
-import qualified HaskellWorks.Data.TreeCursor as TC
+import qualified Data.ByteString                              as BS
+import qualified Data.Vector.Storable                         as DVS
+import qualified HaskellWorks.Data.Json.Backend.Standard.Fast as FAST
+import qualified HaskellWorks.Data.Json.Backend.Standard.Slow as SLOW
+import qualified HaskellWorks.Data.TreeCursor                 as TC
 
 {-# ANN module ("HLint: ignore Redundant do"        :: String) #-}
 {-# ANN module ("HLint: ignore Reduce duplication"  :: String) #-}
@@ -40,8 +42,8 @@ ns = TC.nextSibling
 
 spec :: Spec
 spec = describe "HaskellWorks.Data.Json.Succinct.CursorSpec" $ do
-  genSpec "DVS.Vector Word64" (Proxy :: Proxy (JsonCursor BS.ByteString (DVS.Vector Word64) (SimpleBalancedParens (DVS.Vector Word64))))
-  genSpec "Poppy512"          (Proxy :: Proxy (JsonCursor BS.ByteString Poppy512 (SimpleBalancedParens (DVS.Vector Word64))))
+  genSpec "DVS.Vector Word64" SLOW.makeCursor
+  genSpec "Poppy512"          FAST.makeCursor
 
 genSpec :: forall t u.
   ( Eq                t
@@ -52,13 +54,11 @@ genSpec :: forall t u.
   , Rank0             u
   , Rank1             u
   , BalancedParens    u
-  , TestBit           u
-  , FromForeignRegion (JsonCursor BS.ByteString t u)
-  , IsString          (JsonCursor BS.ByteString t u))
-  => String -> Proxy (JsonCursor BS.ByteString t u) -> SpecWith ()
-genSpec t _ = do
+  , TestBit           u)
+  => String -> (String -> JsonCursor BS.ByteString t u) -> SpecWith ()
+genSpec t makeCursor = do
   describe ("Json cursor of type " ++ t) $ do
-    let forJson (cursor :: JsonCursor BS.ByteString t u) f = describe ("of value " ++ show cursor) (f cursor)
+    let forJson s f = describe ("of value " ++ show s) (f (makeCursor s))
     forJson "{}" $ \cursor -> do
       it "should have correct type"       $         jsonTypeAt  cursor `shouldBe` Just JsonTypeObject
     forJson " {}" $ \cursor -> do
@@ -85,14 +85,14 @@ genSpec t _ = do
       it "cursor can navigate to first child of object at second child of array" $ do
         (fc >=> ns >=> fc >=> ns >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeNumber
     describe "For empty json array" $ do
-      let cursor =  "[null]" :: JsonCursor BS.ByteString t u
+      let cursor = makeCursor "[null]"
       it "can navigate down and forwards" $ do
         (                     jsonTypeAt) cursor `shouldBe` Just JsonTypeArray
         (fc               >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeNull
         (fc >=> ns        >=> jsonTypeAt) cursor `shouldBe` Nothing
         (fc >=> ns >=> ns >=> jsonTypeAt) cursor `shouldBe` Nothing
     describe "For sample Json" $ do
-      let cursor =  "{ \
+      let cursor = makeCursor "{ \
                     \    \"widget\": { \
                     \        \"debug\": \"on\", \
                     \        \"window\": { \
