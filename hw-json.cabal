@@ -1,4 +1,4 @@
-cabal-version: 1.12
+cabal-version:  2.2
 
 name:           hw-json
 version:        0.9.0.1
@@ -10,7 +10,7 @@ bug-reports:    https://github.com/haskell-works/hw-json/issues
 author:         John Ky
 maintainer:     newhoggy@gmail.com
 copyright:      2016 John Ky
-license:        BSD3
+license:        BSD-3-Clause
 license-file:   LICENSE
 build-type:     Simple
 extra-source-files:
@@ -37,17 +37,13 @@ flag sse42
   manual: False
   default: False
 
-library
-  hs-source-dirs:
-      src
-  ghc-options: -Wall -O2 -msse4.2
+common deps
   build-depends:
-      ansi-wl-pprint      >= 0.6.8.2    && < 0.7
+      base                >= 4          && < 5
+    , ansi-wl-pprint      >= 0.6.8.2    && < 0.7
     , array               >= 0.5        && < 0.6
     , attoparsec          >= 0.13       && < 0.14
-    , base                >= 4          && < 5
     , bytestring          >= 0.10.6     && < 0.11
-    , containers          >= 0.5        && < 0.7
     , dlist               >= 0.8        && < 0.9
     , hw-balancedparens   >= 0.2.0.1    && < 0.3
     , hw-bits             >= 0.7.0.2    && < 0.8
@@ -61,6 +57,13 @@ library
     , text                >= 1.2        && < 1.3
     , vector              >= 0.12       && < 0.13
     , word8               >= 0.1        && < 0.2
+
+library
+  import: deps
+  hs-source-dirs:
+      src
+  ghc-options: -Wall -O2 -msse4.2
+
   if (flag(sse42))
     ghc-options: -mbmi2
   if (flag(bmi2)) && (impl(ghc >=8.4.1))
@@ -102,9 +105,12 @@ library
       HaskellWorks.Data.Json.Value
   other-modules:
       Paths_hw_json
+  autogen-modules:
+      Paths_hw_json
   default-language: Haskell2010
 
 executable hw-json
+  import: deps
   main-is: Main.hs
   other-modules:
       App.Commands
@@ -112,27 +118,14 @@ executable hw-json
       App.Commands.Demo
       App.Commands.Types
       App.Lens
-      Paths_hw_json
   hs-source-dirs:
       app
   ghc-options: -Wall -threaded -rtsopts -with-rtsopts=-N -O2 -msse4.2
   build-depends:
-      base >=4 && <5
-    , bytestring >=0.10.6 && <0.11
-    , criterion >=1.4 && <1.6
-    , dlist >=0.8 && <0.9
-    , hw-balancedparens >=0.2.0.1 && <0.3
-    , hw-bits >=0.7.0.2 && <0.8
-    , hw-json
-    , hw-mquery >=0.1 && <0.2
-    , hw-prim >=0.6.2.21 && <0.7
-    , hw-rankselect >=0.10 && <0.13
-    , hw-rankselect-base >=0.3 && <0.4
-    , hw-simd >=0.1.1.2 && <0.2
-    , lens >=4 && <5
-    , mmap >=0.5 && <0.6
-    , optparse-applicative >=0.14 && <0.15
-    , vector >=0.12 && <0.13
+      hw-json
+    , criterion             >= 1.4        && < 1.6
+    , lens                  >= 4          && < 5
+    , optparse-applicative  >= 0.14       && < 0.15
   if (flag(sse42))
     ghc-options: -mbmi2
   if (flag(bmi2)) && (impl(ghc >=8.4.1))
@@ -144,26 +137,15 @@ executable hw-json
   default-language: Haskell2010
 
 test-suite hw-json-test
+  import: deps
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   hs-source-dirs:
       test
   ghc-options: -Wall -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      attoparsec >=0.13 && <0.14
-    , base >=4 && <5
-    , bytestring >=0.10.6 && <0.11
-    , containers >=0.5 && <0.7
-    , hspec >=2.5 && <2.6
-    , hw-balancedparens >=0.2.0.1 && <0.3
-    , hw-bits >=0.7.0.2 && <0.8
-    , hw-json
-    , hw-prim >=0.6.2.21 && <0.7
-    , hw-rankselect >=0.10 && <0.13
-    , hw-rankselect-base >=0.3 && <0.4
-    , hw-simd >=0.1.1.2 && <0.2
-    , mmap >=0.5 && <0.6
-    , vector >=0.12 && <0.13
+      hw-json
+    , hspec           >= 2.5      &&  < 2.6
   if (flag(sse42))
     ghc-options: -mbmi2
   if (flag(bmi2)) && (impl(ghc >=8.4.1))
@@ -184,25 +166,16 @@ test-suite hw-json-test
   build-tool-depends: hspec-discover:hspec-discover
 
 benchmark bench
+  import: deps
   type: exitcode-stdio-1.0
   main-is: Main.hs
   hs-source-dirs:
       bench
   ghc-options: -Wall -O2 -msse4.2
   build-depends:
-      base >=4 && <5
-    , bytestring >=0.10.6 && <0.11
-    , criterion >=1.4 && <1.6
-    , directory >=1.3 && <1.4
-    , hw-balancedparens >=0.2.0.1 && <0.3
-    , hw-bits >=0.7.0.2 && <0.8
-    , hw-json
-    , hw-prim >=0.6.2.21 && <0.7
-    , hw-rankselect >=0.10 && <0.13
-    , hw-rankselect-base >=0.3 && <0.4
-    , hw-simd >=0.1.1.2 && <0.2
-    , mmap >=0.5 && <0.6
-    , vector >=0.12 && <0.13
+      hw-json
+    , criterion     >= 1.4      &&  < 1.6
+    , directory     >= 1.3      &&  < 1.4
   if (flag(sse42))
     ghc-options: -mbmi2
   if (flag(bmi2)) && (impl(ghc >=8.4.1))
