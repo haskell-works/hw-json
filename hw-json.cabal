@@ -163,7 +163,7 @@ test-suite hw-json-test
       HaskellWorks.Data.Json.ValueSpec
       Paths_hw_json
   default-language: Haskell2010
-  build-tool-depends: hspec-discover:hspec-discover
+  build-tools: hspec-discover
 
 benchmark bench
   import: deps
