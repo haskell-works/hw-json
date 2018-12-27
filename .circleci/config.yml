@@ -38,7 +38,7 @@ cabalbuild: &cabalbuild
     - run:
         name: Building build dependencies
         command: |
-          cabal update
+          cabal new-update
           cabal new-build --disable-tests --disable-benchmarks --project-file="cabal.project" --dep -j${CABAL_THREADS:-4} all
           cabal new-build --enable-tests  --enable-benchmarks  --project-file="cabal.project" --dep -j${CABAL_THREADS:-4} all
 
@@ -165,9 +165,6 @@ workflows:
             - ghc-8.6.3
             - ghc-8.4.3
             - ghc-8.2.2
-          filters:
-            branches:
-              only: master
 
   tagged-release:
     jobs:
