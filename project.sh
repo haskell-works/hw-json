@@ -20,7 +20,7 @@ case "$cmd" in
     ;;
 
   test)
-    cabal new-test -j4 \
+    cabal new-test -j4 --enable-tests \
       $CABAL_FLAGS "$@"
     ;;
 
