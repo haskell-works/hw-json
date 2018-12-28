@@ -12,23 +12,18 @@
 module HaskellWorks.Data.Json.TypeSpec (spec) where
 
 import Control.Monad
-import Data.Proxy
-import Data.String
-import Data.Word
 import HaskellWorks.Data.BalancedParens.BalancedParens
-import HaskellWorks.Data.BalancedParens.Simple
 import HaskellWorks.Data.Bits.BitWise
-import HaskellWorks.Data.FromForeignRegion
 import HaskellWorks.Data.Json.Cursor
 import HaskellWorks.Data.Json.Type
 import HaskellWorks.Data.RankSelect.Base.Rank0
 import HaskellWorks.Data.RankSelect.Base.Rank1
 import HaskellWorks.Data.RankSelect.Base.Select1
-import HaskellWorks.Data.RankSelect.Poppy512
+import HaskellWorks.Hspec.Hedgehog
+import Hedgehog
 import Test.Hspec
 
 import qualified Data.ByteString                              as BS
-import qualified Data.Vector.Storable                         as DVS
 import qualified HaskellWorks.Data.Json.Backend.Standard.Fast as FAST
 import qualified HaskellWorks.Data.Json.Backend.Standard.Slow as SLOW
 import qualified HaskellWorks.Data.TreeCursor                 as TC
@@ -60,37 +55,37 @@ genSpec t makeCursor = do
   describe ("Json cursor of type " ++ t) $ do
     let forJson s f = describe ("of value " ++ show s) (f (makeCursor s))
     forJson "{}" $ \cursor -> do
-      it "should have correct type"       $         jsonTypeAt  cursor `shouldBe` Just JsonTypeObject
+      it "should have correct type"       $ requireTest $         jsonTypeAt  cursor === Just JsonTypeObject
     forJson " {}" $ \cursor -> do
-      it "should have correct type"       $         jsonTypeAt  cursor `shouldBe` Just JsonTypeObject
+      it "should have correct type"       $ requireTest $         jsonTypeAt  cursor === Just JsonTypeObject
     forJson "1234" $ \cursor -> do
-      it "should have correct type"       $         jsonTypeAt  cursor `shouldBe` Just JsonTypeNumber
+      it "should have correct type"       $ requireTest $         jsonTypeAt  cursor === Just JsonTypeNumber
     forJson "\"Hello\"" $ \cursor -> do
-      it "should have correct type"       $         jsonTypeAt  cursor `shouldBe` Just JsonTypeString
+      it "should have correct type"       $ requireTest $         jsonTypeAt  cursor === Just JsonTypeString
     forJson "[]" $ \cursor -> do
-      it "should have correct type"       $         jsonTypeAt  cursor `shouldBe` Just JsonTypeArray
+      it "should have correct type"       $ requireTest $         jsonTypeAt  cursor === Just JsonTypeArray
     forJson "true" $ \cursor -> do
-      it "should have correct type"       $         jsonTypeAt  cursor `shouldBe` Just JsonTypeBool
+      it "should have correct type"       $ requireTest $         jsonTypeAt  cursor === Just JsonTypeBool
     forJson "false" $ \cursor -> do
-      it "should have correct type"       $         jsonTypeAt  cursor `shouldBe` Just JsonTypeBool
+      it "should have correct type"       $ requireTest $         jsonTypeAt  cursor === Just JsonTypeBool
     forJson "null" $ \cursor -> do
-      it "should have correct type"       $         jsonTypeAt  cursor `shouldBe` Just JsonTypeNull
+      it "should have correct type"       $ requireTest $         jsonTypeAt  cursor === Just JsonTypeNull
     forJson "[null]" $ \cursor -> do
-      it "should have correct type"       $ (fc >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeNull
+      it "should have correct type"       $ requireTest $ (fc >=> jsonTypeAt) cursor === Just JsonTypeNull
     forJson "[null, {\"field\": 1}]" $ \cursor -> do
-      it "cursor can navigate to second child of array" $ do
-        (fc >=> ns >=> jsonTypeAt)  cursor  `shouldBe` Just JsonTypeObject
-      it "cursor can navigate to first child of object at second child of array" $ do
-        (fc >=> ns >=> fc >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeString
-      it "cursor can navigate to first child of object at second child of array" $ do
-        (fc >=> ns >=> fc >=> ns >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeNumber
+      it "cursor can navigate to second child of array" $ requireTest $ do
+        (fc >=> ns >=> jsonTypeAt) cursor === Just JsonTypeObject
+      it "cursor can navigate to first child of object at second child of array" $ requireTest $ do
+        (fc >=> ns >=> fc >=> jsonTypeAt) cursor === Just JsonTypeString
+      it "cursor can navigate to first child of object at second child of array" $ requireTest $ do
+        (fc >=> ns >=> fc >=> ns >=> jsonTypeAt) cursor === Just JsonTypeNumber
     describe "For empty json array" $ do
       let cursor = makeCursor "[null]"
-      it "can navigate down and forwards" $ do
-        (                     jsonTypeAt) cursor `shouldBe` Just JsonTypeArray
-        (fc               >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeNull
-        (fc >=> ns        >=> jsonTypeAt) cursor `shouldBe` Nothing
-        (fc >=> ns >=> ns >=> jsonTypeAt) cursor `shouldBe` Nothing
+      it "can navigate down and forwards" $ requireTest $ do
+        (                     jsonTypeAt) cursor === Just JsonTypeArray
+        (fc               >=> jsonTypeAt) cursor === Just JsonTypeNull
+        (fc >=> ns        >=> jsonTypeAt) cursor === Nothing
+        (fc >=> ns >=> ns >=> jsonTypeAt) cursor === Nothing
     describe "For sample Json" $ do
       let cursor = makeCursor "{ \
                     \    \"widget\": { \
@@ -101,15 +96,15 @@ genSpec t makeCursor = do
                     \        } \
                     \    } \
                     \}" :: JsonCursor BS.ByteString t u
-      it "can navigate down and forwards" $ do
-        (                                                                      jsonTypeAt) cursor `shouldBe` Just JsonTypeObject
-        (fc                                                                >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeString
-        (fc >=> ns                                                         >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeObject
-        (fc >=> ns >=> fc                                                  >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeString
-        (fc >=> ns >=> fc >=> ns                                           >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeString
-        (fc >=> ns >=> fc >=> ns >=> ns                                    >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeString
-        (fc >=> ns >=> fc >=> ns >=> ns >=> ns                             >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeObject
-        (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc                      >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeString
-        (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns               >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeString
-        (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns        >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeString
-        (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns >=> ns >=> jsonTypeAt) cursor `shouldBe` Just JsonTypeArray
+      it "can navigate down and forwards" $ requireTest $ do
+        (                                                                      jsonTypeAt) cursor === Just JsonTypeObject
+        (fc                                                                >=> jsonTypeAt) cursor === Just JsonTypeString
+        (fc >=> ns                                                         >=> jsonTypeAt) cursor === Just JsonTypeObject
+        (fc >=> ns >=> fc                                                  >=> jsonTypeAt) cursor === Just JsonTypeString
+        (fc >=> ns >=> fc >=> ns                                           >=> jsonTypeAt) cursor === Just JsonTypeString
+        (fc >=> ns >=> fc >=> ns >=> ns                                    >=> jsonTypeAt) cursor === Just JsonTypeString
+        (fc >=> ns >=> fc >=> ns >=> ns >=> ns                             >=> jsonTypeAt) cursor === Just JsonTypeObject
+        (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc                      >=> jsonTypeAt) cursor === Just JsonTypeString
+        (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns               >=> jsonTypeAt) cursor === Just JsonTypeString
+        (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns        >=> jsonTypeAt) cursor === Just JsonTypeString
+        (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns >=> ns >=> jsonTypeAt) cursor === Just JsonTypeArray

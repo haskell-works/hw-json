@@ -145,9 +145,10 @@ test-suite hw-json-test
   ghc-options: -Wall -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       hw-json
+    , hspec               >= 2.4        && < 3
     , hedgehog            >= 0.5        && < 0.7
-    , hspec               >= 2.5        && < 2.6
     , hw-hspec-hedgehog   >= 0.1.0.4    && < 0.2
+    , transformers        >= 0.4        && < 0.6
   if (flag(sse42))
     ghc-options: -mbmi2
   if (flag(bmi2)) && (impl(ghc >=8.4.1))
