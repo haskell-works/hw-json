@@ -21,6 +21,8 @@ import HaskellWorks.Data.Json.Internal.Token
 import HaskellWorks.Data.RankSelect.Base.Rank0
 import HaskellWorks.Data.RankSelect.Base.Rank1
 import HaskellWorks.Data.RankSelect.Base.Select1
+import HaskellWorks.Hspec.Hedgehog
+import Hedgehog
 import Test.Hspec
 
 import qualified Data.ByteString              as BS
@@ -50,8 +52,8 @@ genTest t mkCursor = do
   describe ("Json cursor of type " ++ t) $ do
     describe "For empty json array" $ do
       let cursor = mkCursor "[null]"
-      it "can navigate down and forwards" $ do
-        jsonIndexAt cursor `shouldBe` Right (JsonIndexArray [JsonIndexNull])
+      it "can navigate down and forwards" $ requireTest $ do
+        jsonIndexAt cursor === Right (JsonIndexArray [JsonIndexNull])
     describe "For sample Json" $ do
       let cursor = mkCursor "\
             \{ \
@@ -63,39 +65,39 @@ genTest t mkCursor = do
             \        } \
             \    } \
             \}"
-      it "can navigate up" $ do
-        (                                                                      pn) cursor `shouldBe` Nothing
-        (fc                                                                >=> pn) cursor `shouldBe`                                    Just cursor
-        (fc >=> ns                                                         >=> pn) cursor `shouldBe`                                    Just cursor
-        (fc >=> ns >=> fc                                                  >=> pn) cursor `shouldBe` (fc >=> ns                            ) cursor
-        (fc >=> ns >=> fc >=> ns                                           >=> pn) cursor `shouldBe` (fc >=> ns                            ) cursor
-        (fc >=> ns >=> fc >=> ns >=> ns                                    >=> pn) cursor `shouldBe` (fc >=> ns                            ) cursor
-        (fc >=> ns >=> fc >=> ns >=> ns >=> ns                             >=> pn) cursor `shouldBe` (fc >=> ns                            ) cursor
-        (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc                      >=> pn) cursor `shouldBe` (fc >=> ns >=> fc >=> ns >=> ns >=> ns) cursor
-        (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns               >=> pn) cursor `shouldBe` (fc >=> ns >=> fc >=> ns >=> ns >=> ns) cursor
-        (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns        >=> pn) cursor `shouldBe` (fc >=> ns >=> fc >=> ns >=> ns >=> ns) cursor
-        (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns >=> ns >=> pn) cursor `shouldBe` (fc >=> ns >=> fc >=> ns >=> ns >=> ns) cursor
-      it "can get subtree size" $ do
-        (                                                                      ss) cursor `shouldBe` Just 16
-        (fc                                                                >=> ss) cursor `shouldBe` Just 1
-        (fc >=> ns                                                         >=> ss) cursor `shouldBe` Just 14
-        (fc >=> ns >=> fc                                                  >=> ss) cursor `shouldBe` Just 1
-        (fc >=> ns >=> fc >=> ns                                           >=> ss) cursor `shouldBe` Just 1
-        (fc >=> ns >=> fc >=> ns >=> ns                                    >=> ss) cursor `shouldBe` Just 1
-        (fc >=> ns >=> fc >=> ns >=> ns >=> ns                             >=> ss) cursor `shouldBe` Just 10
-        (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc                      >=> ss) cursor `shouldBe` Just 1
-        (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns               >=> ss) cursor `shouldBe` Just 1
-        (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns        >=> ss) cursor `shouldBe` Just 1
-        (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns >=> ns >=> ss) cursor `shouldBe` Just 6
-      it "can get token at cursor" $ do
-        (jsonTokenAt                                                                      ) cursor `shouldBe` Just (JsonTokenBraceL                 )
-        (fc                                                                >=> jsonTokenAt) cursor `shouldBe` Just (JsonTokenString   "widget"      )
-        (fc >=> ns                                                         >=> jsonTokenAt) cursor `shouldBe` Just (JsonTokenBraceL                 )
-        (fc >=> ns >=> fc                                                  >=> jsonTokenAt) cursor `shouldBe` Just (JsonTokenString   "debug"       )
-        (fc >=> ns >=> fc >=> ns                                           >=> jsonTokenAt) cursor `shouldBe` Just (JsonTokenString   "on"          )
-        (fc >=> ns >=> fc >=> ns >=> ns                                    >=> jsonTokenAt) cursor `shouldBe` Just (JsonTokenString   "window"      )
-        (fc >=> ns >=> fc >=> ns >=> ns >=> ns                             >=> jsonTokenAt) cursor `shouldBe` Just (JsonTokenBraceL                 )
-        (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc                      >=> jsonTokenAt) cursor `shouldBe` Just (JsonTokenString   "name"        )
-        (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns               >=> jsonTokenAt) cursor `shouldBe` Just (JsonTokenString   "main_window" )
-        (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns        >=> jsonTokenAt) cursor `shouldBe` Just (JsonTokenString   "dimensions"  )
-        (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns >=> ns >=> jsonTokenAt) cursor `shouldBe` Just (JsonTokenBracketL               )
+      it "can navigate up" $ requireTest $ do
+        (                                                                      pn) cursor === Nothing
+        (fc                                                                >=> pn) cursor ===                                    Just cursor
+        (fc >=> ns                                                         >=> pn) cursor ===                                    Just cursor
+        (fc >=> ns >=> fc                                                  >=> pn) cursor === (fc >=> ns                            ) cursor
+        (fc >=> ns >=> fc >=> ns                                           >=> pn) cursor === (fc >=> ns                            ) cursor
+        (fc >=> ns >=> fc >=> ns >=> ns                                    >=> pn) cursor === (fc >=> ns                            ) cursor
+        (fc >=> ns >=> fc >=> ns >=> ns >=> ns                             >=> pn) cursor === (fc >=> ns                            ) cursor
+        (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc                      >=> pn) cursor === (fc >=> ns >=> fc >=> ns >=> ns >=> ns) cursor
+        (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns               >=> pn) cursor === (fc >=> ns >=> fc >=> ns >=> ns >=> ns) cursor
+        (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns        >=> pn) cursor === (fc >=> ns >=> fc >=> ns >=> ns >=> ns) cursor
+        (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns >=> ns >=> pn) cursor === (fc >=> ns >=> fc >=> ns >=> ns >=> ns) cursor
+      it "can get subtree size" $ requireTest $ do
+        (                                                                      ss) cursor === Just 16
+        (fc                                                                >=> ss) cursor === Just 1
+        (fc >=> ns                                                         >=> ss) cursor === Just 14
+        (fc >=> ns >=> fc                                                  >=> ss) cursor === Just 1
+        (fc >=> ns >=> fc >=> ns                                           >=> ss) cursor === Just 1
+        (fc >=> ns >=> fc >=> ns >=> ns                                    >=> ss) cursor === Just 1
+        (fc >=> ns >=> fc >=> ns >=> ns >=> ns                             >=> ss) cursor === Just 10
+        (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc                      >=> ss) cursor === Just 1
+        (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns               >=> ss) cursor === Just 1
+        (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns        >=> ss) cursor === Just 1
+        (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns >=> ns >=> ss) cursor === Just 6
+      it "can get token at cursor" $ requireTest $ do
+        (jsonTokenAt                                                                      ) cursor === Just (JsonTokenBraceL                 )
+        (fc                                                                >=> jsonTokenAt) cursor === Just (JsonTokenString   "widget"      )
+        (fc >=> ns                                                         >=> jsonTokenAt) cursor === Just (JsonTokenBraceL                 )
+        (fc >=> ns >=> fc                                                  >=> jsonTokenAt) cursor === Just (JsonTokenString   "debug"       )
+        (fc >=> ns >=> fc >=> ns                                           >=> jsonTokenAt) cursor === Just (JsonTokenString   "on"          )
+        (fc >=> ns >=> fc >=> ns >=> ns                                    >=> jsonTokenAt) cursor === Just (JsonTokenString   "window"      )
+        (fc >=> ns >=> fc >=> ns >=> ns >=> ns                             >=> jsonTokenAt) cursor === Just (JsonTokenBraceL                 )
+        (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc                      >=> jsonTokenAt) cursor === Just (JsonTokenString   "name"        )
+        (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns               >=> jsonTokenAt) cursor === Just (JsonTokenString   "main_window" )
+        (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns        >=> jsonTokenAt) cursor === Just (JsonTokenString   "dimensions"  )
+        (fc >=> ns >=> fc >=> ns >=> ns >=> ns >=> fc >=> ns >=> ns >=> ns >=> jsonTokenAt) cursor === Just (JsonTokenBracketL               )

@@ -3,6 +3,8 @@
 module HaskellWorks.Data.Json.Internal.BlankSpec (spec) where
 
 import HaskellWorks.Data.Json.Internal.Backend.Standard.Blank
+import HaskellWorks.Hspec.Hedgehog
+import Hedgehog
 import Test.Hspec
 
 import qualified Data.ByteString as BS
@@ -11,8 +13,8 @@ import qualified Data.ByteString as BS
 
 whenBlankedJsonShouldBe :: BS.ByteString -> BS.ByteString -> Spec
 whenBlankedJsonShouldBe original expected = do
-  it (show original ++ " when blanked json should be " ++ show expected) $ do
-    BS.concat (blankJson [original]) `shouldBe` expected
+  it (show original ++ " when blanked json should be " ++ show expected) $ requireTest $ do
+    BS.concat (blankJson [original]) === expected
 
 spec :: Spec
 spec = describe "HaskellWorks.Data.Json.Internal.BlankSpec" $ do
