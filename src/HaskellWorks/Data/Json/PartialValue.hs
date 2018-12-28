@@ -21,14 +21,14 @@ module HaskellWorks.Data.Json.PartialValue
   ) where
 
 import Control.Arrow
-import HaskellWorks.Data.AtLeastSize
-import HaskellWorks.Data.Entry
 import HaskellWorks.Data.Json.Internal.PartialIndex
 import HaskellWorks.Data.Json.Internal.Value
-import HaskellWorks.Data.Micro
-import HaskellWorks.Data.Mini
 import HaskellWorks.Data.MQuery
-import HaskellWorks.Data.Row
+import HaskellWorks.Data.MQuery.AtLeastSize
+import HaskellWorks.Data.MQuery.Entry
+import HaskellWorks.Data.MQuery.Micro
+import HaskellWorks.Data.MQuery.Mini
+import HaskellWorks.Data.MQuery.Row
 import Text.PrettyPrint.ANSI.Leijen
 
 import qualified Data.Attoparsec.ByteString.Char8 as ABC

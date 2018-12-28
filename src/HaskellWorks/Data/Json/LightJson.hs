@@ -12,13 +12,13 @@ import Control.Arrow
 import Data.String
 import Data.Word
 import Data.Word8
-import HaskellWorks.Data.AtLeastSize
-import HaskellWorks.Data.Entry
 import HaskellWorks.Data.Json.Internal.Word8
-import HaskellWorks.Data.Micro
-import HaskellWorks.Data.Mini
 import HaskellWorks.Data.MQuery
-import HaskellWorks.Data.Row
+import HaskellWorks.Data.MQuery.AtLeastSize
+import HaskellWorks.Data.MQuery.Entry
+import HaskellWorks.Data.MQuery.Micro
+import HaskellWorks.Data.MQuery.Mini
+import HaskellWorks.Data.MQuery.Row
 import Prelude                               hiding (drop)
 import Text.PrettyPrint.ANSI.Leijen
 
