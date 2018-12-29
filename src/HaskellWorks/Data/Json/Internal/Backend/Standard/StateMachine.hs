@@ -6,21 +6,15 @@ module HaskellWorks.Data.Json.Internal.Backend.Standard.StateMachine
   , phiTableSimd
   , transitionTable
   , transitionTableSimd
-  , transitionTableInC
   , State(..)
   ) where
 
-import Data.Semigroup                 ((<>))
-import Data.Text                      (Text)
 import Data.Word
 import HaskellWorks.Data.Bits.BitWise
 
-import qualified Data.Text                             as T
-import qualified Data.Text.Lazy.Builder                as TB
 import qualified Data.Vector                           as DV
 import qualified Data.Vector.Storable                  as DVS
 import qualified HaskellWorks.Data.Json.Internal.Word8 as W8
-import qualified Text.Printf                           as T
 
 {-# ANN module ("HLint: ignore Redundant guard"  :: String) #-}
 
@@ -83,13 +77,3 @@ stateMachine c InValue  | W8.isDelim c        = (InJson  , 0b000)
 stateMachine c InValue  | W8.isValueChar c    = (InValue , 0b000)
 stateMachine _ InValue  | otherwise           = (InJson  , 0b000)
 {-# INLINE stateMachine #-}
-
--- transitionTable :: DV.Vector (DVS.Vector Word8)
-transitionTableInC :: TB.Builder
-transitionTableInC = "{" <> "" <> "}"
-  where wss = DVS.toList <$> DV.toList transitionTable
-        -- mkVV = mconcat wss
-        mkV :: [Word8] -> TB.Builder
-        mkV = foldMap (TB.fromText . printByte)
-        printByte :: Word8 -> Text
-        printByte w = T.pack (T.printf "0x%02x" w)
