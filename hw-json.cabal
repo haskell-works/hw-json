@@ -43,6 +43,7 @@ common deps
     , ansi-wl-pprint      >= 0.6.8.2    && < 0.7
     , array               >= 0.5        && < 0.6
     , attoparsec          >= 0.13       && < 0.14
+    , bits-extra          >= 0.0.1      && < 0.1
     , bytestring          >= 0.10.6     && < 0.11
     , dlist               >= 0.8        && < 0.9
     , hw-balancedparens   >= 0.2.0.1    && < 0.3
@@ -54,6 +55,7 @@ common deps
     , hw-rankselect-base  >= 0.3.2.1    && < 0.4
     , hw-simd             >= 0.1.1.2    && < 0.2
     , mmap                >= 0.5        && < 0.6
+    , semigroups          >= 0.18.5     && < 0.19
     , text                >= 1.2        && < 1.3
     , vector              >= 0.12       && < 0.13
     , word8               >= 0.1        && < 0.2
@@ -71,6 +73,7 @@ library
     cpp-options: -DBMI2_ENABLED
   exposed-modules:
       HaskellWorks.Data.Json
+      HaskellWorks.Data.Json.Backend.Simple.Cursor
       HaskellWorks.Data.Json.Backend.Simple.SemiIndex
       HaskellWorks.Data.Json.Backend.Standard.Cursor
       HaskellWorks.Data.Json.Backend.Standard.Fast
@@ -86,6 +89,7 @@ library
       HaskellWorks.Data.Json.Internal.Backend.Standard.Cursor.Token
       HaskellWorks.Data.Json.Internal.Backend.Standard.IbBp
       HaskellWorks.Data.Json.Internal.Backend.Standard.MakeIndex
+      HaskellWorks.Data.Json.Internal.Backend.Standard.StateMachine
       HaskellWorks.Data.Json.Internal.Backend.Standard.ToBalancedParens64
       HaskellWorks.Data.Json.Internal.Backend.Standard.ToInterestBits64
       HaskellWorks.Data.Json.Internal.Backend.Standard.Token.Tokenize
@@ -155,6 +159,7 @@ test-suite hw-json-test
     ghc-options: -mbmi2 -msse4.2
     cpp-options: -DBMI2_ENABLED
   other-modules:
+      HaskellWorks.Data.Json.Backend.Standard.Succinct.Cursor.BalancedParensSpec
       HaskellWorks.Data.Json.Backend.Standard.Succinct.Cursor.InterestBitsSpec
       HaskellWorks.Data.Json.Backend.Standard.Succinct.CursorSpec
       HaskellWorks.Data.Json.Backend.Standard.Succinct.GenCursorTest

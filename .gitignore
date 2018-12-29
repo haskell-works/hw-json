@@ -29,4 +29,4 @@ cabal.sandbox.config
 /cbits
 *.idx
 .ghc.environment.*
-
+/cabal.project.local
