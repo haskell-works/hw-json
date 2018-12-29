@@ -94,6 +94,7 @@ buildFromByteString ib bp bs i = go
                   W.unsafeWriteBit ib 0
                   buildFromByteString ib bp bs (i + 1) InJson
                 | c == W8.comma || c == W8.colon -> do
+                  W.unsafeWriteBit ib 0
                   buildFromByteString ib bp bs (i + 1) InJson
                 | W8.isAlphabetic c || W8.isDigit c || W8.isPeriod c || W8.isMinus c || W8.isPlus c -> do
                   W.unsafeWriteBit ib 1
