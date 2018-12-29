@@ -8,24 +8,26 @@ shift
 
 case "$cmd" in
   install)
-    cabal new-install -j4 \
-      --test --no-run-tests --bench --no-run-benchmarks \
+    cabal new-install \
+      --symlink-bindir=$HOME/.local/bin \
+      -j8 --overwrite-policy=always --disable-documentation \
+      exe:hw-json
       $CABAL_FLAGS "$@"
     ;;
 
   build)
-    cabal new-build all -j4 \
+    cabal new-build all -j8 \
       --disable-tests --disable-benchmarks \
       $CABAL_FLAGS "$@"
     ;;
 
   test)
-    cabal new-test -j4 --enable-tests --disable-documentation \
+    cabal new-test -j8 --enable-tests --disable-documentation \
       $CABAL_FLAGS "$@"
     ;;
 
   bench)
-    cabal new-bench -j4 \
+    cabal new-bench -j8 \
       $CABAL_FLAGS "$@"
     ;;
 
