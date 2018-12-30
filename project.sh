@@ -46,10 +46,3 @@ case "$cmd" in
     ;;
 esac
 
-# haskell-ide-engine work-around
-for x in $(find dist-newstyle -name setup-config | grep '/opt/setup-config$' | sed 's|/opt/setup-config$||g'); do
-  ( cd $x
-    ln -fs opt/setup-config setup-config
-  )
-done
-
