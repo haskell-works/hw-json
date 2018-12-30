@@ -89,16 +89,16 @@ instance (BP.BalancedParens u, Rank1 u, Rank0 u) => TreeCursor (JsonCursor t v u
   firstChild k = let mq = BP.firstChild (balancedParens k) (cursorRank k) in (\q -> k { cursorRank = q }) <$> mq
 
   nextSibling :: JsonCursor t v u -> Maybe (JsonCursor t v u)
-  nextSibling k = error "Not implemented b" -- (\q -> k { cursorRank = q }) <$> BP.nextSibling (balancedParens k) (cursorRank k)
+  nextSibling _ = error "Not implemented b" -- (\q -> k { cursorRank = q }) <$> BP.nextSibling (balancedParens k) (cursorRank k)
 
   parent :: JsonCursor t v u -> Maybe (JsonCursor t v u)
-  parent k = error "Not implemented c" -- let mq = BP.parent (balancedParens k) (cursorRank k) in (\q -> k { cursorRank = q }) <$> mq
+  parent _ = error "Not implemented c" -- let mq = BP.parent (balancedParens k) (cursorRank k) in (\q -> k { cursorRank = q }) <$> mq
 
   depth :: JsonCursor t v u -> Maybe Count
-  depth k = error "Not implemented d" -- BP.depth (balancedParens k) (cursorRank k)
+  depth _ = error "Not implemented d" -- BP.depth (balancedParens k) (cursorRank k)
 
   subtreeSize :: JsonCursor t v u -> Maybe Count
-  subtreeSize k = error "Not implemented e" -- BP.subtreeSize (balancedParens k) (cursorRank k)
+  subtreeSize _ = error "Not implemented e" -- BP.subtreeSize (balancedParens k) (cursorRank k)
 
 jsonCursorPos :: (Rank1 w, Select1 v) => JsonCursor s v w -> Position
 jsonCursorPos k = toPosition (select1 ik (rank1 bpk (cursorRank k)) - 1)

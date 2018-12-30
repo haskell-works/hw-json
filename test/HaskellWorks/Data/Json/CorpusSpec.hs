@@ -13,17 +13,14 @@
 module HaskellWorks.Data.Json.CorpusSpec(spec) where
 
 import Control.Monad.IO.Class
-import Data.Word
 import HaskellWorks.Data.BalancedParens.Simple
 import HaskellWorks.Data.Bits.FromBitTextByteString
-import HaskellWorks.Data.FromByteString
 import HaskellWorks.Data.Json.Cursor
 import HaskellWorks.Hspec.Hedgehog
 import Hedgehog
 import Test.Hspec
 
 import qualified Data.ByteString                              as BS
-import qualified Data.Vector.Storable                         as DVS
 import qualified HaskellWorks.Data.Json.Backend.Standard.Slow as SLOW
 
 {-# ANN module ("HLint: ignore Redundant do"        :: String) #-}
