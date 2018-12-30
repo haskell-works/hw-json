@@ -25,14 +25,13 @@ import Data.Word
 import Foreign.Storable                                              (Storable (..))
 import HaskellWorks.Data.Bits.BitWise
 import HaskellWorks.Data.Bits.PopCount.PopCount1
-import HaskellWorks.Data.Json.Internal.Backend.Standard.StateMachine (State (..))
+import HaskellWorks.Data.Json.Internal.Backend.Standard.StateMachine (IntState (..), State (..))
 import HaskellWorks.Data.Vector.AsVector64
 
 import qualified Data.ByteString                                                     as BS
 import qualified Data.ByteString.Builder                                             as B
 import qualified Data.ByteString.Lazy                                                as LBS
 import qualified Data.ByteString.Unsafe                                              as BSU
-import qualified Data.Vector                                                         as DV
 import qualified Data.Vector.Storable                                                as DVS
 import qualified Data.Vector.Storable.Mutable                                        as DVSM
 import qualified HaskellWorks.Data.Bits.Writer.Storable                              as W
@@ -145,11 +144,11 @@ constructSI n f state = DVS.createT $ do
 {-# INLINE constructSI #-}
 
 buildFromByteString2 :: [BS.ByteString] -> [DVS.Vector Word64]
-buildFromByteString2 = go InJson
-  where go :: State -> [BS.ByteString] -> [DVS.Vector Word64]
+buildFromByteString2 = go (IntState (fromEnum InJson))
+  where go :: IntState -> [BS.ByteString] -> [DVS.Vector Word64]
         go s (bs:bss) = v:go s' bss
           where (s', v) = constructSI (BS.length bs `div` 16) f s -- TODO adjust length
-                f :: Int -> State -> (State, Word64)
+                f :: Int -> IntState -> (IntState, Word64)
                 f i s'' = let j = i * 16 in transition16 s''
                   (BSU.unsafeIndex bs  j      )
                   (BSU.unsafeIndex bs (j +  1))
@@ -170,10 +169,10 @@ buildFromByteString2 = go InJson
         go _ [] = []
 {-# INLINE buildFromByteString2 #-}
 
-transition16 :: State
+transition16 :: IntState
   -> Word8 -> Word8 -> Word8 -> Word8 -> Word8 -> Word8 -> Word8 -> Word8
   -> Word8 -> Word8 -> Word8 -> Word8 -> Word8 -> Word8 -> Word8 -> Word8
-  -> (State, Word64)
+  -> (IntState, Word64)
 transition16 s  a b c d  e f g h  i j k l  m n o p = (sp, w)
   where (sa, wa) = transition1 s  a
         (sb, wb) = transition1 sa b
@@ -209,12 +208,12 @@ transition16 s  a b c d  e f g h  i j k l  m n o p = (sp, w)
             (fromIntegral wp .<. 60)
 {-# INLINE transition16 #-}
 
-transition1 :: State -> Word8 -> (State, Word64)
+transition1 :: IntState -> Word8 -> (IntState, Word64)
 transition1 s a = let x = (s', w) in
   -- let !_ = trace ("--> " <> show (chr (fromIntegral a)) <> " " <> bitShow (fromIntegral w :: Word8)) x in
   x
-  where s' = toEnum $ fromIntegral $ DVS.unsafeIndex (DV.unsafeIndex SM.transitionTable (fromEnum s)) (fromIntegral a)
-        w  =          fromIntegral $ DVS.unsafeIndex (DV.unsafeIndex SM.phiTable        (fromEnum s)) (fromIntegral a)
+  where s' =                SM.lookupTransitionTable s (fromIntegral a)
+        w  = fromIntegral $ SM.lookupPhiTable        s (fromIntegral a)
 {-# INLINE transition1 #-}
 
 buildFromByteString3 :: [BS.ByteString] -> [PreSiChunk (DVS.Vector Word64)]

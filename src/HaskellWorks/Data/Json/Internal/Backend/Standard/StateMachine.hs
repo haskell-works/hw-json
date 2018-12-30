@@ -1,11 +1,15 @@
-{-# LANGUAGE BinaryLiterals    #-}
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE BinaryLiterals             #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE OverloadedStrings          #-}
 
 module HaskellWorks.Data.Json.Internal.Backend.Standard.StateMachine
-  ( phiTable
+  ( lookupPhiTable
+  , lookupTransitionTable
+  , phiTable
   , phiTableSimd
   , transitionTable
   , transitionTableSimd
+  , IntState(..)
   , State(..)
   ) where
 
@@ -18,6 +22,8 @@ import qualified HaskellWorks.Data.Json.Internal.Word8 as W8
 
 {-# ANN module ("HLint: ignore Redundant guard"  :: String) #-}
 
+newtype IntState = IntState Int deriving (Eq, Ord, Show, Num)
+
 data State = InJson | InString | InEscape | InValue deriving (Eq, Enum, Bounded, Show)
 
 phiTable :: DV.Vector (DVS.Vector Word8)
@@ -26,9 +32,21 @@ phiTable = DV.constructN 5 gos
         gos v = DVS.constructN 256 go
           where vi = DV.length v
                 go :: DVS.Vector Word8 -> Word8
-                go u = fromIntegral (snd (stateMachine ui (toEnum vi)))
-                  where ui = fromIntegral (DVS.length u)
+                go u = fromIntegral (snd (stateMachine (fromIntegral ui) (toEnum vi)))
+                  where ui = DVS.length u
 {-# NOINLINE phiTable #-}
+
+phiTable2 :: DVS.Vector Word8
+phiTable2 = DVS.constructN (4 * fromIntegral iLen) go
+  where iLen = 256 :: Int
+        go :: DVS.Vector Word8 -> Word8
+        go u = fromIntegral (snd (stateMachine (fromIntegral ui) (toEnum (fromIntegral uj))))
+          where (uj, ui) = fromIntegral (DVS.length u) `divMod` iLen
+{-# NOINLINE phiTable2 #-}
+
+lookupPhiTable :: IntState -> Word8 -> Word8
+lookupPhiTable (IntState s) w = DVS.unsafeIndex phiTable2 (s * 256 + fromIntegral w)
+{-# INLINE lookupPhiTable #-}
 
 phiTableSimd :: DVS.Vector Word32
 phiTableSimd = DVS.constructN 256 go
@@ -49,6 +67,18 @@ transitionTable = DV.constructN 5 gos
                 go u = fromIntegral (fromEnum (fst (stateMachine ui (toEnum vi))))
                   where ui = fromIntegral (DVS.length u)
 {-# NOINLINE transitionTable #-}
+
+transitionTable2 :: DVS.Vector Word8
+transitionTable2 = DVS.constructN (4 * fromIntegral iLen) go
+  where iLen = 256 :: Int
+        go :: DVS.Vector Word8 -> Word8
+        go u = fromIntegral (fromEnum (fst (stateMachine (fromIntegral ui) (toEnum (fromIntegral uj)))))
+          where (uj, ui) = fromIntegral (DVS.length u) `divMod` iLen
+{-# NOINLINE transitionTable2 #-}
+
+lookupTransitionTable :: IntState -> Word8 -> IntState
+lookupTransitionTable (IntState s) w = fromIntegral (DVS.unsafeIndex transitionTable2 (s * 256 + fromIntegral w))
+{-# INLINE lookupTransitionTable #-}
 
 transitionTableSimd :: DVS.Vector Word64
 transitionTableSimd = DVS.constructN 256 go
