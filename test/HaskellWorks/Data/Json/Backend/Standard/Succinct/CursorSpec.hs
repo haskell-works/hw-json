@@ -11,7 +11,6 @@
 
 module HaskellWorks.Data.Json.Backend.Standard.Succinct.CursorSpec(spec) where
 
-import Data.String
 import Data.Word
 import HaskellWorks.Data.BalancedParens.Simple
 import HaskellWorks.Data.Json.Backend.Standard.Succinct.GenCursorTest
