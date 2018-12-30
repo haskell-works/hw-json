@@ -54,6 +54,7 @@ common deps
     , hw-rankselect       >= 0.12.0.4   && < 0.13
     , hw-rankselect-base  >= 0.3.2.1    && < 0.4
     , hw-simd             >= 0.1.1.2    && < 0.2
+    , hw-streams          >= 0.0.0.8    && < 0.1
     , mmap                >= 0.5        && < 0.6
     , semigroups          >= 0.18.5     && < 0.19
     , text                >= 1.2        && < 1.3
