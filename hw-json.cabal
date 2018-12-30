@@ -47,7 +47,7 @@ common deps
     , bytestring          >= 0.10.6     && < 0.11
     , dlist               >= 0.8        && < 0.9
     , hw-balancedparens   >= 0.2.0.1    && < 0.3
-    , hw-bits             >= 0.7.0.2    && < 0.8
+    , hw-bits             >= 0.7.0.5    && < 0.8
     , hw-mquery           >= 0.2.0.0    && < 0.3
     , hw-parser           >= 0.1        && < 0.2
     , hw-prim             >= 0.6.2.21   && < 0.7
