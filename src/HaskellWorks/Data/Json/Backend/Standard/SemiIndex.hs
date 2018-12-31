@@ -247,7 +247,7 @@ toIbBpBuilders = go 0 0
           then do
             let op    = DVS.unsafeIndex bpOp vi
             let cl    = DVS.unsafeIndex bpCl vi
-            let (source, mask) = compress (op .&. 0xffffffff) (cl .&. 0xffffffff) (op .>. 8) (cl .>. 8)
+            let (source, mask) = compress (op .&. 0xffffffff) (cl .&. 0xffffffff) (op .>. 32) (cl .>. 32)
             let wb = pext source mask
             let wn = popCount1 wb
             let tb = (wb .<. n) .|. b
