@@ -20,6 +20,10 @@ case "$cmd" in
       --disable-tests --disable-benchmarks \
       $CABAL_FLAGS "$@"
     ;;
+  
+  exec)
+    cabal new-exec "$(echo *.cabal | cut -d . -f 1)" "$@"
+    ;;
 
   test)
     cabal new-test -j8 --enable-tests --disable-documentation \
