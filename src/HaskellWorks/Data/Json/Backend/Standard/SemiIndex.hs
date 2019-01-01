@@ -209,9 +209,7 @@ transition16 s  a b c d  e f g h  i j k l  m n o p = (sp, w)
 {-# INLINE transition16 #-}
 
 transition1 :: IntState -> Word8 -> (IntState, Word64)
-transition1 s a = let x = (s', w) in
-  -- let !_ = trace ("--> " <> show (chr (fromIntegral a)) <> " " <> bitShow (fromIntegral w :: Word8)) x in
-  x
+transition1 s a = (s', w)
   where s' =                SM.lookupTransitionTable s (fromIntegral a)
         w  = fromIntegral $ SM.lookupPhiTable        s (fromIntegral a)
 {-# INLINE transition1 #-}
@@ -236,20 +234,20 @@ toIbBpBuilders :: [PreSiChunk (DVS.Vector Word64)] -> [SiChunk (DVS.Vector Word6
 toIbBpBuilders = go 0 0
   where go :: Word64 -> Word64 -> [PreSiChunk (DVS.Vector Word64)] -> [SiChunk (DVS.Vector Word64)]
         go b n (PreSiChunk ib bpOp bpCl:cs) = SiChunk ib bp: go b' n' cs
-          where ((b', n'), bp) = mkBp b n bpOp bpCl
+          where ((b', n'), bp) = mkBp b n (DVS.unsafeCast bpOp) (DVS.unsafeCast bpCl)
         go b _ [] = [SiChunk DVS.empty (DVS.singleton b)]
-        mkBp :: Word64 -> Word64 -> DVS.Vector Word64 -> DVS.Vector Word64 -> ((Word64, Word64), DVS.Vector Word64)
+        mkBp :: Word64 -> Word64 -> DVS.Vector Word32 -> DVS.Vector Word32 -> ((Word64, Word64), DVS.Vector Word64)
         mkBp b n bpOp bpCl = DVS.createT $ do
           mv <- DVSM.unsafeNew (DVS.length bpOp)
           mkBpGo b n bpOp bpCl mv 0 0
-        mkBpGo :: Word64 -> Word64 -> DVS.Vector Word64 -> DVS.Vector Word64 -> DVS.MVector s Word64 -> Int -> Int -> ST s ((Word64, Word64), DVS.MVector s Word64)
+        mkBpGo :: Word64 -> Word64 -> DVS.Vector Word32 -> DVS.Vector Word32 -> DVS.MVector s Word64 -> Int -> Int -> ST s ((Word64, Word64), DVS.MVector s Word64)
         mkBpGo b n bpOp bpCl mv vi mvi = if vi < DVS.length bpOp
           then do
-            let op    = DVS.unsafeIndex bpOp vi
-            let cl    = DVS.unsafeIndex bpCl vi
-            let (source, mask) = compress (op .&. 0xffffffff) (cl .&. 0xffffffff) (op .>. 32) (cl .>. 32)
-            let wb = pext source mask
-            let wn = popCount1 wb
+            let op = DVS.unsafeIndex bpOp vi
+            let cl = DVS.unsafeIndex bpCl vi
+            let (slo, mlo) = compress op cl -- slo: source lo, mlo: mask lo
+            let wb = pext slo mlo
+            let wn = popCount1 mlo
             let tb = (wb .<. n) .|. b
             let tn = n + wn
             if tn < 64
@@ -257,35 +255,15 @@ toIbBpBuilders = go 0 0
                 mkBpGo tb tn bpOp bpCl mv (vi + 1) mvi
               else do
                 DVSM.unsafeWrite mv mvi tb
-                let ub = wb .>. (64 - tn)
+                let ub = wb .>. (64 - n)
                 let un = tn - 64
                 mkBpGo ub un bpOp bpCl mv (vi + 1) (mvi + 1)
           else return ((b, n), DVSM.take mvi mv)
-        compress :: Word64 -> Word64 -> Word64 -> Word64 -> (Word64, Word64)
-        compress oplo cllo ophi clhi = let x = (sw :: Word64, mw :: Word64) in
-          -- let !_ = trace ("----> oplo: " <> bitShow oplo) oplo in
-          -- let !_ = trace ("----> cllo: " <> bitShow cllo) cllo in
-          -- let !_ = trace ("----> ophi: " <> bitShow ophi) ophi in
-          -- let !_ = trace ("----> clhi: " <> bitShow clhi) clhi in
-
-          -- let !_ = trace ("----> mlo:  " <> bitShow mlo ) mlo  in
-          -- let !_ = trace ("----> mhi:  " <> bitShow mhi ) mhi  in
-          -- let !_ = trace ("----> slo:  " <> bitShow slo ) slo  in
-          -- let !_ = trace ("----> shi:  " <> bitShow shi ) shi  in
-          -- let !_ = trace ("----> rlo:  " <> bitShow rlo ) rlo  in
-          -- let !_ = trace ("----> rhi:  " <> bitShow rhi ) rhi  in
-          -- let !_ = trace ("----> plo:  " <> bitShow plo ) plo  in
-          -- let !_ = trace ("----> phi:  " <> bitShow phi ) phi  in
-          -- let !_ = trace ("----> sw:   " <> bitShow sw  ) sw   in
-          -- let !_ = trace ("----> mw:   " <> bitShow mw  ) mw   in
-          x
-          where mlo = pdep oplo 0x5555555555555555 .|. pdep       cllo  0xaaaaaaaaaaaaaaaa
-                mhi = pdep ophi 0x5555555555555555 .|. pdep       clhi  0xaaaaaaaaaaaaaaaa
-                slo = pdep oplo 0x5555555555555555
-                shi = pdep ophi 0x5555555555555555
-                rlo = pext slo mlo
-                rhi = pext shi mhi
-                plo = popCount1 mlo
-                phi = popCount1 mhi
-                sw  = rlo .|. rhi .<. plo
-                mw  = (1 .<. (plo + phi)) - 1
+        compress :: Word32 -> Word32 -> (Word64, Word64)
+        compress op cl = (sw, mw)
+          where iop = pdep (fromIntegral op :: Word64) 0x5555555555555555 -- interleaved open
+                icl = pdep (fromIntegral cl :: Word64) 0xaaaaaaaaaaaaaaaa -- interleaved close
+                ioc = iop .|. icl                                         -- interleaved open/close
+                sw  = pext iop ioc
+                pc  = popCount1 ioc
+                mw  = (1 .<. pc) - 1
