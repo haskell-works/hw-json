@@ -74,7 +74,9 @@ library
   exposed-modules:
       HaskellWorks.Data.Json
       HaskellWorks.Data.Json.Backend.Simple.Cursor
+      HaskellWorks.Data.Json.Backend.Simple.Fast
       HaskellWorks.Data.Json.Backend.Simple.SemiIndex
+      HaskellWorks.Data.Json.Backend.Simple.Value
       HaskellWorks.Data.Json.Backend.Standard.Cursor
       HaskellWorks.Data.Json.Backend.Standard.Fast
       HaskellWorks.Data.Json.Backend.Standard.Load
@@ -93,6 +95,8 @@ library
       HaskellWorks.Data.Json.Internal.Backend.Standard.ToBalancedParens64
       HaskellWorks.Data.Json.Internal.Backend.Standard.ToInterestBits64
       HaskellWorks.Data.Json.Internal.Backend.Standard.Token.Tokenize
+      HaskellWorks.Data.Json.Internal.Backend.Simple.IbBp
+      HaskellWorks.Data.Json.Internal.Backend.Simple.ToIbBp
       HaskellWorks.Data.Json.Internal.CharLike
       HaskellWorks.Data.Json.Internal.Index
       HaskellWorks.Data.Json.Internal.PartialIndex
@@ -159,6 +163,7 @@ test-suite hw-json-test
     ghc-options: -mbmi2 -msse4.2
     cpp-options: -DBMI2_ENABLED
   other-modules:
+      HaskellWorks.Data.Json.Backend.Simple.CursorSpec
       HaskellWorks.Data.Json.Backend.Standard.Succinct.Cursor.BalancedParensSpec
       HaskellWorks.Data.Json.Backend.Standard.Succinct.Cursor.InterestBitsSpec
       HaskellWorks.Data.Json.Backend.Standard.Succinct.CursorSpec
