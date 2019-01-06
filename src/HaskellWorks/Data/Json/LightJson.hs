@@ -1,4 +1,3 @@
-{-# LANGUAGE BangPatterns          #-}
 {-# LANGUAGE FlexibleContexts      #-}
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE InstanceSigs          #-}
@@ -10,22 +9,17 @@ module HaskellWorks.Data.Json.LightJson where
 
 import Control.Arrow
 import Data.String
-import Data.Word
-import Data.Word8
 import HaskellWorks.Data.Json.Internal.Doc
-import HaskellWorks.Data.Json.Internal.Word8
 import HaskellWorks.Data.MQuery
 import HaskellWorks.Data.MQuery.AtLeastSize
 import HaskellWorks.Data.MQuery.Entry
 import HaskellWorks.Data.MQuery.Micro
 import HaskellWorks.Data.MQuery.Mini
 import HaskellWorks.Data.MQuery.Row
-import Prelude                               hiding (drop)
+import Prelude                              hiding (drop)
 import Text.PrettyPrint.ANSI.Leijen
 
-import qualified Data.ByteString       as BS
-import qualified Data.ByteString.Char8 as BSC
-import qualified Data.List             as L
+import qualified Data.ByteString as BS
 
 data LightJson c
   = LightJsonString String
@@ -49,46 +43,6 @@ data LightJsonField c = LightJsonField String (LightJson c)
 class LightJsonAt a where
   lightJsonAt :: a -> LightJson a
 
-data JsonState
-  = Escaped
-  | InJson
-  | InString
-  | InNumber
-  | InIdent
-
-slurpString :: BS.ByteString -> String
-slurpString bs = L.unfoldr genString (InJson, BSC.unpack bs)
-  where genString :: (JsonState, String) -> Maybe (Char, (JsonState, String))
-        genString (InJson, ds) = case ds of
-          (e:es) | e == '"' -> genString  (InString , es)
-          (_:es)            -> genString  (InJson   , es)
-          _                 -> Nothing
-        genString (InString, ds) = case ds of
-          (e:es) | e == '\\' -> genString  (Escaped  , es)
-          (e:_ ) | e == '"'  -> Nothing
-          (e:es)             -> Just (e,   (InString , es))
-          _                  -> Nothing
-        genString (Escaped, ds) = case ds of
-          (_:es) -> Just ('.', (InString , es))
-          _      -> Nothing
-        genString (_, _) = Nothing
-
-slurpNumber :: BS.ByteString -> BS.ByteString
-slurpNumber bs = let (!cs, _) = BS.unfoldrN (BS.length bs) genNumber (InJson, bs) in cs
-    where genNumber :: (JsonState, BS.ByteString) -> Maybe (Word8, (JsonState, BS.ByteString))
-          genNumber (InJson, cs) = case BS.uncons cs of
-            Just (!d, !ds) | isLeadingDigit d -> Just (d           , (InNumber , ds))
-            Just (!d, !ds)                    -> Just (d           , (InJson   , ds))
-            Nothing                           -> Nothing
-          genNumber (InNumber, cs) = case BS.uncons cs of
-            Just (!d, !ds) | isTrailingDigit d -> Just (d           , (InNumber , ds))
-            Just (!d, !ds) | d == _quotedbl    -> Just (_parenleft  , (InString , ds))
-            _                                  -> Nothing
-          genNumber (_, _) = Nothing
-
-toLightJsonField :: (String, LightJson c) -> LightJsonField c
-toLightJsonField (k, v) = LightJsonField k v
-
 instance LightJsonAt c => Pretty (LightJsonField c) where
   pretty (LightJsonField k v) = text (show k) <> text ": " <> pretty v
 
@@ -102,6 +56,8 @@ instance LightJsonAt c => Pretty (LightJson c) where
     LightJsonBool w     -> red (text (show w))
     LightJsonNull       -> text "null"
     LightJsonError s    -> text "<error " <> text s <> text ">"
+    where toLightJsonField :: (String, LightJson c) -> LightJsonField c
+          toLightJsonField (k, v) = LightJsonField k v
 
 instance Pretty (Micro (LightJson c)) where
   pretty (Micro (LightJsonString s )) = dullgreen (text (show s))
