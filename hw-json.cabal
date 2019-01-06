@@ -98,6 +98,7 @@ library
       HaskellWorks.Data.Json.Internal.Backend.Simple.IbBp
       HaskellWorks.Data.Json.Internal.Backend.Simple.ToIbBp
       HaskellWorks.Data.Json.Internal.CharLike
+      HaskellWorks.Data.Json.Internal.Doc
       HaskellWorks.Data.Json.Internal.Index
       HaskellWorks.Data.Json.Internal.PartialIndex
       HaskellWorks.Data.Json.Internal.Token
