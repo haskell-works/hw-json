@@ -58,24 +58,6 @@ data JsonState
   | InNumber
   | InIdent
 
-slurpByteString :: BS.ByteString -> BS.ByteString
-slurpByteString bs = let (!cs, _) = BS.unfoldrN (BS.length bs) genString (InJson, bs) in cs
-  where genString :: (JsonState, BS.ByteString) -> Maybe (Word8, (JsonState, BS.ByteString))
-        genString (InJson, cs) = case BS.uncons cs of
-          Just (!e, !es) | e == _quotedbl -> genString            (InString , es)
-          -- TODO: Only match whitespace
-          Just (!_, !es)                  -> genString            (InJson   , es)
-          Nothing                         -> Nothing
-        genString (InString, ds) = case BS.uncons ds of
-          Just (!e, !es) | e == _backslash -> genString            (Escaped  , es)
-          Just (!e, !_ ) | e == _quotedbl  -> Nothing
-          Just (e , !es)                   -> Just (e            , (InString , es))
-          Nothing                          -> Nothing
-        genString (Escaped, ds) = case BS.uncons ds of
-          Just (_ , !es) -> Just (_period      , (InString , es))
-          Nothing        -> Nothing
-        genString (_, _) = Nothing
-
 slurpString :: BS.ByteString -> String
 slurpString bs = L.unfoldr genString (InJson, BSC.unpack bs)
   where genString :: (JsonState, String) -> Maybe (Char, (JsonState, String))
@@ -105,7 +87,6 @@ slurpNumber bs = let (!cs, _) = BS.unfoldrN (BS.length bs) genNumber (InJson, bs
             Just (!d, !ds) | d == _quotedbl    -> Just (_parenleft  , (InString , ds))
             _                                  -> Nothing
           genNumber (_, _) = Nothing
-
 
 toLightJsonField :: (String, LightJson c) -> LightJsonField c
 toLightJsonField (k, v) = LightJsonField k v
