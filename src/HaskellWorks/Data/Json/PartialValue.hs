@@ -21,6 +21,7 @@ module HaskellWorks.Data.Json.PartialValue
   ) where
 
 import Control.Arrow
+import HaskellWorks.Data.Json.Internal.Doc
 import HaskellWorks.Data.Json.Internal.PartialIndex
 import HaskellWorks.Data.Json.Internal.Value
 import HaskellWorks.Data.MQuery
@@ -83,13 +84,6 @@ toJsonPartialField (k, v) = JsonPartialField k v
 
 instance Pretty JsonPartialField where
   pretty (JsonPartialField k v) = text (show k) <> text ": " <> pretty v
-
-hEncloseSep :: Doc -> Doc -> Doc -> [Doc] -> Doc
-hEncloseSep l r s ds
-    = case ds of
-        []  -> l <> r
-        [d] -> l <> d <> r
-        _   -> hcat (zipWith (<>) (l : repeat s) ds) <> r
 
 instance Pretty JsonPartialValue where
   pretty mjpv = case mjpv of

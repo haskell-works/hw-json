@@ -12,6 +12,7 @@ import Control.Arrow
 import Data.String
 import Data.Word
 import Data.Word8
+import HaskellWorks.Data.Json.Internal.Doc
 import HaskellWorks.Data.Json.Internal.Word8
 import HaskellWorks.Data.MQuery
 import HaskellWorks.Data.MQuery.AtLeastSize
@@ -49,9 +50,6 @@ data LightJsonField c = LightJsonField String (LightJson c)
 
 class LightJsonAt a where
   lightJsonAt :: a -> LightJson a
-
-wSpace :: Word8
-wSpace = 0x20
 
 data JsonState
   = Escaped
@@ -115,13 +113,6 @@ toLightJsonField (k, v) = LightJsonField k v
 instance LightJsonAt c => Pretty (LightJsonField c) where
   pretty (LightJsonField k v) = text (show k) <> text ": " <> pretty v
 
-hEncloseSep :: Doc -> Doc -> Doc -> [Doc] -> Doc
-hEncloseSep l r s ds
-    = case ds of
-        []  -> l <> r
-        [d] -> l <> d <> r
-        _   -> hcat (zipWith (<>) (l : repeat s) ds) <> r
-
 instance LightJsonAt c => Pretty (LightJson c) where
   pretty c = case c of
     LightJsonString s   -> dullgreen  (text (show s))
@@ -172,11 +163,6 @@ instance LightJsonAt c => Pretty (MQuery (LightJson c)) where
 
 instance LightJsonAt c => Pretty (MQuery (Entry String (LightJson c))) where
   pretty (MQuery das) = pretty (Row 120 das)
-
--- hasKV :: LightJsonAt c => BS.ByteString -> LightJson c -> LightJson c -> MQuery (LightJson c)
--- hasKV k v (LightJsonObject xs)  = let ys = second lightJsonAt `map` xs in
---                                   if (k, v) `elem` ys then MQuery (DL.singleton (LightJsonObject xs)) else MQuery DL.empty
--- hasKV _ _  _                    = MQuery DL.empty
 
 item :: LightJsonAt c => LightJson c -> MQuery (LightJson c)
 item jpv = case jpv of
