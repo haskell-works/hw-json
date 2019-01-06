@@ -23,11 +23,9 @@ import HaskellWorks.Data.MQuery.Row
 import Prelude                               hiding (drop)
 import Text.PrettyPrint.ANSI.Leijen
 
-import qualified Data.Attoparsec.ByteString.Char8 as ABC
-import qualified Data.ByteString                  as BS
-import qualified Data.ByteString.Char8            as BSC
-import qualified Data.DList                       as DL
-import qualified Data.List                        as L
+import qualified Data.ByteString       as BS
+import qualified Data.ByteString.Char8 as BSC
+import qualified Data.List             as L
 
 data LightJson c
   = LightJsonString String
@@ -144,58 +142,3 @@ instance LightJsonAt c => Pretty (MQuery (LightJson c)) where
 
 instance LightJsonAt c => Pretty (MQuery (Entry String (LightJson c))) where
   pretty (MQuery das) = pretty (Row 120 das)
-
-item :: LightJsonAt c => LightJson c -> MQuery (LightJson c)
-item jpv = case jpv of
-  LightJsonArray es -> MQuery $ DL.fromList (lightJsonAt `map` es)
-  _                 -> MQuery   DL.empty
-
-entry :: LightJsonAt c => LightJson c -> MQuery (Entry String (LightJson c))
-entry jpv = case jpv of
-  LightJsonObject fs -> MQuery $ DL.fromList ((uncurry Entry . second lightJsonAt) `map` fs)
-  _                  -> MQuery   DL.empty
-
-asString :: LightJson c -> MQuery String
-asString jpv = case jpv of
-  LightJsonString s -> MQuery $ DL.singleton s
-  _                 -> MQuery   DL.empty
-
-asDouble :: LightJson c -> MQuery Double
-asDouble jpv = case jpv of
-  LightJsonNumber sn  -> case ABC.parse ABC.rational sn of
-    ABC.Fail    {}    -> MQuery DL.empty
-    ABC.Partial f     -> case f " " of
-      ABC.Fail    {}  -> MQuery DL.empty
-      ABC.Partial _   -> MQuery DL.empty
-      ABC.Done    _ r -> MQuery (DL.singleton r)
-    ABC.Done    _ r   -> MQuery (DL.singleton r)
-  _                   -> MQuery   DL.empty
-
-asInteger :: LightJson c -> MQuery Integer
-asInteger jpv = do
-  d <- asDouble jpv
-  return (floor d)
-
-castAsInteger :: LightJson c -> MQuery Integer
-castAsInteger jpv = case jpv of
-  LightJsonString n -> MQuery $ DL.singleton (read n)
-  LightJsonNumber _ -> asInteger jpv
-  _                 -> MQuery   DL.empty
-
-named :: String -> Entry String (LightJson c) -> MQuery (LightJson c)
-named fieldName (Entry fieldName' jpv) | fieldName == fieldName'  = MQuery $ DL.singleton jpv
-named _         _                      = MQuery   DL.empty
-
-jsonKeys :: LightJson c -> [String]
-jsonKeys jpv = case jpv of
-  LightJsonObject fs -> fst `map` fs
-  _                  -> []
-
-hasKey :: String -> LightJson c -> Bool
-hasKey fieldName jpv = fieldName `elem` jsonKeys jpv
-
-jsonSize :: LightJson c -> MQuery Integer
-jsonSize jpv = case jpv of
-  LightJsonArray  es -> MQuery (DL.singleton (fromIntegral (length es)))
-  LightJsonObject es -> MQuery (DL.singleton (fromIntegral (length es)))
-  _                  -> MQuery (DL.singleton 0)
