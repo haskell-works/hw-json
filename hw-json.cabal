@@ -101,6 +101,7 @@ library
       HaskellWorks.Data.Json.Internal.Doc
       HaskellWorks.Data.Json.Internal.Index
       HaskellWorks.Data.Json.Internal.PartialIndex
+      HaskellWorks.Data.Json.Internal.Slurp
       HaskellWorks.Data.Json.Internal.Token
       HaskellWorks.Data.Json.Internal.Token.Types
       HaskellWorks.Data.Json.Internal.Value
