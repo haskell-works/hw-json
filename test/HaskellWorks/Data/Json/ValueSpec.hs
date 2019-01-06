@@ -14,7 +14,7 @@ module HaskellWorks.Data.Json.ValueSpec (spec) where
 import Control.Monad
 import HaskellWorks.Data.BalancedParens.BalancedParens
 import HaskellWorks.Data.Bits.BitWise
-import HaskellWorks.Data.Json.Cursor
+import HaskellWorks.Data.Json.Backend.Standard.Cursor
 import HaskellWorks.Data.Json.DecodeError
 import HaskellWorks.Data.Json.Internal.Index
 import HaskellWorks.Data.Json.Value

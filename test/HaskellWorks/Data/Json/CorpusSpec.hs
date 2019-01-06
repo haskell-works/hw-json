@@ -15,7 +15,7 @@ module HaskellWorks.Data.Json.CorpusSpec(spec) where
 import Control.Monad.IO.Class
 import HaskellWorks.Data.BalancedParens.Simple
 import HaskellWorks.Data.Bits.FromBitTextByteString
-import HaskellWorks.Data.Json.Cursor
+import HaskellWorks.Data.Json.Backend.Standard.Cursor
 import HaskellWorks.Hspec.Hedgehog
 import Hedgehog
 import Test.Hspec

@@ -13,8 +13,8 @@ module HaskellWorks.Data.Json.Backend.Standard.Succinct.CursorSpec(spec) where
 
 import Data.Word
 import HaskellWorks.Data.BalancedParens.Simple
+import HaskellWorks.Data.Json.Backend.Standard.Cursor
 import HaskellWorks.Data.Json.Backend.Standard.Succinct.GenCursorTest
-import HaskellWorks.Data.Json.Cursor
 import HaskellWorks.Data.RankSelect.Poppy512
 import Test.Hspec
 
