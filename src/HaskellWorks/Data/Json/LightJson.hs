@@ -45,7 +45,7 @@ instance Eq (LightJson c) where
   (==)  LightJsonNull       LightJsonNull      = True
   (==)  _                   _                  = False
 
-data (LightJsonField c) = LightJsonField String (LightJson c)
+data LightJsonField c = LightJsonField String (LightJson c)
 
 class LightJsonAt a where
   lightJsonAt :: a -> LightJson a
