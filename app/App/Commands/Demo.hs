@@ -12,6 +12,7 @@ import Control.Monad
 import Data.Semigroup                    ((<>))
 import HaskellWorks.Data.Json.LightJson
 import HaskellWorks.Data.Json.LoadCursor
+import HaskellWorks.Data.Json.Query
 import HaskellWorks.Data.MQuery
 import HaskellWorks.Data.MQuery.Micro
 import Options.Applicative               hiding (columns)

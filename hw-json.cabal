@@ -110,6 +110,7 @@ library
       HaskellWorks.Data.Json.Load
       HaskellWorks.Data.Json.LoadCursor
       HaskellWorks.Data.Json.PartialValue
+      HaskellWorks.Data.Json.Query
       HaskellWorks.Data.Json.Type
       HaskellWorks.Data.Json.Value
   other-modules:
