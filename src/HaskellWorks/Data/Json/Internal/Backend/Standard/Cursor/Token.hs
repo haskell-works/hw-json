@@ -6,7 +6,7 @@ module HaskellWorks.Data.Json.Internal.Backend.Standard.Cursor.Token
 import Data.ByteString.Internal                                        as BSI
 import HaskellWorks.Data.Bits.BitWise
 import HaskellWorks.Data.Drop
-import HaskellWorks.Data.Json.Cursor
+import HaskellWorks.Data.Json.Backend.Standard.Cursor
 import HaskellWorks.Data.Json.Internal.Backend.Standard.Token.Tokenize
 import HaskellWorks.Data.Positioning
 import HaskellWorks.Data.RankSelect.Base.Rank1

@@ -15,7 +15,7 @@ import Control.Monad
 import Data.Word
 import HaskellWorks.Data.BalancedParens.Simple
 import HaskellWorks.Data.FromForeignRegion
-import HaskellWorks.Data.Json.Cursor
+import HaskellWorks.Data.Json.Backend.Standard.Cursor
 import HaskellWorks.Data.Json.DecodeError
 import HaskellWorks.Data.Json.Internal.Index
 import HaskellWorks.Data.Json.Value

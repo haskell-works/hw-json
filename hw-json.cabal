@@ -83,7 +83,6 @@ library
       HaskellWorks.Data.Json.Backend.Standard.LoadCursor
       HaskellWorks.Data.Json.Backend.Standard.SemiIndex
       HaskellWorks.Data.Json.Backend.Standard.Slow
-      HaskellWorks.Data.Json.Cursor
       HaskellWorks.Data.Json.DecodeError
       HaskellWorks.Data.Json.FromValue
       HaskellWorks.Data.Json.Internal.Backend.Standard.Blank
@@ -108,8 +107,6 @@ library
       HaskellWorks.Data.Json.Internal.Word64
       HaskellWorks.Data.Json.Internal.Word8
       HaskellWorks.Data.Json.LightJson
-      HaskellWorks.Data.Json.Load
-      HaskellWorks.Data.Json.LoadCursor
       HaskellWorks.Data.Json.PartialValue
       HaskellWorks.Data.Json.Query
       HaskellWorks.Data.Json.Type

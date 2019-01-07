@@ -14,7 +14,7 @@ module HaskellWorks.Data.Json.Backend.Standard.Succinct.GenCursorTest(genTest) w
 import Control.Monad
 import HaskellWorks.Data.BalancedParens.BalancedParens
 import HaskellWorks.Data.Bits.BitWise
-import HaskellWorks.Data.Json.Cursor
+import HaskellWorks.Data.Json.Backend.Standard.Cursor
 import HaskellWorks.Data.Json.Internal.Backend.Standard.Cursor.Token
 import HaskellWorks.Data.Json.Internal.Index
 import HaskellWorks.Data.Json.Internal.Token
