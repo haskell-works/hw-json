@@ -14,6 +14,7 @@ module HaskellWorks.Data.Json.Backend.Simple.CursorSpec
   ) where
 
 import Control.Monad
+import HaskellWorks.Data.Json.LightJson
 import HaskellWorks.Hspec.Hedgehog
 import Hedgehog
 import Test.Hspec
@@ -83,3 +84,5 @@ spec = describe "HaskellWorks.Data.Json.Backend.Simple.CursorSpec" $ do
         (V.snippet <$> (fc >=> fc >=> fc              ) k) === Just "11"
         (V.snippet <$> (fc >=> fc >=> fc >=> ns       ) k) === Nothing
         (V.snippet <$> (fc >=> fc >=> fc >=> fc       ) k) === Nothing
+      it "can lightJsonAt" $ requireTest $ do
+        lightJsonAt k === LightJsonArray []

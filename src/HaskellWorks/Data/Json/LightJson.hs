@@ -29,14 +29,15 @@ data LightJson c
   | LightJsonBool Bool
   | LightJsonNull
   | LightJsonError String
-  deriving Show
+  deriving (Eq, Show)
 
-instance Eq (LightJson c) where
-  (==) (LightJsonString a) (LightJsonString b) = a == b
-  (==) (LightJsonNumber a) (LightJsonNumber b) = a == b
-  (==) (LightJsonBool   a) (LightJsonBool   b) = a == b
-  (==)  LightJsonNull       LightJsonNull      = True
-  (==)  _                   _                  = False
+-- This instance is interfering with tests, but it might be used in queries.
+-- instance Eq (LightJson c) where
+--   (==) (LightJsonString a) (LightJsonString b) = a == b
+--   (==) (LightJsonNumber a) (LightJsonNumber b) = a == b
+--   (==) (LightJsonBool   a) (LightJsonBool   b) = a == b
+--   (==)  LightJsonNull       LightJsonNull      = True
+--   (==)  _                   _                  = False
 
 data LightJsonField c = LightJsonField String (LightJson c)
 
