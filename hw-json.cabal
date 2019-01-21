@@ -14,7 +14,14 @@ license:        BSD-3-Clause
 license-file:   LICENSE
 build-type:     Simple
 extra-source-files:
+    ChangeLog.md
     README.md
+    cbits/debug.h
+    cbits/simd-phi-table-32.c
+    cbits/simd-spliced.c
+    cbits/simd-state.c
+    cbits/simd-transition-table-32.c
+    cbits/simd.h
     corpus/5000B.bp
     corpus/5000B.ib
     corpus/5000B.json
@@ -22,10 +29,14 @@ extra-source-files:
     corpus/issue-0001.ib
     corpus/issue-0001.json
     corpus/issue-0001.md
-
 source-repository head
   type: git
   location: https://github.com/haskell-works/hw-json
+
+flag avx2
+  description: Enable avx2 instruction set
+  manual: False
+  default: False
 
 flag bmi2
   description: Enable bmi2 instruction set
@@ -37,40 +48,104 @@ flag sse42
   manual: False
   default: False
 
+flag lzcnt
+  description: Enable lzcnt instruction set
+  manual: False
+  default: False
+
+common ansi-wl-pprint         { build-depends: ansi-wl-pprint       >= 0.6.8.2    && < 0.7    }
+common array                  { build-depends: array                >= 0.5        && < 0.6    }
+common attoparsec             { build-depends: attoparsec           >= 0.13       && < 0.14   }
+common base                   { build-depends: base                 >= 4          && < 5      }
+common bits-extra             { build-depends: bits-extra           >= 0.0.1      && < 0.1    }
+common bytestring             { build-depends: bytestring           >= 0.10.6     && < 0.11   }
+common criterion              { build-depends: criterion            >= 1.4        && < 1.6    }
+common directory              { build-depends: directory            >= 1.3        && < 1.4    }
+common dlist                  { build-depends: dlist                >= 0.8        && < 0.9    }
+common hedgehog               { build-depends: hedgehog             >= 0.5        && < 0.7    }
+common hspec                  { build-depends: hspec                >= 2.4        && < 3      }
+common hw-balancedparens      { build-depends: hw-balancedparens    >= 0.2.0.1    && < 0.3    }
+common hw-bits                { build-depends: hw-bits              >= 0.7.0.5    && < 0.8    }
+common hw-hspec-hedgehog      { build-depends: hw-hspec-hedgehog    >= 0.1.0.4    && < 0.2    }
+common hw-mquery              { build-depends: hw-mquery            >= 0.2.0.0    && < 0.3    }
+common hw-parser              { build-depends: hw-parser            >= 0.1        && < 0.2    }
+common hw-prim                { build-depends: hw-prim              >= 0.6.2.21   && < 0.7    }
+common hw-rankselect          { build-depends: hw-rankselect        >= 0.12.0.4   && < 0.13   }
+common hw-rankselect-base     { build-depends: hw-rankselect-base   >= 0.3.2.1    && < 0.4    }
+common hw-simd                { build-depends: hw-simd              >= 0.1.1.2    && < 0.2    }
+common lens                   { build-depends: lens                 >= 4          && < 5      }
+common mmap                   { build-depends: mmap                 >= 0.5        && < 0.6    }
+common optparse-applicative   { build-depends: optparse-applicative >= 0.14       && < 0.15   }
+common semigroups             { build-depends: semigroups           >= 0.18.5     && < 0.19   }
+common text                   { build-depends: text                 >= 1.2        && < 1.3    }
+common transformers           { build-depends: transformers         >= 0.4        && < 0.6    }
+common vector                 { build-depends: vector               >= 0.12       && < 0.13   }
+common word8                  { build-depends: word8                >= 0.1        && < 0.2    }
+
 common deps
-  build-depends:
-      base                >= 4          && < 5
-    , ansi-wl-pprint      >= 0.6.8.2    && < 0.7
-    , array               >= 0.5        && < 0.6
-    , attoparsec          >= 0.13       && < 0.14
-    , bits-extra          >= 0.0.1      && < 0.1
-    , bytestring          >= 0.10.6     && < 0.11
-    , dlist               >= 0.8        && < 0.9
-    , hw-balancedparens   >= 0.2.0.1    && < 0.3
-    , hw-bits             >= 0.7.0.5    && < 0.8
-    , hw-mquery           >= 0.2.0.0    && < 0.3
-    , hw-parser           >= 0.1        && < 0.2
-    , hw-prim             >= 0.6.2.21   && < 0.7
-    , hw-rankselect       >= 0.12.0.4   && < 0.13
-    , hw-rankselect-base  >= 0.3.2.1    && < 0.4
-    , hw-simd             >= 0.1.1.2    && < 0.2
-    , mmap                >= 0.5        && < 0.6
-    , semigroups          >= 0.18.5     && < 0.19
-    , text                >= 1.2        && < 1.3
-    , vector              >= 0.12       && < 0.13
-    , word8               >= 0.1        && < 0.2
+  import:
+      base
+    , ansi-wl-pprint
+    , array
+    , attoparsec
+    , bits-extra
+    , bytestring
+    , dlist
+    , hw-balancedparens
+    , hw-bits
+    , hw-mquery
+    , hw-parser
+    , hw-prim
+    , hw-rankselect
+    , hw-rankselect-base
+    , hw-simd
+    , mmap
+    , semigroups
+    , text
+    , vector
+    , word8
+
+  include-dirs: cbits
+  includes:
+    debug.h
+    simd.h
+  if flag(lzcnt)
+    cc-options: -mlzcnt -DLZCNT_ENABLED
+    cpp-options: -DLZCNT_ENABLED
+  if flag(sse42)
+    ghc-options: -msse4.2
+    cc-options: -msse4.2 -DSSE42_ENABLED
+    cpp-options: -DSSE42_ENABLED
+  if flag(avx2)
+    cc-options: -mavx2 -DAVX2_ENABLED
+    cpp-options: -DAVX2_ENABLED
+  if flag(bmi2)
+    cc-options: -mbmi2 -DBMI2_ENABLED
+    cpp-options: -DBMI2_ENABLED
+    if impl(ghc >= 8.4.1)
+      ghc-options: -mbmi2
+  if impl(ghc < 8)
+    build-depends:
+      semigroups >=0.16 && <0.19
+  if impl(ghc >=8.0.1)
+    ghc-options:
+      -Wcompat
+      -Wincomplete-record-updates
+      -Wincomplete-uni-patterns
+      -Wredundant-constraints
 
 library
-  import: deps
-  hs-source-dirs:
-      src
-  ghc-options: -Wall -O2 -msse4.2
-
-  if (flag(sse42))
-    ghc-options: -mbmi2
-  if (flag(bmi2)) && (impl(ghc >=8.4.1))
-    ghc-options: -mbmi2 -msse4.2
-    cpp-options: -DBMI2_ENABLED
+  import:         deps
+  hs-source-dirs: src
+  ghc-options:    -Wall -O2
+  c-sources:
+      cbits/debug.c
+      cbits/simd-spliced.c
+      cbits/simd-state.c
+      cbits/simd-phi-table-32.c
+      cbits/simd-transition-table-32.c
+  build-tools:
+      c2hs
   exposed-modules:
       HaskellWorks.Data.Json
       HaskellWorks.Data.Json.Backend.Simple.Cursor
@@ -85,6 +160,8 @@ library
       HaskellWorks.Data.Json.Backend.Standard.Slow
       HaskellWorks.Data.Json.DecodeError
       HaskellWorks.Data.Json.FromValue
+      HaskellWorks.Data.Json.Internal.Backend.Simple.IbBp
+      HaskellWorks.Data.Json.Internal.Backend.Simple.ToIbBp
       HaskellWorks.Data.Json.Internal.Backend.Standard.Blank
       HaskellWorks.Data.Json.Internal.Backend.Standard.BlankedJson
       HaskellWorks.Data.Json.Internal.Backend.Standard.Cursor.Token
@@ -94,8 +171,6 @@ library
       HaskellWorks.Data.Json.Internal.Backend.Standard.ToBalancedParens64
       HaskellWorks.Data.Json.Internal.Backend.Standard.ToInterestBits64
       HaskellWorks.Data.Json.Internal.Backend.Standard.Token.Tokenize
-      HaskellWorks.Data.Json.Internal.Backend.Simple.IbBp
-      HaskellWorks.Data.Json.Internal.Backend.Simple.ToIbBp
       HaskellWorks.Data.Json.Internal.CharLike
       HaskellWorks.Data.Json.Internal.Doc
       HaskellWorks.Data.Json.Internal.Index
@@ -109,6 +184,12 @@ library
       HaskellWorks.Data.Json.LightJson
       HaskellWorks.Data.Json.PartialValue
       HaskellWorks.Data.Json.Query
+      HaskellWorks.Data.Json.Simd.Index.Simple
+      HaskellWorks.Data.Json.Simd.Index.Standard
+      HaskellWorks.Data.Json.Simd.Internal.Foreign
+      HaskellWorks.Data.Json.Simd.Internal.Index.Simple
+      HaskellWorks.Data.Json.Simd.Internal.Index.Standard
+      HaskellWorks.Data.Json.Simd.Internal.List
       HaskellWorks.Data.Json.Type
       HaskellWorks.Data.Json.Value
   other-modules:
@@ -119,49 +200,34 @@ library
 
 executable hw-json
   import: deps
-  main-is: Main.hs
+    , criterion
+    , lens
+    , optparse-applicative
+  hs-source-dirs:   app
+  main-is:          Main.hs
+  ghc-options:      -Wall -threaded -rtsopts -with-rtsopts=-N -O2 -msse4.2
+  build-depends:    hw-json
+  default-language: Haskell2010
   other-modules:
       App.Commands
       App.Commands.CreateIndex
       App.Commands.Demo
       App.Commands.Types
       App.Lens
-  hs-source-dirs:
-      app
-  ghc-options: -Wall -threaded -rtsopts -with-rtsopts=-N -O2 -msse4.2
-  build-depends:
-      hw-json
-    , criterion             >= 1.4        && < 1.6
-    , lens                  >= 4          && < 5
-    , optparse-applicative  >= 0.14       && < 0.15
-  if (flag(sse42))
-    ghc-options: -mbmi2
-  if (flag(bmi2)) && (impl(ghc >=8.4.1))
-    ghc-options: -mbmi2 -msse4.2
-    cpp-options: -DBMI2_ENABLED
-  if (impl(ghc < 8))
-    build-depends:
-        semigroups >=0.16 && <0.19
-  default-language: Haskell2010
 
 test-suite hw-json-test
   import: deps
-  type: exitcode-stdio-1.0
-  main-is: Spec.hs
-  hs-source-dirs:
-      test
-  ghc-options: -Wall -threaded -rtsopts -with-rtsopts=-N
-  build-depends:
-      hw-json
-    , hspec               >= 2.4        && < 3
-    , hedgehog            >= 0.5        && < 0.7
-    , hw-hspec-hedgehog   >= 0.1.0.4    && < 0.2
-    , transformers        >= 0.4        && < 0.6
-  if (flag(sse42))
-    ghc-options: -mbmi2
-  if (flag(bmi2)) && (impl(ghc >=8.4.1))
-    ghc-options: -mbmi2 -msse4.2
-    cpp-options: -DBMI2_ENABLED
+    , hspec
+    , hedgehog
+    , hw-hspec-hedgehog
+    , transformers
+  type:             exitcode-stdio-1.0
+  main-is:          Spec.hs
+  hs-source-dirs:   test
+  ghc-options:      -Wall -threaded -rtsopts -with-rtsopts=-N
+  build-depends:    hw-json
+  default-language: Haskell2010
+  build-tools:      hspec-discover
   other-modules:
       HaskellWorks.Data.Json.Backend.Simple.CursorSpec
       HaskellWorks.Data.Json.Backend.Standard.Succinct.Cursor.BalancedParensSpec
@@ -175,25 +241,15 @@ test-suite hw-json-test
       HaskellWorks.Data.Json.TypeSpec
       HaskellWorks.Data.Json.ValueSpec
       Paths_hw_json
-  default-language: Haskell2010
-  build-tools: hspec-discover
 
 benchmark bench
   import: deps
-  type: exitcode-stdio-1.0
-  main-is: Main.hs
-  hs-source-dirs:
-      bench
-  ghc-options: -Wall -O2 -msse4.2
-  build-depends:
-      hw-json
-    , criterion     >= 1.4      &&  < 1.6
-    , directory     >= 1.3      &&  < 1.4
-  if (flag(sse42))
-    ghc-options: -mbmi2
-  if (flag(bmi2)) && (impl(ghc >=8.4.1))
-    ghc-options: -mbmi2 -msse4.2
-    cpp-options: -DBMI2_ENABLED
-  other-modules:
-      Paths_hw_json
+    , criterion
+    , directory
+  type:             exitcode-stdio-1.0
+  main-is:          Main.hs
+  hs-source-dirs:   bench
+  ghc-options:      -Wall -O2 -msse4.2
+  build-depends:    hw-json
+  other-modules:    Paths_hw_json
   default-language: Haskell2010

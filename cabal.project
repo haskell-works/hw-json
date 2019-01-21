@@ -14,5 +14,5 @@ package hw-rankselect-base
 package hw-simd
   flags: +bmi2
 
-package hw-json-simd
-  flags: +avx2
+package hw-json
+  flags: +avx2 +bmi2 +lzcnt +sse42

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-CABAL_FLAGS=""
+CABAL_FLAGS="
+"
 
 cmd="$1"
 
