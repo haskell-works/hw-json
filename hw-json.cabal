@@ -106,8 +106,8 @@ common deps
 
   include-dirs: cbits
   includes:
-    cbits/debug.h
-    cbits/simd.h
+    debug.h
+    simd.h
   if flag(lzcnt)
     cc-options: -mlzcnt -DLZCNT_ENABLED
     cpp-options: -DLZCNT_ENABLED
