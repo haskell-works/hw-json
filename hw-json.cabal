@@ -14,7 +14,6 @@ license:        BSD-3-Clause
 license-file:   LICENSE
 build-type:     Simple
 extra-source-files:
-    ChangeLog.md
     README.md
     cbits/debug.h
     cbits/simd-phi-table-32.c
