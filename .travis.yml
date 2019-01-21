@@ -57,6 +57,7 @@ install:
   - "sed -i.bak 's/^jobs:/-- jobs:/' ${HOME}/.cabal/config"
   - rm -fv cabal.project cabal.project.local
   - grep -Ev -- '^\s*--' ${HOME}/.cabal/config | grep -Ev '^\s*$'
+  - "echo 'verbose: 3' > cabal.project.local"
   - "printf 'packages: \".\"\\n' > cabal.project"
   - cat cabal.project
   - if [ -f "./configure.ac" ]; then
