@@ -73,10 +73,10 @@ install:
 script:
   # test that source-distributions can be generated
   - (cd "." && cabal sdist)
-  - mv "."/dist/hw-json-*.tar.gz ${DISTDIR}/
+  - mv "."/dist/hw-*.tar.gz ${DISTDIR}/
   - cd ${DISTDIR} || false
   - find . -maxdepth 1 -name '*.tar.gz' -exec tar -xvf '{}' \;
-  - "printf 'packages: hw-json-*/*.cabal\\n' > cabal.project"
+  - "printf 'packages: hw-*/*.cabal\\n' > cabal.project"
   - cat cabal.project
   # this builds all libraries and executables (without tests/benchmarks)
   - cabal new-build -w ${HC} --disable-tests --disable-benchmarks all
@@ -89,7 +89,7 @@ script:
   - if [ "x$TEST" = "x--enable-tests" ]; then cabal new-test -w ${HC} ${TEST} ${BENCH} all; fi
 
   # cabal check
-  - (cd hw-json-* && cabal check)
+  - (cd hw-* && cabal check)
 
   # haddock
   - rm -rf ./dist-newstyle
