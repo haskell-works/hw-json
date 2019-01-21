@@ -13,6 +13,7 @@ copyright:      2016 John Ky
 license:        BSD-3-Clause
 license-file:   LICENSE
 build-type:     Simple
+tested-with:    GHC == 8.6.1, GHC == 8.4.3, GHC == 8.2.2, GHC == 8.0.2, GHC == 7.10.3
 extra-source-files:
     README.md
     cbits/debug.h
