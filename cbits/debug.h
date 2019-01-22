@@ -1,8 +1,12 @@
+#ifdef AVX2_ENABLED
 #include <immintrin.h>
 #include <mmintrin.h>
+#endif//AVX2_ENABLED
+
 #include <stdint.h>
 #include <stdio.h>
 
+#ifdef AVX2_ENABLED
 void print256_num(__m256i var);
 
 void print128_num(__m128i var);
@@ -10,6 +14,7 @@ void print128_num(__m128i var);
 void fprint256_num(FILE *file, __m256i var);
 
 void fprint128_num(FILE *file, __m128i var);
+#endif//AVX2_ENABLED
 
 inline void print_bits_8(uint8_t v) {
   char *digits = "01";
