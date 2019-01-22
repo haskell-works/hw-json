@@ -89,6 +89,7 @@ script:
   - find . -maxdepth 1 -name '*.tar.gz' -exec tar -xvf '{}' \;
   - "printf 'packages: hw-json-*/*.cabal\\n' > cabal.project"
   - touch cabal.project.local
+  - "echo 'verbose: 3' >> cabal.project.local"
   - "if ! $NOINSTALLEDCONSTRAINTS; then for pkg in $($HCPKG list --simple-output); do echo $pkg  | grep -vw -- hw-json | sed 's/^/constraints: /' | sed 's/-[^-]*$/ installed/' >> cabal.project.local; done; fi"
   - cat cabal.project || true
   - cat cabal.project.local || true
