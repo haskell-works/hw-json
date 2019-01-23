@@ -9,7 +9,7 @@ homepage:       http://github.com/haskell-works/hw-json#readme
 bug-reports:    https://github.com/haskell-works/hw-json/issues
 author:         John Ky
 maintainer:     newhoggy@gmail.com
-copyright:      2016 John Ky
+copyright:      2016 - 2019 John Ky
 license:        BSD-3-Clause
 license-file:   LICENSE
 build-type:     Simple
@@ -37,31 +37,57 @@ flag sse42
   manual: False
   default: False
 
-common deps
-  build-depends:
-      base                >= 4          && < 5
-    , ansi-wl-pprint      >= 0.6.8.2    && < 0.7
-    , array               >= 0.5        && < 0.6
-    , attoparsec          >= 0.13       && < 0.14
-    , bits-extra          >= 0.0.1      && < 0.1
-    , bytestring          >= 0.10.6     && < 0.11
-    , dlist               >= 0.8        && < 0.9
-    , hw-balancedparens   >= 0.2.0.1    && < 0.3
-    , hw-bits             >= 0.7.0.5    && < 0.8
-    , hw-mquery           >= 0.2.0.0    && < 0.3
-    , hw-parser           >= 0.1        && < 0.2
-    , hw-prim             >= 0.6.2.21   && < 0.7
-    , hw-rankselect       >= 0.12.0.4   && < 0.13
-    , hw-rankselect-base  >= 0.3.2.1    && < 0.4
-    , hw-simd             >= 0.1.1.2    && < 0.2
-    , mmap                >= 0.5        && < 0.6
-    , semigroups          >= 0.18.5     && < 0.19
-    , text                >= 1.2        && < 1.3
-    , vector              >= 0.12       && < 0.13
-    , word8               >= 0.1        && < 0.2
+common base                 { build-depends: base                 >= 4          && < 5      }
+
+common ansi-wl-pprint       { build-depends: ansi-wl-pprint       >= 0.6.8.2    && < 0.7    }
+common array                { build-depends: array                >= 0.5        && < 0.6    }
+common attoparsec           { build-depends: attoparsec           >= 0.13       && < 0.14   }
+common bits-extra           { build-depends: bits-extra           >= 0.0.1      && < 0.1    }
+common bytestring           { build-depends: bytestring           >= 0.10.6     && < 0.11   }
+common criterion            { build-depends: criterion            >= 1.4        && < 1.6    }
+common directory            { build-depends: directory            >= 1.3        &&  < 1.4   }
+common dlist                { build-depends: dlist                >= 0.8        && < 0.9    }
+common hedgehog             { build-depends: hedgehog             >= 0.5        && < 0.7    }
+common hspec                { build-depends: hspec                >= 2.4        && < 3      }
+common hw-balancedparens    { build-depends: hw-balancedparens    >= 0.2.0.1    && < 0.3    }
+common hw-bits              { build-depends: hw-bits              >= 0.7.0.5    && < 0.8    }
+common hw-hspec-hedgehog    { build-depends: hw-hspec-hedgehog    >= 0.1.0.4    && < 0.2    }
+common hw-mquery            { build-depends: hw-mquery            >= 0.2.0.0    && < 0.3    }
+common hw-parser            { build-depends: hw-parser            >= 0.1        && < 0.2    }
+common hw-prim              { build-depends: hw-prim              >= 0.6.2.21   && < 0.7    }
+common hw-rankselect        { build-depends: hw-rankselect        >= 0.12.0.4   && < 0.13   }
+common hw-rankselect-base   { build-depends: hw-rankselect-base   >= 0.3.2.1    && < 0.4    }
+common hw-simd              { build-depends: hw-simd              >= 0.1.1.2    && < 0.2    }
+common lens                 { build-depends: lens                 >= 4          && < 5      }
+common mmap                 { build-depends: mmap                 >= 0.5        && < 0.6    }
+common optparse-applicative { build-depends: optparse-applicative >= 0.14       && < 0.15   }
+common semigroups           { build-depends: semigroups           >= 0.18.5     && < 0.19   }
+common text                 { build-depends: text                 >= 1.2        && < 1.3    }
+common transformers         { build-depends: transformers         >= 0.4        && < 0.6    }
+common vector               { build-depends: vector               >= 0.12       && < 0.13   }
+common word8                { build-depends: word8                >= 0.1        && < 0.2    }
 
 library
-  import: deps
+  import:   base
+          , ansi-wl-pprint
+          , array
+          , attoparsec
+          , bits-extra
+          , bytestring
+          , dlist
+          , hw-balancedparens
+          , hw-bits
+          , hw-mquery
+          , hw-parser
+          , hw-prim
+          , hw-rankselect
+          , hw-rankselect-base
+          , hw-simd
+          , mmap
+          , semigroups
+          , text
+          , vector
+          , word8
   hs-source-dirs:
       src
   ghc-options: -Wall -O2 -msse4.2
@@ -118,7 +144,28 @@ library
   default-language: Haskell2010
 
 executable hw-json
-  import: deps
+  import:   base
+          , ansi-wl-pprint
+          , array
+          , attoparsec
+          , bits-extra
+          , bytestring
+          , dlist
+          , hw-balancedparens
+          , hw-bits
+          , hw-mquery
+          , hw-parser
+          , hw-prim
+          , hw-rankselect
+          , hw-rankselect-base
+          , hw-simd
+          , lens
+          , mmap
+          , optparse-applicative
+          , semigroups
+          , text
+          , vector
+          , word8
   main-is: Main.hs
   other-modules:
       App.Commands
@@ -126,14 +173,9 @@ executable hw-json
       App.Commands.Demo
       App.Commands.Types
       App.Lens
-  hs-source-dirs:
-      app
+  hs-source-dirs: app
   ghc-options: -Wall -threaded -rtsopts -with-rtsopts=-N -O2 -msse4.2
-  build-depends:
-      hw-json
-    , criterion             >= 1.4        && < 1.6
-    , lens                  >= 4          && < 5
-    , optparse-applicative  >= 0.14       && < 0.15
+  build-depends: hw-json
   if (flag(sse42))
     ghc-options: -mbmi2
   if (flag(bmi2)) && (impl(ghc >=8.4.1))
@@ -145,18 +187,36 @@ executable hw-json
   default-language: Haskell2010
 
 test-suite hw-json-test
-  import: deps
+  import:   base
+          , ansi-wl-pprint
+          , array
+          , attoparsec
+          , bits-extra
+          , bytestring
+          , dlist
+          , hw-balancedparens
+          , hw-bits
+          , hw-mquery
+          , hw-parser
+          , hw-prim
+          , hw-rankselect
+          , hw-rankselect-base
+          , hw-simd
+          , mmap
+          , semigroups
+          , text
+          , vector
+          , word8
+          , hspec
+          , hedgehog
+          , hw-hspec-hedgehog
+          , transformers
   type: exitcode-stdio-1.0
   main-is: Spec.hs
-  hs-source-dirs:
-      test
+  hs-source-dirs: test
   ghc-options: -Wall -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       hw-json
-    , hspec               >= 2.4        && < 3
-    , hedgehog            >= 0.5        && < 0.7
-    , hw-hspec-hedgehog   >= 0.1.0.4    && < 0.2
-    , transformers        >= 0.4        && < 0.6
   if (flag(sse42))
     ghc-options: -mbmi2
   if (flag(bmi2)) && (impl(ghc >=8.4.1))
@@ -179,16 +239,33 @@ test-suite hw-json-test
   build-tools: hspec-discover
 
 benchmark bench
-  import: deps
+  import:   base
+          , ansi-wl-pprint
+          , array
+          , attoparsec
+          , bits-extra
+          , bytestring
+          , criterion
+          , directory
+          , dlist
+          , hw-balancedparens
+          , hw-bits
+          , hw-mquery
+          , hw-parser
+          , hw-prim
+          , hw-rankselect
+          , hw-rankselect-base
+          , hw-simd
+          , mmap
+          , semigroups
+          , text
+          , vector
+          , word8
   type: exitcode-stdio-1.0
   main-is: Main.hs
-  hs-source-dirs:
-      bench
+  hs-source-dirs: bench
   ghc-options: -Wall -O2 -msse4.2
-  build-depends:
-      hw-json
-    , criterion     >= 1.4      &&  < 1.6
-    , directory     >= 1.3      &&  < 1.4
+  build-depends: hw-json
   if (flag(sse42))
     ghc-options: -mbmi2
   if (flag(bmi2)) && (impl(ghc >=8.4.1))
