@@ -145,27 +145,14 @@ library
 
 executable hw-json
   import:   base
-          , ansi-wl-pprint
-          , array
-          , attoparsec
-          , bits-extra
           , bytestring
           , dlist
-          , hw-balancedparens
-          , hw-bits
           , hw-mquery
-          , hw-parser
           , hw-prim
-          , hw-rankselect
-          , hw-rankselect-base
-          , hw-simd
           , lens
           , mmap
           , optparse-applicative
           , semigroups
-          , text
-          , vector
-          , word8
   main-is: Main.hs
   other-modules:
       App.Commands
@@ -188,29 +175,18 @@ executable hw-json
 
 test-suite hw-json-test
   import:   base
-          , ansi-wl-pprint
-          , array
           , attoparsec
-          , bits-extra
           , bytestring
-          , dlist
+          , hedgehog
+          , hspec
           , hw-balancedparens
           , hw-bits
-          , hw-mquery
-          , hw-parser
+          , hw-hspec-hedgehog
           , hw-prim
           , hw-rankselect
           , hw-rankselect-base
-          , hw-simd
-          , mmap
-          , semigroups
-          , text
-          , vector
-          , word8
-          , hspec
-          , hedgehog
-          , hw-hspec-hedgehog
           , transformers
+          , vector
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   hs-source-dirs: test
@@ -240,27 +216,11 @@ test-suite hw-json-test
 
 benchmark bench
   import:   base
-          , ansi-wl-pprint
-          , array
-          , attoparsec
-          , bits-extra
           , bytestring
           , criterion
           , directory
-          , dlist
-          , hw-balancedparens
-          , hw-bits
-          , hw-mquery
-          , hw-parser
-          , hw-prim
-          , hw-rankselect
-          , hw-rankselect-base
-          , hw-simd
           , mmap
           , semigroups
-          , text
-          , vector
-          , word8
   type: exitcode-stdio-1.0
   main-is: Main.hs
   hs-source-dirs: bench
