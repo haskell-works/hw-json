@@ -3,8 +3,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 
 module HaskellWorks.Data.Json.Backend.Standard.LoadCursor
-  ( indexJsonCursor
-  , readJson
+  ( readJson
   , loadJsonStrict
   , loadJsonWithCsPoppyIndex
   , loadJsonWithIndex
@@ -27,7 +26,6 @@ import System.IO.MMap
 import qualified Data.ByteString                              as BS
 import qualified Data.ByteString.Internal                     as BSI
 import qualified Data.Vector.Storable                         as DVS
-import qualified HaskellWorks.Data.ByteString                 as BS
 import qualified HaskellWorks.Data.Json.Backend.Standard.Slow as SLOW
 
 readJson :: String -> IO (JsonCursor BS.ByteString (DVS.Vector Word64) (SimpleBalancedParens (DVS.Vector Word64)))
@@ -76,11 +74,3 @@ loadJsonWithPoppy512Index2 filename = do
   let cursor = JsonCursor jsonBS (makePoppy512 jsonIb) (SimpleBalancedParens (makePoppy512 jsonBp)) 1
                 :: JsonCursor BSI.ByteString Poppy512 (SimpleBalancedParens Poppy512)
   return cursor
-
-indexJsonCursor :: String -> IO ()
-indexJsonCursor filename = do
-  JsonCursor _  ib (SimpleBalancedParens bp) _ <- readJson filename
-  let wib = DVS.unsafeCast ib :: DVS.Vector Word8
-  let wbp = DVS.unsafeCast bp :: DVS.Vector Word8
-  BS.writeFile (filename ++ ".ib") (BS.toByteString wib)
-  BS.writeFile (filename ++ ".bp") (BS.toByteString wbp)
