@@ -4,6 +4,7 @@
 
 module HaskellWorks.Data.Json.Backend.Standard.LoadCursor
   ( indexJsonCursor
+  , readJson
   , loadJsonStrict
   , loadJsonWithCsPoppyIndex
   , loadJsonWithIndex
@@ -31,7 +32,7 @@ import qualified HaskellWorks.Data.Json.Backend.Standard.Slow as SLOW
 
 readJson :: String -> IO (JsonCursor BS.ByteString (DVS.Vector Word64) (SimpleBalancedParens (DVS.Vector Word64)))
 readJson path = do
-  bs <- BS.readFile path
+  bs <- readFile path
   let !cursor = SLOW.makeCursor bs
   return cursor
 

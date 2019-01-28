@@ -22,11 +22,11 @@ import qualified Data.DList as DL
 
 runDemo :: DemoOptions -> IO ()
 runDemo opts = do
-  !cursor <- loadJsonWithCsPoppyIndex (opts ^. L.filePath)
+  !cursor <- readJson (opts ^. L.filePath)
   let !json = lightJsonAt cursor
   let q = MQuery (DL.singleton json)
 
-  putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> entry >=> named "price_currency_code" >=> asString) & count
+  putPretty $ q >>= (entry >=> named "meta" >=> entry >=> named "view" >=> entry >=> named "columns" >=> item >=> entry >=> named "id") & count
 
 optsDemo :: Parser DemoOptions
 optsDemo = DemoOptions
@@ -38,4 +38,4 @@ optsDemo = DemoOptions
         )
 
 cmdDemo :: Mod CommandFields (IO ())
-cmdDemo = command "create-index"  $ flip info idm $ runDemo <$> optsDemo
+cmdDemo = command "demo"  $ flip info idm $ runDemo <$> optsDemo

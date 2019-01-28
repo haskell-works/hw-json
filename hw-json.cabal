@@ -61,14 +61,23 @@ common hw-simd              { build-depends: hw-simd              >= 0.1.1.2    
 common lens                 { build-depends: lens                 >= 4          && < 5      }
 common mmap                 { build-depends: mmap                 >= 0.5        && < 0.6    }
 common optparse-applicative { build-depends: optparse-applicative >= 0.14       && < 0.15   }
-common semigroups           { build-depends: semigroups           >= 0.18.5     && < 0.19   }
 common text                 { build-depends: text                 >= 1.2        && < 1.3    }
 common transformers         { build-depends: transformers         >= 0.4        && < 0.6    }
 common vector               { build-depends: vector               >= 0.12       && < 0.13   }
 common word8                { build-depends: word8                >= 0.1        && < 0.2    }
 
+common semigroups   { if impl(ghc < 8     ) { build-depends: semigroups     >= 0.16     && < 0.19 } }
+common hw-json-simd { if impl(ghc >= 8.2.0) { build-depends: hw-json-simd   >= 0.1.0.0  && < 0.2  } }
+
+common config
+  if flag(sse42)
+    ghc-options: -mbmi2
+  if flag(bmi2) && impl(ghc >= 8.4.1)
+    ghc-options: -mbmi2 -msse4.2
+    cpp-options: -DBMI2_ENABLED
+
 library
-  import:   base
+  import:   base, config
           , ansi-wl-pprint
           , array
           , attoparsec
@@ -88,15 +97,9 @@ library
           , text
           , vector
           , word8
-  hs-source-dirs:
-      src
+  hs-source-dirs: src
   ghc-options: -Wall -O2 -msse4.2
 
-  if (flag(sse42))
-    ghc-options: -mbmi2
-  if (flag(bmi2)) && (impl(ghc >=8.4.1))
-    ghc-options: -mbmi2 -msse4.2
-    cpp-options: -DBMI2_ENABLED
   exposed-modules:
       HaskellWorks.Data.Json
       HaskellWorks.Data.Json.Backend.Simple.Cursor
@@ -144,9 +147,10 @@ library
   default-language: Haskell2010
 
 executable hw-json
-  import:   base
+  import:   base, config
           , bytestring
           , dlist
+          , hw-json-simd
           , hw-mquery
           , hw-prim
           , lens
@@ -163,18 +167,10 @@ executable hw-json
   hs-source-dirs: app
   ghc-options: -Wall -threaded -rtsopts -with-rtsopts=-N -O2 -msse4.2
   build-depends: hw-json
-  if (flag(sse42))
-    ghc-options: -mbmi2
-  if (flag(bmi2)) && (impl(ghc >=8.4.1))
-    ghc-options: -mbmi2 -msse4.2
-    cpp-options: -DBMI2_ENABLED
-  if (impl(ghc < 8))
-    build-depends:
-        semigroups >=0.16 && <0.19
   default-language: Haskell2010
 
 test-suite hw-json-test
-  import:   base
+  import:   base, config
           , attoparsec
           , bytestring
           , hedgehog
@@ -189,15 +185,9 @@ test-suite hw-json-test
           , vector
   type: exitcode-stdio-1.0
   main-is: Spec.hs
+  build-depends: hw-json
   hs-source-dirs: test
   ghc-options: -Wall -threaded -rtsopts -with-rtsopts=-N
-  build-depends:
-      hw-json
-  if (flag(sse42))
-    ghc-options: -mbmi2
-  if (flag(bmi2)) && (impl(ghc >=8.4.1))
-    ghc-options: -mbmi2 -msse4.2
-    cpp-options: -DBMI2_ENABLED
   other-modules:
       HaskellWorks.Data.Json.Backend.Simple.CursorSpec
       HaskellWorks.Data.Json.Backend.Standard.Succinct.Cursor.BalancedParensSpec
@@ -215,7 +205,7 @@ test-suite hw-json-test
   build-tools: hspec-discover
 
 benchmark bench
-  import:   base
+  import:   base, config
           , bytestring
           , criterion
           , directory
@@ -226,11 +216,5 @@ benchmark bench
   hs-source-dirs: bench
   ghc-options: -Wall -O2 -msse4.2
   build-depends: hw-json
-  if (flag(sse42))
-    ghc-options: -mbmi2
-  if (flag(bmi2)) && (impl(ghc >=8.4.1))
-    ghc-options: -mbmi2 -msse4.2
-    cpp-options: -DBMI2_ENABLED
-  other-modules:
-      Paths_hw_json
+  other-modules: Paths_hw_json
   default-language: Haskell2010
