@@ -3,7 +3,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 
 module HaskellWorks.Data.Json.Backend.Standard.Load
-  ( readJson
+  ( loadCursor
   , loadJson
   , loadJsonPartial
   , loadJsonWithCsPoppyIndex
@@ -17,23 +17,16 @@ import HaskellWorks.Data.BalancedParens.Simple
 import HaskellWorks.Data.Bits.BitShown
 import HaskellWorks.Data.FromForeignRegion
 import HaskellWorks.Data.Json.Backend.Standard.Cursor
+import HaskellWorks.Data.Json.Backend.Standard.Load.Cursor
 import HaskellWorks.Data.Json.Internal.PartialIndex
 import HaskellWorks.Data.Json.PartialValue
 import HaskellWorks.Data.RankSelect.CsPoppy
 import HaskellWorks.Data.RankSelect.Poppy512
 import System.IO.MMap
 
-import qualified Data.ByteString                              as BS
-import qualified Data.ByteString.Internal                     as BSI
-import qualified Data.Vector.Storable                         as DVS
-import qualified HaskellWorks.Data.ByteString                 as BS
-import qualified HaskellWorks.Data.Json.Backend.Standard.Slow as SLOW
-
-readJson :: String -> IO (JsonCursor BS.ByteString (DVS.Vector Word64) (SimpleBalancedParens (DVS.Vector Word64)))
-readJson path = do
-  bs <- BS.mmap path
-  let !cursor = SLOW.makeCursor bs
-  return cursor
+import qualified Data.ByteString          as BS
+import qualified Data.ByteString.Internal as BSI
+import qualified Data.Vector.Storable     as DVS
 
 loadJsonRawWithIndex :: String -> IO (BS.ByteString, DVS.Vector Word64, DVS.Vector Word64)
 loadJsonRawWithIndex filename = do
@@ -79,6 +72,6 @@ loadJson = loadJsonWithCsPoppyIndex
 
 loadJsonPartial :: String -> IO JsonPartialValue
 loadJsonPartial filename = do
-  !cursor <- readJson filename
+  !cursor <- loadCursor filename
   let !jsonResult = jsonPartialJsonValueAt (jsonPartialIndexAt cursor)
   return jsonResult
