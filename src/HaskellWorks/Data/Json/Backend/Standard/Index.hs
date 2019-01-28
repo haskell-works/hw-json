@@ -13,7 +13,7 @@ import qualified HaskellWorks.Data.Json.Backend.Standard.Load as L
 
 indexJson :: String -> IO ()
 indexJson filename = do
-  JsonCursor _ ib (SimpleBalancedParens bp) _ <- L.readJson filename
+  JsonCursor _ ib (SimpleBalancedParens bp) _ <- L.loadCursor filename
   let wib = DVS.unsafeCast ib :: DVS.Vector Word8
   let wbp = DVS.unsafeCast bp :: DVS.Vector Word8
   BS.writeFile (filename ++ ".ib") (BS.toByteString wib)

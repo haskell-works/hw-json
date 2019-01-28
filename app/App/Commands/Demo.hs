@@ -22,7 +22,7 @@ import qualified Data.DList as DL
 
 runDemo :: DemoOptions -> IO ()
 runDemo opts = do
-  !cursor <- readJson (opts ^. L.filePath)
+  !cursor <- loadCursor (opts ^. L.filePath)
   let !json = lightJsonAt cursor
   let q = MQuery (DL.singleton json)
 
