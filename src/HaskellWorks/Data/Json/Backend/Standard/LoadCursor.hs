@@ -4,21 +4,16 @@
 
 module HaskellWorks.Data.Json.Backend.Standard.LoadCursor
   ( readJson
-  , loadJsonStrict
   , loadJsonWithCsPoppyIndex
   , loadJsonWithIndex
   , loadJsonWithPoppy512Index
   , loadJsonWithPoppy512Index2
   ) where
 
-import Control.Monad
 import Data.Word
 import HaskellWorks.Data.BalancedParens.Simple
 import HaskellWorks.Data.FromForeignRegion
 import HaskellWorks.Data.Json.Backend.Standard.Cursor
-import HaskellWorks.Data.Json.DecodeError
-import HaskellWorks.Data.Json.Internal.Index
-import HaskellWorks.Data.Json.Value
 import HaskellWorks.Data.RankSelect.CsPoppy
 import HaskellWorks.Data.RankSelect.Poppy512
 import System.IO.MMap
@@ -33,12 +28,6 @@ readJson path = do
   bs <- readFile path
   let !cursor = SLOW.makeCursor bs
   return cursor
-
-loadJsonStrict :: String -> IO (Either DecodeError [JsonValue])
-loadJsonStrict filename = do
-  !cursor <- readJson filename
-  let !jsonResult = (jsonIndexAt >=> jsonValueAt) cursor
-  return $ (:[]) `fmap` jsonResult
 
 loadJsonRawWithIndex :: String -> IO (BS.ByteString, DVS.Vector Word64, DVS.Vector Word64)
 loadJsonRawWithIndex filename = do
