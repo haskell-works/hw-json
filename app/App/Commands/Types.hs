@@ -11,6 +11,7 @@ data CreateIndexOptions = CreateIndexOptions
   , _createIndexOptionsOutputBpFile :: Maybe FilePath
   } deriving (Eq, Show)
 
-newtype DemoOptions = DemoOptions
-  { _demoOptionsFilePath  :: FilePath
+data DemoOptions = DemoOptions
+  { _demoOptionsFilePath :: FilePath
+  , _demoOptionsMethod   :: FilePath
   } deriving (Eq, Show)
