@@ -6,10 +6,10 @@ import Data.Word
 import HaskellWorks.Data.BalancedParens.Simple
 import HaskellWorks.Data.Json.Backend.Standard.Cursor
 
-import qualified Data.ByteString                              as BS
-import qualified Data.Vector.Storable                         as DVS
-import qualified HaskellWorks.Data.ByteString                 as BS
-import qualified HaskellWorks.Data.Json.Backend.Standard.Load as L
+import qualified Data.ByteString                                     as BS
+import qualified Data.Vector.Storable                                as DVS
+import qualified HaskellWorks.Data.ByteString                        as BS
+import qualified HaskellWorks.Data.Json.Backend.Standard.Load.Cursor as L
 
 indexJson :: String -> IO ()
 indexJson filename = do
