@@ -209,7 +209,7 @@ import HaskellWorks.Data.Succinct.RankSelect.Binary.Poppy512
 import HaskellWorks.Data.Positioning
 import qualified Data.Vector.Storable as DVS
 import HaskellWorks.Data.IndexedSeq
-(jsonBS, jsonIb, jsonBp) <- loadJsonRawWithIndex "firehose.json"
+(jsonBS, jsonIb, jsonBp) <- loadRawWithIndex "firehose.json"
 let bp1 = SimpleBalancedParens jsonBp
 let bp2 = SimpleBalancedParens (makePoppy512 jsonBp)
 let bp3 = makePoppy512 jsonBp

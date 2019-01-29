@@ -111,6 +111,7 @@ library
       HaskellWorks.Data.Json.Backend.Standard.Index
       HaskellWorks.Data.Json.Backend.Standard.Load
       HaskellWorks.Data.Json.Backend.Standard.Load.Cursor
+      HaskellWorks.Data.Json.Backend.Standard.Load.Raw
       HaskellWorks.Data.Json.Backend.Standard.LoadCursor
       HaskellWorks.Data.Json.Backend.Standard.SemiIndex
       HaskellWorks.Data.Json.Backend.Standard.Slow
