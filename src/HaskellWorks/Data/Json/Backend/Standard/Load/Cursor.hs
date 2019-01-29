@@ -2,6 +2,10 @@
 
 module HaskellWorks.Data.Json.Backend.Standard.Load.Cursor
   ( loadCursor
+  , loadCursorWithIndex
+  , loadCursorWithPoppy512Index
+  , loadCursorWithCsPoppyIndex
+  , loadCursorWithPoppy512Index2
   ) where
 
 import Data.Word
