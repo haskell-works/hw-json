@@ -52,6 +52,7 @@ common hspec                { build-depends: hspec                >= 2.4        
 common hw-balancedparens    { build-depends: hw-balancedparens    >= 0.2.0.1    && < 0.3    }
 common hw-bits              { build-depends: hw-bits              >= 0.7.0.5    && < 0.8    }
 common hw-hspec-hedgehog    { build-depends: hw-hspec-hedgehog    >= 0.1.0.4    && < 0.2    }
+common hw-json-simd         { build-depends: hw-json-simd         >= 0.1.0.1    && < 0.2    }
 common hw-mquery            { build-depends: hw-mquery            >= 0.2.0.0    && < 0.3    }
 common hw-parser            { build-depends: hw-parser            >= 0.1        && < 0.2    }
 common hw-prim              { build-depends: hw-prim              >= 0.6.2.21   && < 0.7    }
@@ -66,8 +67,7 @@ common transformers         { build-depends: transformers         >= 0.4        
 common vector               { build-depends: vector               >= 0.12       && < 0.13   }
 common word8                { build-depends: word8                >= 0.1        && < 0.2    }
 
-common semigroups   { if impl(ghc < 8     ) { build-depends: semigroups     >= 0.16     && < 0.19 } }
-common hw-json-simd { if impl(ghc >= 8.2.0) { build-depends: hw-json-simd   >= 0.1.0.0  && < 0.2  } }
+common semigroups   { if impl(ghc <  8    ) { build-depends: semigroups     >= 0.16     && < 0.19 } }
 
 common config
   if flag(sse42)
