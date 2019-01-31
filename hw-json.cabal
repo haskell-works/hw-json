@@ -152,13 +152,17 @@ executable hw-json
   import:   base, config
           , bytestring
           , dlist
+          , hw-balancedparens
           , hw-json-simd
           , hw-mquery
           , hw-prim
+          , hw-rankselect
+          , hw-rankselect-base
           , lens
           , mmap
           , optparse-applicative
           , semigroups
+          , vector
   main-is: Main.hs
   other-modules:
       App.Commands
