@@ -26,11 +26,13 @@ import qualified HaskellWorks.Data.Json.Internal.Backend.Standard.Blank         
 import qualified HaskellWorks.Data.Json.Internal.Backend.Standard.BlankedJson        as J
 import qualified HaskellWorks.Data.Json.Internal.Backend.Standard.MakeIndex          as J
 import qualified HaskellWorks.Data.Json.Internal.Backend.Standard.ToBalancedParens64 as J
+import qualified HaskellWorks.Data.Json.Simd.Index.Standard                          as STSI
 import qualified System.Exit                                                         as IO
 import qualified System.IO                                                           as IO
 import qualified System.IO.MMap                                                      as IO
 
 {-# ANN module ("HLint: ignore Reduce duplication"  :: String) #-}
+{-# ANN module ("HLint: ignore Redundant do"        :: String) #-}
 
 runCreateIndexStandard :: CreateIndexOptions -> IO ()
 runCreateIndexStandard opts = do
@@ -60,6 +62,17 @@ runCreateIndexStandard opts = do
           forM_ siChunks $ \(STSI.SiChunk ib bp) -> do
             LBS.hPut hIb (LBS.toLazyByteString ib)
             LBS.hPut hBp (LBS.toLazyByteString bp)
+    "simd" -> do
+      IO.withFile filePath IO.ReadMode $ \hIn -> do
+        contents <- LBS.resegmentPadded 512 <$> LBS.hGetContents hIn
+        case STSI.makeStandardJsonIbBps contents of
+          Right chunks -> do
+            IO.withFile outputIbFile IO.WriteMode $ \hIb -> do
+              IO.withFile outputBpFile IO.WriteMode $ \hBp -> do
+                forM_ chunks $ \(ibBs, bpBs) -> do
+                  BS.hPut hIb ibBs
+                  BS.hPut hBp bpBs
+          Left msg -> IO.hPutStrLn IO.stderr $ "Unable to create index: " <> show msg
     "sum" -> do
       lbs <- LBS.resegmentPadded 64 <$> LBS.readFile filePath
       IO.putStrLn $ "Sum: " <> show (sum (BS.foldl (\a b -> a + fromIntegral b) (0 :: Word64) <$> LBS.toChunks lbs))
