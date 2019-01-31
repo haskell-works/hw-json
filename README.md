@@ -2,14 +2,13 @@
 [![master](https://circleci.com/gh/haskell-works/hw-json/tree/master.svg?style=svg)](https://circleci.com/gh/haskell-works/hw-json/tree/master)
 
 `hw-json` is a succinct JSON parsing library.
-It uses succinct data-structures to allow traversal of
-large JSON strings with minimal memory overhead.
+
+It uses succinct data-structures to allow traversal of large JSON strings with minimal memory overhead.
 
 For an example, see [`app/Main.hs`](../master/app/Main.hs)
 
 ## Prerequisites
-* Install `haskell-stack`.
-* Install `hlint` (eg. `stack install hlint`)
+* `cabal` version `2.2` or later
 
 ## Memory benchmark
 
