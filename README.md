@@ -35,11 +35,11 @@ For an example, see [`app/Main.hs`](../master/app/Main.hs)
 Mem (MB) CMD
 -------- ---------------------------------------------------------
       94 import Control.DeepSeq
-      100 import Data.Aeson
-      104 import qualified Data.ByteString.Lazy as BSL
-      105 bs <- BSL.readFile "../corpus/bench/hospitalisation.json"
-      146 let !x = deepseq bs bs
-      669 let !y = decode json78m :: Maybe Value
+     100 import Data.Aeson
+     104 import qualified Data.ByteString.Lazy as BSL
+     105 bs <- BSL.readFile "../corpus/bench/hospitalisation.json"
+     146 let !x = deepseq bs bs
+     669 let !y = decode json78m :: Maybe Value
 ```
 
 ### Parsing large Json files in Haskell with hw-json
@@ -53,14 +53,14 @@ Mem (MB) CMD
       97 import HaskellWorks.Data.BalancedParens.Simple
       98 import HaskellWorks.Data.Bits.BitShown
       99 import HaskellWorks.Data.FromForeignRegion
-      106 import HaskellWorks.Data.Json.Backend.Standard.Cursor
-      109 import System.IO.MMap
-      110 import qualified Data.ByteString                              as BS
-      111 import qualified Data.Vector.Storable                         as DVS
-      112 import qualified HaskellWorks.Data.ByteString                 as BS
-      114 import qualified HaskellWorks.Data.Json.Backend.Standard.Fast as FAST
-      115 bs <- BS.mmap "../corpus/bench/hospitalisation.json"
-      203 let !cursor = FAST.makeCursor bs
+     106 import HaskellWorks.Data.Json.Backend.Standard.Cursor
+     109 import System.IO.MMap
+     110 import qualified Data.ByteString                              as BS
+     111 import qualified Data.Vector.Storable                         as DVS
+     112 import qualified HaskellWorks.Data.ByteString                 as BS
+     114 import qualified HaskellWorks.Data.Json.Backend.Standard.Fast as FAST
+     115 bs <- BS.mmap "../corpus/bench/hospitalisation.json"
+     203 let !cursor = FAST.makeCursor bs
 ```
 
 ## Examples
@@ -233,7 +233,6 @@ let bp3 = makePoppy512 jsonBp
 * [Semi-Indexing Semi-Structured Data in Tiny Space](http://www.di.unipi.it/~ottavian/files/semi_index_cikm.pdf)
 * [Succinct Data Structures talk by Edward Kmett](https://www.youtube.com/watch?v=uA0Z7_4J7u8)
 * [Typed Tagless Final Interpreters](http://okmij.org/ftp/tagless-final/course/lecture.pdf)
-
 
 ## Special mentions
 
