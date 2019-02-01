@@ -31,96 +31,67 @@ For an example, see [`app/Main.hs`](../master/app/Main.hs)
 
 ### Parsing large Json files in Haskell with Aeson
 
-```text
-Mem (MB) CMD
--------- ---------------------------------------------------------
-      94 import Control.DeepSeq
-     100 import Data.Aeson
-     104 import qualified Data.ByteString.Lazy as BSL
-     105 bs <- BSL.readFile "../corpus/bench/hospitalisation.json"
-     146 let !x = deepseq bs bs
-     669 let !y = decode json78m :: Maybe Value
+```haskell
+-- CMD                                                     -- Mem (MB)
+---------------------------------------------------------- -- --------
+import Control.DeepSeq                                     --       94
+import Data.Aeson                                          --      100
+import qualified Data.ByteString.Lazy as BSL               --      104
+bs <- BSL.readFile "../corpus/bench/hospitalisation.json"  --      105
+let !x = deepseq bs bs                                     --      146
+let !y = decode json78m :: Maybe Value                     --      669
 ```
 
 ### Parsing large Json files in Haskell with hw-json
 
-```text
-Mem (MB) CMD
--------- ---------------------------------------------------------
-      93 import Foreign
-      95 import Control.Monad
-      96 import Data.Word
-      97 import HaskellWorks.Data.BalancedParens.Simple
-      98 import HaskellWorks.Data.Bits.BitShown
-      99 import HaskellWorks.Data.FromForeignRegion
-     106 import HaskellWorks.Data.Json.Backend.Standard.Cursor
-     109 import System.IO.MMap
-     110 import qualified Data.ByteString                              as BS
-     111 import qualified Data.Vector.Storable                         as DVS
-     112 import qualified HaskellWorks.Data.ByteString                 as BS
-     114 import qualified HaskellWorks.Data.Json.Backend.Standard.Fast as FAST
-     115 bs <- BS.mmap "../corpus/bench/hospitalisation.json"
-     203 let !cursor = FAST.makeCursor bs
+```haskell
+-- CMD                                                                -- Mem (MB)
+--------------------------------------------------------------------- -- --------
+import Foreign                                                        --       93
+import Control.Monad                                                  --       95
+import Data.Word                                                      --       96
+import HaskellWorks.Data.BalancedParens.Simple                        --       97
+import HaskellWorks.Data.Bits.BitShown                                --       98
+import HaskellWorks.Data.FromForeignRegion                            --       99
+import HaskellWorks.Data.Json.Backend.Standard.Cursor                 --      106
+import System.IO.MMap                                                 --      109
+import qualified Data.ByteString                              as BS   --      110
+import qualified Data.Vector.Storable                         as DVS  --      111
+import qualified HaskellWorks.Data.ByteString                 as BS   --      112
+import qualified HaskellWorks.Data.Json.Backend.Standard.Fast as FAST --      114
+bs <- BS.mmap "../corpus/bench/hospitalisation.json"                  --      115
+let !cursor = FAST.makeCursor bs                                      --      203
 ```
 
 ## Examples
 
-### Performance example
-(This section out of date)
-
-```haskell
-import Foreign
-import qualified Data.Vector.Storable as DVS
-import qualified Data.ByteString as BS
-import qualified Data.ByteString.Internal as BSI
-import System.IO.MMap
-import Data.Word
-import System.CPUTime
-(fptr :: ForeignPtr Word8, offset, size) <- mmapFileForeignPtr "/Users/jky/Downloads/78mbs.json" ReadOnly Nothing
-cursor <- measure (fromForeignRegion (fptr, offset, size) :: JsonCursor BS.ByteString (DVS.Vector Word64) (SimpleBalancedParens (DVS.Vector Word64)))
-let !bs = BSI.fromForeignPtr (castForeignPtr fptr) offset size
-x <- measure $ jsonBsToInterestBs bs
-let !y = BS.concat (unescape' "" [bs])
-
-import Foreign
-import qualified Data.Vector.Storable as DVS
-import qualified Data.ByteString as BS
-import qualified Data.ByteString.Internal as BSI
-import System.IO.MMap
-import Data.Word
-import System.CPUTime
-(fptr :: ForeignPtr Word8, offset, size) <- mmapFileForeignPtr "/Users/jky/Downloads/part40.json" ReadOnly Nothing
-let !bs = BSI.fromForeignPtr (castForeignPtr fptr) offset size
-x <- measure $ BS.concat $ blankedJsonToInterestBits $ blankJson [bs]
-x <- measure $ jsonBsToInterestBs bs
-
-jsonTokenAt $ J.nextSibling $ J.firstChild $ J.nextSibling $ J.firstChild $ J.firstChild  cursor
-```
-
 ### Navigation example
 
 ```haskell
-import qualified Data.ByteString                             as BS
-import           Data.String
-import qualified Data.Vector.Storable                        as DVS
-import           Data.Word
-import           HaskellWorks.Data.Bits.BitShow
-import           HaskellWorks.Data.Bits.BitShown
-import           HaskellWorks.Data.FromForeignRegion
-import           HaskellWorks.Data.Json.Succinct.Cursor      as C
-import           HaskellWorks.Data.Json.Token
-import           HaskellWorks.Data.BalancedParens.Simple
-import           HaskellWorks.Data.RankSelect.Base.Rank0
-import           HaskellWorks.Data.RankSelect.Base.Rank1
-import           HaskellWorks.Data.RankSelect.Base.Select1
-import           HaskellWorks.Data.RankSelect.Poppy512
-import qualified HaskellWorks.Data.TreeCursor as TC
-import           System.IO.MMap
+import Control.Monad
+import Data.String
+import Data.Word
+import HaskellWorks.Data.BalancedParens.Simple
+import HaskellWorks.Data.Bits.BitShow
+import HaskellWorks.Data.Bits.BitShown
+import HaskellWorks.Data.FromForeignRegion
+import HaskellWorks.Data.Json.Backend.Standard.Cursor
+import HaskellWorks.Data.Json.Internal.Token.Types
+import HaskellWorks.Data.RankSelect.Base.Rank0
+import HaskellWorks.Data.RankSelect.Base.Rank1
+import HaskellWorks.Data.RankSelect.Base.Select1
+import HaskellWorks.Data.RankSelect.Poppy512
+import System.IO.MMap
+import qualified Data.ByteString                                as BS
+import qualified Data.Vector.Storable                           as DVS
+import qualified HaskellWorks.Data.Json.Backend.Standard.Cursor as C
+import qualified HaskellWorks.Data.Json.Backend.Standard.Fast   as FAST
+import qualified HaskellWorks.Data.TreeCursor                   as TC
 let fc = TC.firstChild
 let ns = TC.nextSibling
 let pn = TC.parent
 let ss = TC.subtreeSize
-let cursor = "[null, {\"field\": 1}]" :: JsonCursor BS.ByteString (DVS.Vector Word64) (SimpleBalancedParens (DVS.Vector Word64))
+let cursor = FAST.makeCursor "[null, {\"field\": 1}]"
 cursor
 fc cursor
 (fc >=> ns) cursor
@@ -153,30 +124,31 @@ let q = MQuery (DL.singleton json)
 ```
 
 ```haskell
-measureIO $ putPretty $ q >>= item & limit 10
-measureIO $ putPretty $ q >>= item & page 10 1
-measureIO $ putPretty $ q >>= item >>= hasKV "founded_year" (JsonPartialNumber 2005) & limit 10
-measureIO $ putPretty $ q >>= item >>= entry
-measureIO $ putPretty $ q >>= item >>= entry >>= named "name" & limit 10
-measureIO $ putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> entry >=> named "price_currency_code")
-measureIO $ putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> entry >=> named "price_currency_code") & onList (uniq . sort)
-measureIO $ putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> entry >=> named "price_currency_code" >=> asString >=> valueOf "USD") & limit 10
-measureIO $ putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> having (entry >=> named "price_currency_code" >=> asString >=> valueOf "USD") >=> entry >=> named "price_amount") & limit 10
-measureIO $ putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> having (entry >=> named "price_currency_code" >=> asString >=> valueOf "USD") >=> entry >=> named "price_amount" >=> castAsInteger ) & limit 10
-measureIO $ putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> having (entry >=> named "price_currency_code" >=> asString >=> valueOf "USD") >=> entry >=> named "price_amount" >=> castAsInteger ) & aggregate sum
+putPretty $ q >>= item & limit 10
+putPretty $ q >>= item & page 10 1
+putPretty $ q >>= item >>= hasKV "founded_year" (JsonPartialNumber 2005) & limit 10
+putPretty $ q >>= item >>= entry
+putPretty $ q >>= item >>= entry >>= named "name" & limit 10
+putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> entry >=> named "price_currency_code")
+putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> entry >=> named "price_currency_code") & onList (uniq . sort)
+putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> entry >=> named "price_currency_code" >=> asString >=> valueOf "USD") & limit 10
+putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> having (entry >=> named "price_currency_code" >=> asString >=> valueOf "USD") >=> entry >=> named "price_amount") & limit 10
+putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> having (entry >=> named "price_currency_code" >=> asString >=> valueOf "USD") >=> entry >=> named "price_amount" >=> castAsInteger ) & limit 10
+putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> having (entry >=> named "price_currency_code" >=> asString >=> valueOf "USD") >=> entry >=> named "price_amount" >=> castAsInteger ) & aggregate sum
 ```
 
 ```haskell
-import           Control.Monad
+import Control.Monad
+import Data.Function
+import Data.List
+import HaskellWorks.Data.Json.LoadCursor
+import HaskellWorks.Data.Micro
+import HaskellWorks.Data.MQuery
+import HaskellWorks.Data.Json.LightJson
+import HaskellWorks.Data.Row
+import HaskellWorks.Diagnostics
+
 import qualified Data.DList as DL
-import           Data.Function
-import           Data.List
-import           HaskellWorks.Data.Json.LoadCursor
-import           HaskellWorks.Data.Micro
-import           HaskellWorks.Data.MQuery
-import           HaskellWorks.Data.Json.LightJson
-import           HaskellWorks.Data.Row
-import           HaskellWorks.Diagnostics
 ```
 
 ```haskell
@@ -189,16 +161,16 @@ let q = MQuery (DL.singleton json)
 ```
 
 ```haskell
-measureIO $ putPretty $ q >>= item & limit 10
-measureIO $ putPretty $ q >>= item & page 10 1
-measureIO $ putPretty $ q >>= item >>= entry
-measureIO $ putPretty $ q >>= item >>= entry >>= named "name" & limit 10
-measureIO $ putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> entry >=> named "price_currency_code" >=> asString)
-measureIO $ putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> entry >=> named "price_currency_code" >=> asString) & onList (uniq . sort)
-measureIO $ putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> entry >=> named "price_currency_code" >=> asString >=> valueOf "USD") & limit 10
-measureIO $ putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> having (entry >=> named "price_currency_code" >=> asString >=> valueOf "USD") >=> entry >=> named "price_amount") & limit 10
-measureIO $ putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> having (entry >=> named "price_currency_code" >=> asString >=> valueOf "USD") >=> entry >=> named "price_amount" >=> castAsInteger ) & limit 10
-measureIO $ putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> having (entry >=> named "price_currency_code" >=> asString >=> valueOf "USD") >=> entry >=> named "price_amount" >=> castAsInteger ) & aggregate sum
+putPretty $ q >>= item & limit 10
+putPretty $ q >>= item & page 10 1
+putPretty $ q >>= item >>= entry
+putPretty $ q >>= item >>= entry >>= named "name" & limit 10
+putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> entry >=> named "price_currency_code" >=> asString)
+putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> entry >=> named "price_currency_code" >=> asString) & onList (uniq . sort)
+putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> entry >=> named "price_currency_code" >=> asString >=> valueOf "USD") & limit 10
+putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> having (entry >=> named "price_currency_code" >=> asString >=> valueOf "USD") >=> entry >=> named "price_amount") & limit 10
+putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> having (entry >=> named "price_currency_code" >=> asString >=> valueOf "USD") >=> entry >=> named "price_amount" >=> castAsInteger ) & limit 10
+putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> having (entry >=> named "price_currency_code" >=> asString >=> valueOf "USD") >=> entry >=> named "price_amount" >=> castAsInteger ) & aggregate sum
 ```
 
 ### Decoding
@@ -220,8 +192,8 @@ cabal repl --ghc-options='-fexternal-interpreter -prof'
 import HaskellWorks.Data.Succinct.BalancedParens
 import HaskellWorks.Data.Succinct.RankSelect.Binary.Poppy512
 import HaskellWorks.Data.Positioning
-import qualified Data.Vector.Storable as DVS
 import HaskellWorks.Data.IndexedSeq
+import qualified Data.Vector.Storable as DVS
 (jsonBS, jsonIb, jsonBp) <- loadRawWithIndex "firehose.json"
 let bp1 = SimpleBalancedParens jsonBp
 let bp2 = SimpleBalancedParens (makePoppy512 jsonBp)

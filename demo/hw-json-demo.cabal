@@ -91,6 +91,8 @@ library
           , hw-json
           , hw-json-simd
           , hw-prim
+          , hw-rankselect
+          , hw-rankselect-base
           , mmap
           , vector
   hs-source-dirs:   src
