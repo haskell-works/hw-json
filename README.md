@@ -115,10 +115,10 @@ import HaskellWorks.Data.MQuery.Row
 
 import qualified Data.DList as DL
 
-!cursor <- loadPartial "../data/78mb.json"
-!cursor <- loadCursorWithIndex "../data/78mb.json"
-!cursor <- loadCursor "../data/78mb.json"
-!cursor <- loadCursorWithCsPoppyIndex "../data/78mb.json"
+!cursor <- loadPartial "../corpus/bench/78mb.json"
+!cursor <- loadCursorWithIndex "../corpus/bench/78mb.json"
+!cursor <- loadCursor "../corpus/bench/78mb.json"
+!cursor <- loadCursorWithCsPoppyIndex "../corpus/bench/78mb.json"
 let !json = jsonPartialJsonValueAt cursor
 let q = MQuery (DL.singleton json)
 

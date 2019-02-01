@@ -31,8 +31,8 @@ spec :: Spec
 spec = describe "HaskellWorks.Data.Json.Corpus" $ do
   it "Corpus 5000B loads properly" $ requireTest $ do
     inJsonBS                    <- liftIO $ BS.readFile "corpus/5000B.json"
-    inInterestBitsBS            <- liftIO $ BS.readFile "corpus/5000B.ib"
-    inInterestBalancedParensBS  <- liftIO $ BS.readFile "corpus/5000B.bp"
+    inInterestBitsBS            <- liftIO $ BS.readFile "corpus/5000B.ib.idx"
+    inInterestBalancedParensBS  <- liftIO $ BS.readFile "corpus/5000B.bp.idx"
     let inInterestBits            = fromBitTextByteString inInterestBitsBS
     let inInterestBalancedParens  = fromBitTextByteString inInterestBalancedParensBS
     let !cursor = SLOW.makeCursor inJsonBS
