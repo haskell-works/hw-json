@@ -86,6 +86,7 @@ library
           , aeson
           , bytestring
           , deepseq
+          , dlist
           , hw-balancedparens
           , hw-bits
           , hw-json
