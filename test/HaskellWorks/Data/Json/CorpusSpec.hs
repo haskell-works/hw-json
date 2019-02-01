@@ -31,8 +31,8 @@ spec :: Spec
 spec = describe "HaskellWorks.Data.Json.Corpus" $ do
   it "Corpus 5000B loads properly" $ requireTest $ do
     inJsonBS                    <- liftIO $ BS.readFile "corpus/5000B.json"
-    inInterestBitsBS            <- liftIO $ BS.readFile "corpus/5000B.ib"
-    inInterestBalancedParensBS  <- liftIO $ BS.readFile "corpus/5000B.bp"
+    inInterestBitsBS            <- liftIO $ BS.readFile "corpus/5000B.json.ib.idx"
+    inInterestBalancedParensBS  <- liftIO $ BS.readFile "corpus/5000B.json.bp.idx"
     let inInterestBits            = fromBitTextByteString inInterestBitsBS
     let inInterestBalancedParens  = fromBitTextByteString inInterestBalancedParensBS
     let !cursor = SLOW.makeCursor inJsonBS
@@ -44,8 +44,8 @@ spec = describe "HaskellWorks.Data.Json.Corpus" $ do
     bp === inInterestBalancedParens
   it "issue-0001 loads properly" $ requireTest $ do
     inJsonBS                    <- liftIO $ BS.readFile "corpus/issue-0001.json"
-    inInterestBitsBS            <- liftIO $ BS.readFile "corpus/issue-0001.ib"
-    inInterestBalancedParensBS  <- liftIO $ BS.readFile "corpus/issue-0001.bp"
+    inInterestBitsBS            <- liftIO $ BS.readFile "corpus/issue-0001.json.ib.idx"
+    inInterestBalancedParensBS  <- liftIO $ BS.readFile "corpus/issue-0001.json.bp.idx"
     let inInterestBits            = fromBitTextByteString inInterestBitsBS
     let inInterestBalancedParens  = fromBitTextByteString inInterestBalancedParensBS
     let !cursor = SLOW.makeCursor inJsonBS

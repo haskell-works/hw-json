@@ -15,12 +15,12 @@ license-file:   LICENSE
 build-type:     Simple
 extra-source-files:
     README.md
-    corpus/5000B.bp
-    corpus/5000B.ib
     corpus/5000B.json
-    corpus/issue-0001.bp
-    corpus/issue-0001.ib
+    corpus/5000B.json.bp.idx
+    corpus/5000B.json.ib.idx
     corpus/issue-0001.json
+    corpus/issue-0001.json.bp.idx
+    corpus/issue-0001.json.ib.idx
     corpus/issue-0001.md
 
 source-repository head

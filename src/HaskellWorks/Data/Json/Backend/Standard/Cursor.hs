@@ -171,5 +171,3 @@ instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => JsonIn
 
 instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => JsonPartialValueAt (JsonCursor BS.ByteString v w) where
   jsonPartialJsonValueAt = jsonPartialJsonValueAt . jsonPartialIndexAt
-
-
