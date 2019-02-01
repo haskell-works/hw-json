@@ -82,11 +82,13 @@ import HaskellWorks.Data.RankSelect.Base.Rank1
 import HaskellWorks.Data.RankSelect.Base.Select1
 import HaskellWorks.Data.RankSelect.Poppy512
 import System.IO.MMap
+
 import qualified Data.ByteString                                as BS
 import qualified Data.Vector.Storable                           as DVS
 import qualified HaskellWorks.Data.Json.Backend.Standard.Cursor as C
 import qualified HaskellWorks.Data.Json.Backend.Standard.Fast   as FAST
 import qualified HaskellWorks.Data.TreeCursor                   as TC
+
 let fc = TC.firstChild
 let ns = TC.nextSibling
 let pn = TC.parent
@@ -103,27 +105,23 @@ fc cursor
 import Control.Monad
 import Data.Function
 import Data.List
-import HaskellWorks.Data.Json.Backend.Standard.Load
-import HaskellWorks.Data.Json.LoadCursor
+import HaskellWorks.Data.Json.Backend.Standard.Load.Cursor
+import HaskellWorks.Data.Json.Backend.Standard.Load.Partial
+import HaskellWorks.Data.Json.Backend.Standard.Load.Raw
 import HaskellWorks.Data.Json.PartialValue
 import HaskellWorks.Data.MQuery
 import HaskellWorks.Data.MQuery.Micro
 import HaskellWorks.Data.MQuery.Row
-import HaskellWorks.Diagnostics
 
 import qualified Data.DList as DL
-```
 
-```haskell
-!cursor <- loadJsonPartial "../data/78mb.json"
-!cursor <- loadJsonWithIndex "../data/78mb.json"
-!cursor <- loadJson "../data/78mb.json"
-!cursor <- loadJsonWithCsPoppyIndex "../data/78mb.json"
+!cursor <- loadPartial "../data/78mb.json"
+!cursor <- loadCursorWithIndex "../data/78mb.json"
+!cursor <- loadCursor "../data/78mb.json"
+!cursor <- loadCursorWithCsPoppyIndex "../data/78mb.json"
 let !json = jsonPartialJsonValueAt cursor
 let q = MQuery (DL.singleton json)
-```
 
-```haskell
 putPretty $ q >>= item & limit 10
 putPretty $ q >>= item & page 10 1
 putPretty $ q >>= item >>= hasKV "founded_year" (JsonPartialNumber 2005) & limit 10
@@ -135,32 +133,7 @@ putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> entry >=> named "p
 putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> having (entry >=> named "price_currency_code" >=> asString >=> valueOf "USD") >=> entry >=> named "price_amount") & limit 10
 putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> having (entry >=> named "price_currency_code" >=> asString >=> valueOf "USD") >=> entry >=> named "price_amount" >=> castAsInteger ) & limit 10
 putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> having (entry >=> named "price_currency_code" >=> asString >=> valueOf "USD") >=> entry >=> named "price_amount" >=> castAsInteger ) & aggregate sum
-```
 
-```haskell
-import Control.Monad
-import Data.Function
-import Data.List
-import HaskellWorks.Data.Json.LoadCursor
-import HaskellWorks.Data.Micro
-import HaskellWorks.Data.MQuery
-import HaskellWorks.Data.Json.LightJson
-import HaskellWorks.Data.Row
-import HaskellWorks.Diagnostics
-
-import qualified Data.DList as DL
-```
-
-```haskell
-!cursor <- loadJsonPartial "../data/78mb.json"
-!cursor <- loadJsonWithIndex "../data/78mb.json"
-!cursor <- loadJson "../data/78mb.json"
-!cursor <- loadJsonWithCsPoppyIndex "../data/78mb.json"
-let !json = lightJsonAt cursor
-let q = MQuery (DL.singleton json)
-```
-
-```haskell
 putPretty $ q >>= item & limit 10
 putPretty $ q >>= item & page 10 1
 putPretty $ q >>= item >>= entry
@@ -171,33 +144,6 @@ putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> entry >=> named "p
 putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> having (entry >=> named "price_currency_code" >=> asString >=> valueOf "USD") >=> entry >=> named "price_amount") & limit 10
 putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> having (entry >=> named "price_currency_code" >=> asString >=> valueOf "USD") >=> entry >=> named "price_amount" >=> castAsInteger ) & limit 10
 putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> having (entry >=> named "price_currency_code" >=> asString >=> valueOf "USD") >=> entry >=> named "price_amount" >=> castAsInteger ) & aggregate sum
-```
-
-### Decoding
-
-#### Line separated base 64 encoded gzipped json
-
-```bash
-while read in; do echo "$in" | base64 --decode | gunzip; echo ""; done < file.lgz > firehose.json
-```
-
-### Profiling with stack traces
-
-```bash
-mafia build -p
-cabal repl --ghc-options='-fexternal-interpreter -prof'
-```
-
-```haskell
-import HaskellWorks.Data.Succinct.BalancedParens
-import HaskellWorks.Data.Succinct.RankSelect.Binary.Poppy512
-import HaskellWorks.Data.Positioning
-import HaskellWorks.Data.IndexedSeq
-import qualified Data.Vector.Storable as DVS
-(jsonBS, jsonIb, jsonBp) <- loadRawWithIndex "firehose.json"
-let bp1 = SimpleBalancedParens jsonBp
-let bp2 = SimpleBalancedParens (makePoppy512 jsonBp)
-let bp3 = makePoppy512 jsonBp
 ```
 
 ## References
