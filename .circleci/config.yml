@@ -77,11 +77,11 @@ jobs:
       - image: quay.io/haskell_works/ghc-8.6.3:18.04_2018-12-23
     <<: *cabalbuild
 
-  ghc-8.4.3:
+  ghc-8.4.4:
     environment:
       - GHC: "ghc8.4.3"
     docker:
-      - image: quay.io/haskell_works/ghc-8.4.3
+      - image: quay.io/haskell_works/ghc-8.4.4
     <<: *cabalbuild
 
   ghc-8.2.2:
@@ -91,16 +91,9 @@ jobs:
       - image: quay.io/haskell_works/ghc-8.2.2
     <<: *cabalbuild
 
-  ghc-7.10.3:
-    environment:
-      - GHC: "ghc7.10.3"
-    docker:
-      - image: quay.io/haskell_works/ghc-7.10.3
-    <<: *cabalbuild
-
   checked-builds:
     docker:
-      - image: quay.io/haskell_works/ghc-8.4.3
+      - image: quay.io/haskell_works/ghc-8.4.4
 
     steps:
       - checkout
@@ -131,7 +124,7 @@ jobs:
 
   release:
     docker:
-      - image: quay.io/haskell_works/ghc-8.4.3
+      - image: quay.io/haskell_works/ghc-8.4.4
 
     steps:
       - checkout
@@ -165,15 +158,13 @@ workflows:
   multiple-ghcs:
     jobs:
       - ghc-8.6.3
-      - ghc-8.4.3
+      - ghc-8.4.4
       - ghc-8.2.2
-      - ghc-7.10.3
       - checked-builds:
           requires:
             - ghc-8.6.3
-            - ghc-8.4.3
+            - ghc-8.4.4
             - ghc-8.2.2
-            - ghc-7.10.3
 
   tagged-release:
     jobs:
