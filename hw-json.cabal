@@ -172,7 +172,6 @@ executable hw-json
       App.Commands.CreateIndex
       App.Commands.Demo
       App.Commands.Types
-      App.Lens
 
 test-suite hw-json-test
   import:   base, config

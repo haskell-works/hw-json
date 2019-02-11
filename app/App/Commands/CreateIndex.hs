@@ -1,20 +1,22 @@
 {-# LANGUAGE BangPatterns        #-}
+{-# LANGUAGE DataKinds           #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE TypeApplications    #-}
 
 module App.Commands.CreateIndex
   ( cmdCreateIndex
   ) where
 
-import App.Commands.Types
 import Control.Lens
 import Control.Monad
+import Data.Generics.Product.Any
 import Data.Maybe
-import Data.Semigroup      ((<>))
+import Data.Semigroup            ((<>))
 import Data.Word
 import Foreign
-import Options.Applicative hiding (columns)
+import Options.Applicative       hiding (columns)
 
-import qualified App.Lens                                                            as L
+import qualified App.Commands.Types                                                  as Z
 import qualified Data.ByteString                                                     as BS
 import qualified Data.ByteString.Internal                                            as BSI
 import qualified Data.ByteString.Lazy                                                as LBS
@@ -34,12 +36,12 @@ import qualified System.IO.MMap                                                 
 {-# ANN module ("HLint: ignore Reduce duplication"  :: String) #-}
 {-# ANN module ("HLint: ignore Redundant do"        :: String) #-}
 
-runCreateIndexStandard :: CreateIndexOptions -> IO ()
+runCreateIndexStandard :: Z.CreateIndexOptions -> IO ()
 runCreateIndexStandard opts = do
-  let filePath = opts ^. L.filePath
-  let outputIbFile = opts ^. L.outputIbFile & fromMaybe (filePath <> ".ib.idx")
-  let outputBpFile = opts ^. L.outputBpFile & fromMaybe (filePath <> ".bp.idx")
-  case opts ^. L.method of
+  let filePath = opts ^. the @"filePath"
+  let outputIbFile = opts ^. the @"outputIbFile" & fromMaybe (filePath <> ".ib.idx")
+  let outputBpFile = opts ^. the @"outputBpFile" & fromMaybe (filePath <> ".bp.idx")
+  case opts ^. the @"method" of
     "original" -> do
       (fptr :: ForeignPtr Word8, offset, size) <- IO.mmapFileForeignPtr filePath IO.ReadOnly Nothing
       let !bs = BSI.fromForeignPtr (castForeignPtr fptr) offset size
@@ -80,25 +82,25 @@ runCreateIndexStandard opts = do
       IO.hPutStrLn IO.stderr $ "Unknown method " <> show unknown
       IO.exitFailure
 
-runCreateIndexSimple :: CreateIndexOptions -> IO ()
+runCreateIndexSimple :: Z.CreateIndexOptions -> IO ()
 runCreateIndexSimple opts = do
-  let filePath = opts ^. L.filePath
-  let outputIbFile = opts ^. L.outputIbFile & fromMaybe (filePath <> ".ib.idx")
-  let outputBpFile = opts ^. L.outputBpFile & fromMaybe (filePath <> ".bp.idx")
+  let filePath = opts ^. the @"filePath"
+  let outputIbFile = opts ^. the @"outputIbFile" & fromMaybe (filePath <> ".ib.idx")
+  let outputBpFile = opts ^. the @"outputBpFile" & fromMaybe (filePath <> ".bp.idx")
   (fptr :: ForeignPtr Word8, offset, size) <- IO.mmapFileForeignPtr filePath IO.ReadOnly Nothing
   let !bs = BSI.fromForeignPtr (castForeignPtr fptr) offset size
   let SISI.SemiIndex _ ibs bps = SISI.buildSemiIndex bs
   LBS.writeFile outputIbFile (LBS.toLazyByteString ibs)
   LBS.writeFile outputBpFile (LBS.toLazyByteString bps)
 
-runCreateIndex :: CreateIndexOptions -> IO ()
-runCreateIndex opts = case opts ^. L.backend of
+runCreateIndex :: Z.CreateIndexOptions -> IO ()
+runCreateIndex opts = case opts ^. the @"backend" of
   "standard" -> runCreateIndexStandard  opts
   "simple"   -> runCreateIndexSimple    opts
   unknown    -> IO.hPutStrLn IO.stderr $ "Unknown backend " <> show unknown
 
-optsCreateIndex :: Parser CreateIndexOptions
-optsCreateIndex = CreateIndexOptions
+optsCreateIndex :: Parser Z.CreateIndexOptions
+optsCreateIndex = Z.CreateIndexOptions
   <$> strOption
         (   long "input"
         <>  short 'i'
