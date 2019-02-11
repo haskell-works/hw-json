@@ -1,15 +1,17 @@
 {-# LANGUAGE BangPatterns        #-}
+{-# LANGUAGE DataKinds           #-}
 {-# LANGUAGE OverloadedStrings   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE TypeApplications    #-}
 
 module App.Commands.Demo
   ( cmdDemo
   ) where
 
-import App.Commands.Types
 import Control.Lens
 import Control.Monad
 import Control.Monad.ST
+import Data.Generics.Product.Any
 import Data.Semigroup                                      ((<>))
 import Data.Word
 import Foreign.ForeignPtr
@@ -24,7 +26,7 @@ import HaskellWorks.Data.RankSelect.CsPoppy
 import HaskellWorks.Data.Vector.AsVector8
 import Options.Applicative                                 hiding (columns)
 
-import qualified App.Lens                                   as L
+import qualified App.Commands.Types                         as Z
 import qualified Data.ByteString                            as BS
 import qualified Data.ByteString.Internal                   as BSI
 import qualified Data.ByteString.Lazy                       as LBS
@@ -59,12 +61,12 @@ constructUnzipN nBytes xs = (DVS.unsafeCast ibv, DVS.unsafeCast bpv)
           DVSM.set (DVSM.take 8 bpmv) 0
           return (DVSM.length (DVSM.drop 8 ibmv), DVSM.length (DVSM.drop 8 bpmv))
 
-runDemo :: DemoOptions -> IO ()
+runDemo :: Z.DemoOptions -> IO ()
 runDemo opts = do
-  let filePath = opts ^. L.filePath
-  case opts ^. L.method of
+  let filePath = opts ^. the @"filePath"
+  case opts ^. the @"method" of
     "original" -> do
-      !cursor <- loadCursor (opts ^. L.filePath)
+      !cursor <- loadCursor (opts ^. the @"filePath")
       let !json = lightJsonAt cursor
       let q = MQuery (DL.singleton json)
 
@@ -84,8 +86,8 @@ runDemo opts = do
     m -> IO.hPutStrLn IO.stderr $ "Unrecognised method: " <> show m
 
 
-optsDemo :: Parser DemoOptions
-optsDemo = DemoOptions
+optsDemo :: Parser Z.DemoOptions
+optsDemo = Z.DemoOptions
   <$> strOption
         (   long "input"
         <>  short 'i'

@@ -1,17 +1,22 @@
+{-# LANGUAGE DeriveGeneric         #-}
+{-# LANGUAGE DuplicateRecordFields #-}
+
 module App.Commands.Types
   ( CreateIndexOptions(..)
   , DemoOptions(..)
   ) where
 
+import GHC.Generics
+
 data CreateIndexOptions = CreateIndexOptions
-  { _createIndexOptionsFilePath     :: FilePath
-  , _createIndexOptionsBackend      :: String
-  , _createIndexOptionsMethod       :: String
-  , _createIndexOptionsOutputIbFile :: Maybe FilePath
-  , _createIndexOptionsOutputBpFile :: Maybe FilePath
-  } deriving (Eq, Show)
+  { filePath     :: FilePath
+  , backend      :: String
+  , method       :: String
+  , outputIbFile :: Maybe FilePath
+  , outputBpFile :: Maybe FilePath
+  } deriving (Eq, Show, Generic)
 
 data DemoOptions = DemoOptions
-  { _demoOptionsFilePath :: FilePath
-  , _demoOptionsMethod   :: FilePath
-  } deriving (Eq, Show)
+  { filePath :: FilePath
+  , method   :: FilePath
+  } deriving (Eq, Show, Generic)
