@@ -1,176 +1,39 @@
-cabalbuild: &cabalbuild
-  working_directory: ~/project
+version: 2.1
 
-  steps:
-    - checkout
+orbs:
+  haskell: haskell-works/haskell-build@1.4.3
+  github: haskell-works/github-release@1.2.1
+  hackage: haskell-works/hackage@1.0.0
 
-    - run:
-        name: Add GHC tools to PATH
-        command: |
-          echo "HOME=$HOME"
-          echo "BASH_ENV=$BASH_ENV"
-          echo "PATH=$PATH"
-          echo 'export PATH="$PATH:/opt/ghc/bin/"' >> $BASH_ENV
-
-    - run:
-        name: Copying scripts
-        command: |
-          mkdir -p ~/.local/bin
-          cp ./scripts/* ~/.local/bin
-
-    - run:
-        name: GHC version
-        command: |
-          echo "$GHC" > ghc.version
-          date +%Y-%m > month.version
-
-    - run:
-        name: Find all sub-projects
-        command: ./scripts/projects-summary > projects.summary
-
-    ##### Building library
-    - restore_cache:
-        keys:
-          - cabal--{{ checksum "ghc.version" }}--{{ .Environment.CACHE_VERSION }}--{{ checksum "projects.summary" }}--extra
-          - cabal--{{ checksum "ghc.version" }}--{{ .Environment.CACHE_VERSION }}--{{ checksum "projects.summary" }}--
-          - cabal--{{ checksum "ghc.version" }}--{{ .Environment.CACHE_VERSION }}--{{ checksum "month.version"}}
-
-    - run:
-        name: Building build dependencies
-        command: |
-          cabal new-update
-          cabal new-build --disable-tests --disable-benchmarks --project-file="cabal.project" --dep -j${CABAL_THREADS:-4} all
-          cabal new-build --enable-tests  --enable-benchmarks  --project-file="cabal.project" --dep -j${CABAL_THREADS:-4} all
-
-    - save_cache:
-        key:    cabal--{{ checksum "ghc.version" }}--{{ .Environment.CACHE_VERSION }}--{{ checksum "projects.summary" }}--
-        paths:  [~/.cabal/packages, ~/.cabal/store]
-
-    - run:
-        name: Building project
-        command: |
-          cabal new-build --enable-tests --enable-benchmarks --project-file="cabal.project" -j${CABAL_THREADS:-4} all
-
-    - save_cache:
-        key:    cabal--{{ checksum "ghc.version" }}--{{ .Environment.CACHE_VERSION }}--{{ checksum "projects.summary" }}--extra
-        paths:  [~/.cabal/packages, ~/.cabal/store]
-
-    - save_cache:
-        key:    cabal--{{ checksum "ghc.version" }}--{{ .Environment.CACHE_VERSION }}--{{ checksum "month.version"}}
-        paths:  [~/.cabal/packages, ~/.cabal/store]
-
-    - run:
-        name: Running tests
-        command: |
-          if grep '^test-suite' *.cabal > /dev/null; then
-            cabal new-test --enable-tests --project-file="cabal.project" -j${CABAL_THREADS:-4} all
-          else
-            echo Not tests to run
-          fi
-
-version: 2.0
-jobs:
-  ghc-8.6.3:
-    environment:
-      - GHC: "ghc8.6.3"
-    docker:
-      - image: quay.io/haskell_works/ghc-8.6.3:18.04_2018-12-23
-    <<: *cabalbuild
-
-  ghc-8.4.4:
-    environment:
-      - GHC: "ghc8.4.3"
-    docker:
-      - image: quay.io/haskell_works/ghc-8.4.4
-    <<: *cabalbuild
-
-  ghc-8.2.2:
-    environment:
-      - GHC: "ghc8.2.2"
-    docker:
-      - image: quay.io/haskell_works/ghc-8.2.2
-    <<: *cabalbuild
-
-  checked-builds:
-    docker:
-      - image: quay.io/haskell_works/ghc-8.4.4
-
-    steps:
-      - checkout
-
-      - run:
-          name: Add GHC tools to PATH
-          command: |
-            echo "HOME=$HOME"
-            echo "BASH_ENV=$BASH_ENV"
-            echo "PATH=$PATH"
-            echo 'export PATH="$PATH:/opt/ghc/bin/"' >> $BASH_ENV
-
-      - run:
-          name: Copying scripts
-          command: |
-            mkdir -p ~/.local/bin
-            cp ./scripts/* ~/.local/bin
-
-      - deploy:
-          command: |
-            if [ "$CIRCLE_PROJECT_USERNAME" == "haskell-works" ]; then
-              if [[ "$CIRCLE_BRANCH" == master ]]; then
-                when tag autotag
-              elif [[ "$CIRCLE_TAG" =~ v.* ]]; then
-                publish
-              fi
-            fi
-
-  release:
-    docker:
-      - image: quay.io/haskell_works/ghc-8.4.4
-
-    steps:
-      - checkout
-
-      - run:
-          name: Add GHC tools to PATH
-          command: |
-            echo "HOME=$HOME"
-            echo "BASH_ENV=$BASH_ENV"
-            echo "PATH=$PATH"
-            echo 'export PATH="$PATH:/opt/ghc/bin/"' >> $BASH_ENV
-
-      - run:
-          name: Copying scripts
-          command: |
-            mkdir -p ~/.local/bin
-            cp ./scripts/* ~/.local/bin
-
-      - deploy:
-          command: |
-            if [ "$CIRCLE_PROJECT_USERNAME" == "haskell-works" ]; then
-              if [[ "$CIRCLE_BRANCH" == master ]]; then
-                when tag autotag
-              elif [[ "$CIRCLE_TAG" =~ v.* ]]; then
-                publish
-              fi
-            fi
-  
 workflows:
-  version: 2
-  multiple-ghcs:
+  multiple-ghc-build:
     jobs:
-      - ghc-8.6.3
-      - ghc-8.4.4
-      - ghc-8.2.2
-      - checked-builds:
-          requires:
-            - ghc-8.6.3
-            - ghc-8.4.4
-            - ghc-8.2.2
+      - haskell/build:
+          name: GHC 8.2.2
+          executor: haskell/ghc-8_2_2
 
-  tagged-release:
-    jobs:
-      - release:
+      - haskell/build:
+          name: GHC 8.4.4
+          executor: haskell/ghc-8_4_4
+
+      - haskell/build:
+          name: GHC 8.6.3
+          executor: haskell/ghc-8_6_3
+
+      - github/release-cabal:
+          name: GitHub Release
+          requires:
+            - GHC 8.2.2
+            - GHC 8.4.4
+            - GHC 8.6.3
+          checkout: true
           filters:
             branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*/
+              only: master
+
+      - hackage/upload:
+          publish: true
+          requires:
+            - GitHub Release
+          username: ${HACKAGE_USER}
+          password: ${HACKAGE_PASS}
