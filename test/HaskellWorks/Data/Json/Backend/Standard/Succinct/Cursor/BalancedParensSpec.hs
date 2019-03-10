@@ -27,6 +27,8 @@ spec = describe "HaskellWorks.Data.Json.Succinct.Cursor.InterestBitsSpec" $ do
     bitShow (balancedParensOf2 ""           ) === ""
     bitShow (balancedParensOf2 "  \n \r \t ") === ""
     bitShow (balancedParensOf2 "1234 "      ) === "10000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000"
+    bitShow (balancedParensOf2 "1.1 "       ) === "10000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000"
+    bitShow (balancedParensOf2 "-1.1e-1 "   ) === "10000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000"
     bitShow (balancedParensOf2 "false "     ) === "10000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000"
     bitShow (balancedParensOf2 "true "      ) === "10000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000"
     bitShow (balancedParensOf2 "\"hello\" " ) === "10000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000"
