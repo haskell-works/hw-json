@@ -22,6 +22,7 @@ workflows:
 
       - github/release-cabal:
           name: GitHub Release
+          context: haskell-ci
           requires:
             - GHC 8.2.2
             - GHC 8.4.4
@@ -32,6 +33,7 @@ workflows:
               only: master
 
       - hackage/upload:
+          context: haskell-ci
           publish: true
           requires:
             - GitHub Release
