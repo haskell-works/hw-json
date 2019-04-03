@@ -1,7 +1,7 @@
 cabal-version:  2.2
 
 name:           hw-json
-version:        1.0.0.1
+version:        1.0.0.2
 synopsis:       Memory efficient JSON parser
 description:    Memory efficient JSON parser. Please see README.md
 category:       Data
