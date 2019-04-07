@@ -30,7 +30,7 @@ import qualified HaskellWorks.Data.TreeCursor                 as TC
 
 {-# ANN module ("HLint: ignore Redundant do"        :: String) #-}
 {-# ANN module ("HLint: ignore Reduce duplication"  :: String) #-}
-{-# ANN module ("HLint: redundant bracket"          :: String) #-}
+{-# ANN module ("HLint: ignore Redundant bracket"   :: String) #-}
 
 fc = TC.firstChild
 ns = TC.nextSibling
