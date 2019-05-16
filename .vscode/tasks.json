@@ -1,31 +1,18 @@
 {
   "version": "2.0.0",
-  "type": "shell",
-  "presentation": {
-    "reveal": "always",
-    "panel": "new"
-  },
-  "windows": {
-    "command": "cmd", "args": ["/c"]
-  },
-  "linux": {
-    "command": "sh", "args": ["-c"]
-  },
-  "osx": {
-    "command": "sh", "args": ["-c"]
-  },
   "tasks": [
     {
-      "label": "stack build",
-      "group": "build",
-      "command": "/bin/bash",
-      "args": [
-        "-c",
-        "echo START_BUILD && cd ${workspaceRoot} && ./project.sh build && echo END_BUILD "
-      ],
+      "label": "Build",
+      "type": "shell",
+      "command": "bash",
+      "args": ["-lc", "cabal new-build && echo 'Done'"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
       "problemMatcher": {
         "owner": "haskell",
-        "fileLocation": "absolute",
+        "fileLocation": "relative",
         "pattern": [
           {
             "regexp": "^(.+?):(\\d+):(\\d+):\\s+(error|warning|info):.*$",
@@ -36,107 +23,46 @@
             "message": 1
           }
         ]
+      },
+      "presentation": {
+        "echo": false,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
       }
     },
     {
-      "label": "stack clean & build",
-      "command": "/bin/bash",
-      "args": [
-        "-c",
-        "echo START_CLEAN_AND_BUILD && cd ${workspaceRoot} && ./project.sh clean && ./project.sh build && echo END_CLEAN_AND_BUILD "
-      ],
+      "label": "Test",
+      "type": "shell",
+      "command": "bash",
+      "args": ["-lc", "cabal new-test --enable-tests && echo 'Done'"],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
       "problemMatcher": {
         "owner": "haskell",
-        "fileLocation": "absolute",
+        "fileLocation": "relative",
         "pattern": [
           {
-            "regexp": "^(.+?):(\\d+):(\\d+):\\s+(error|warning|info):.*$",
+            "regexp": "^(.+?):(\\d+):(\\d+):.*$",
             "file": 1, "line": 2, "column": 3, "severity": 4
           },
           {
-            "regexp": "\\s*(.*)$",
-            "message": 1
+            "regexp": "\\s*(\\d\\)\\s)?(.*)$",
+            "message": 2
           }
         ]
-      }
-    },
-    {
-      "group": "test",
-      "label": "stack test",
-      "command": "/bin/bash",
-      "args": [
-        "-c",
-        "echo START_TEST && cd ${workspaceRoot} && ./project.sh test && echo END_TEST "
-      ],
-      "problemMatcher": {
-        "owner": "haskell",
-        "fileLocation": [ "relative", "${workspaceRoot}" ],
-        "pattern": [
-          {
-            "regexp": "^\\s+(.+):(\\d+):.*$",
-            "file": 1, "line": 2
-          },
-          {
-            "regexp": "^.*\\.(.+)\\s*$",
-            "message": 1
-          }
-        ]
-      }
-    },
-    {
-      "isBackground": true,
-      "label": "stack watch",
-      "command": "/bin/bash",
-      "args": [
-        "-c",
-        "echo START_WATCH && cd ${workspaceRoot} && ./project.sh build --test --no-run-tests --file-watch && echo END_WATCH "
-      ],
-      "problemMatcher": {
-        "owner": "haskell",
-        "fileLocation": "absolute",
-        "pattern": [
-          {
-            "regexp": "^(.+?):(\\d+):(\\d+):\\s+(error|warning|info):.*$",
-            "file": 1, "line": 2, "column": 3, "severity": 4
-          },
-          {
-            "regexp": "\\s*(.*)$",
-            "message": 1
-          }
-        ],
-        "background": {
-          "activeOnStart": true,
-          "beginsPattern": "^.*\\(local file changes:\\s",
-          "endsPattern": "(ExitFailure|ExitSuccess)"
-        }
-      }
-    },
-    {
-      "isBackground": true,
-      "label": "stack watch & test",
-      "command": "/bin/bash",
-      "args": [
-        "-c",
-        "echo START_WATCH && cd ${workspaceRoot} && ./project.sh build --test --file-watch && echo END_WATCH "
-      ],
-      "problemMatcher": {
-        "owner": "haskell",
-        "fileLocation": [ "relative", "${workspaceRoot}" ],
-        "pattern": [
-          {
-            "regexp": "^\\s+(.+):(\\d+):.*$",
-            "file": 1, "line": 2
-          },
-          {
-            "regexp": "^.*\\.(.+)\\s*$",
-            "message": 1
-          }
-        ],
-        "background": {
-          "activeOnStart": true,
-          "beginsPattern": "^.*\\(local file changes:.*$",
-          "endsPattern": "(ExitFailure|ExitSuccess)"
-        }
+      },
+      "presentation": {
+        "echo": false,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
       }
     }
   ]
