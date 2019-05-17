@@ -21,8 +21,8 @@ workflows:
           binary-cache-uri: ${BINARY_CACHE_URI-"http://hw-binary-cache-us-west-2-a.s3-website-us-west-2.amazonaws.com/archive"}
 
       - haskell/build-with-binary-cache:
-          name: GHC 8.6.4
-          executor: haskell/ghc-8_6_4
+          name: GHC 8.6.5
+          executor: haskell/ghc-8_6_5
           context: haskell-ci
           binary-cache-uri: ${BINARY_CACHE_URI-"http://hw-binary-cache-us-west-2-a.s3-website-us-west-2.amazonaws.com/archive"}
 
@@ -32,7 +32,7 @@ workflows:
           requires:
             - GHC 8.2.2
             - GHC 8.4.4
-            - GHC 8.6.4
+            - GHC 8.6.5
           checkout: true
           filters:
             branches:
