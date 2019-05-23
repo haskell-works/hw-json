@@ -6,6 +6,7 @@ module Main where
 import Control.Monad
 import Criterion.Main
 import Data.List
+import Data.Semigroup                                             ((<>))
 import Data.Word
 import Foreign
 import HaskellWorks.Data.Json.Internal.Backend.Standard.Blank
@@ -66,9 +67,8 @@ makeBenchMakeCursor = do
 
 main :: IO ()
 main = do
-  benchmarks <- mconcat <$> sequence
-    [ makeBenchBlankJson
-    , makeBenchJsonToInterestBits
-    , makeBenchMakeCursor
-    ]
+  benchmarks <- fmap mconcat $ sequence $ mempty
+    <> [makeBenchBlankJson]
+    <> [makeBenchJsonToInterestBits]
+    <> [makeBenchMakeCursor]
   defaultMain benchmarks
