@@ -28,14 +28,14 @@ source-repository head
   location: https://github.com/haskell-works/hw-json
 
 flag bmi2
-  description: Enable bmi2 instruction set
-  manual: False
-  default: False
+  description:  Enable bmi2 instruction set
+  manual:       False
+  default:      False
 
 flag sse42
-  description: Enable sse4.2 instruction set
-  manual: False
-  default: False
+  description:  Enable sse4.2 instruction set
+  manual:       False
+  default:      False
 
 common base                 { build-depends: base                 >= 4          && < 5      }
 
@@ -48,7 +48,7 @@ common criterion            { build-depends: criterion            >= 1.4        
 common directory            { build-depends: directory            >= 1.3        && < 1.4    }
 common dlist                { build-depends: dlist                >= 0.8        && < 0.9    }
 common generic-lens         { build-depends: generic-lens         >= 1.1.0.0    && < 1.2    }
-common hedgehog             { build-depends: hedgehog             >= 0.5        && < 0.7    }
+common hedgehog             { build-depends: hedgehog             >= 0.6        && < 1.1    }
 common hspec                { build-depends: hspec                >= 2.4        && < 3      }
 common hw-balancedparens    { build-depends: hw-balancedparens    >= 0.2.0.1    && < 0.3    }
 common hw-bits              { build-depends: hw-bits              >= 0.7.0.5    && < 0.8    }
@@ -71,10 +71,10 @@ common word8                { build-depends: word8                >= 0.1        
 common semigroups   { if impl(ghc <  8    ) { build-depends: semigroups     >= 0.16     && < 0.19 } }
 
 common config
-  default-language: Haskell2010
-  ghc-options: -Wall
+  default-language:   Haskell2010
+  ghc-options:        -Wall -O2 -msse4.2
   if flag(sse42)
-    ghc-options: -mbmi2
+    ghc-options: -msse4.2
   if flag(bmi2) && impl(ghc >= 8.4.1)
     ghc-options: -mbmi2 -msse4.2
     cpp-options: -DBMI2_ENABLED
@@ -100,10 +100,9 @@ library
           , text
           , vector
           , word8
-  hs-source-dirs:   src
-  ghc-options:      -O2 -msse4.2
-  other-modules:    Paths_hw_json
-  autogen-modules:  Paths_hw_json
+  hs-source-dirs:       src
+  other-modules:        Paths_hw_json
+  autogen-modules:      Paths_hw_json
   exposed-modules:
       HaskellWorks.Data.Json
       HaskellWorks.Data.Json.Backend.Simple.Cursor
@@ -163,10 +162,10 @@ executable hw-json
           , optparse-applicative
           , semigroups
           , vector
-  main-is:        Main.hs
-  hs-source-dirs: app
-  ghc-options:    -threaded -rtsopts -with-rtsopts=-N -O2 -msse4.2
-  build-depends:  hw-json
+  main-is:            Main.hs
+  hs-source-dirs:     app
+  ghc-options:        -threaded -rtsopts -with-rtsopts=-N
+  build-depends:      hw-json
   other-modules:
       App.Commands
       App.Commands.CreateIndex
@@ -187,12 +186,12 @@ test-suite hw-json-test
           , hw-rankselect-base
           , transformers
           , vector
-  type:           exitcode-stdio-1.0
-  main-is:        Spec.hs
-  build-depends:  hw-json
-  hs-source-dirs: test
-  ghc-options:    -threaded -rtsopts -with-rtsopts=-N
-  build-tools:    hspec-discover
+  type:               exitcode-stdio-1.0
+  main-is:            Spec.hs
+  build-depends:      hw-json
+  hs-source-dirs:     test
+  ghc-options:        -threaded -rtsopts -with-rtsopts=-N
+  build-tools:        hspec-discover
   other-modules:
       HaskellWorks.Data.Json.Backend.Simple.CursorSpec
       HaskellWorks.Data.Json.Backend.Standard.Succinct.Cursor.BalancedParensSpec
@@ -214,9 +213,8 @@ benchmark bench
           , directory
           , mmap
           , semigroups
-  type:           exitcode-stdio-1.0
-  main-is:        Main.hs
-  hs-source-dirs: bench
-  ghc-options:    -O2 -msse4.2
-  build-depends:  hw-json
-  other-modules:  Paths_hw_json
+  type:               exitcode-stdio-1.0
+  main-is:            Main.hs
+  hs-source-dirs:     bench
+  build-depends:      hw-json
+  other-modules:      Paths_hw_json
