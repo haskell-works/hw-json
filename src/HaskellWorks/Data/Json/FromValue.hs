@@ -3,8 +3,11 @@
 
 module HaskellWorks.Data.Json.FromValue where
 
+import Data.Text                          (Text)
 import HaskellWorks.Data.Json.DecodeError
 import HaskellWorks.Data.Json.Value
+
+import qualified Data.Text as T
 
 class FromJsonValue a where
   fromJsonValue :: JsonValue -> Either DecodeError a
@@ -14,28 +17,33 @@ instance FromJsonValue JsonValue where
 
 instance FromJsonValue String where
   fromJsonValue v = case v of
-    JsonString r  -> Right r
-    _             -> Left (DecodeError "Not a string")
+    JsonString r -> Right (T.unpack r)
+    _            -> Left (DecodeError "Not a string")
+
+instance FromJsonValue Text where
+  fromJsonValue v = case v of
+    JsonString r -> Right r
+    _            -> Left (DecodeError "Not a string")
 
 instance FromJsonValue Int where
   fromJsonValue v = case v of
-    JsonNumber r  -> Right (floor r)
-    _             -> Left (DecodeError "Not an integer")
+    JsonNumber r -> Right (floor r)
+    _            -> Left (DecodeError "Not an integer")
 
 instance FromJsonValue Double where
   fromJsonValue v = case v of
-    JsonNumber r  -> Right r
-    _             -> Left (DecodeError "Not a double")
+    JsonNumber r -> Right r
+    _            -> Left (DecodeError "Not a double")
 
 instance FromJsonValue Bool where
   fromJsonValue v = case v of
-    JsonBool r    -> Right r
-    _             -> Left (DecodeError "Not a boolean")
+    JsonBool r -> Right r
+    _          -> Left (DecodeError "Not a boolean")
 
 instance FromJsonValue a => FromJsonValue [a] where
   fromJsonValue v = case v of
-    JsonArray xs  -> mapM fromJsonValue xs
-    _             -> Left (DecodeError "Not an array")
+    JsonArray xs -> mapM fromJsonValue xs
+    _            -> Left (DecodeError "Not an array")
 
 instance (FromJsonValue a, FromJsonValue b) => FromJsonValue (a, b) where
   fromJsonValue v = case v of
