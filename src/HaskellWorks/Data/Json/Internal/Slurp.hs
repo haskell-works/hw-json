@@ -3,6 +3,7 @@
 module HaskellWorks.Data.Json.Internal.Slurp where
 
 import Data.String
+import Data.Text
 import Data.Word
 import Data.Word8
 import HaskellWorks.Data.Json.Internal.Word8
@@ -11,6 +12,7 @@ import Prelude                               hiding (drop)
 import qualified Data.ByteString       as BS
 import qualified Data.ByteString.Char8 as BSC
 import qualified Data.List             as L
+import qualified Data.Text             as T
 
 data JsonState
   = Escaped
@@ -19,8 +21,8 @@ data JsonState
   | InNumber
   | InIdent
 
-slurpString :: BS.ByteString -> String
-slurpString bs = L.unfoldr genString (InJson, BSC.unpack bs)
+slurpString :: BS.ByteString -> Text
+slurpString bs = T.pack $ L.unfoldr genString (InJson, BSC.unpack bs) -- TODO optimise
   where genString :: (JsonState, String) -> Maybe (Char, (JsonState, String))
         genString (InJson, ds) = case ds of
           (e:es) | e == '"' -> genString  (InString , es)

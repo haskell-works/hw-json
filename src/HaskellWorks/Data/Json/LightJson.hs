@@ -9,6 +9,7 @@ module HaskellWorks.Data.Json.LightJson where
 
 import Control.Arrow
 import Data.String
+import Data.Text                            (Text)
 import HaskellWorks.Data.Json.Internal.Doc
 import HaskellWorks.Data.MQuery
 import HaskellWorks.Data.MQuery.AtLeastSize
@@ -20,15 +21,16 @@ import Prelude                              hiding (drop)
 import Text.PrettyPrint.ANSI.Leijen
 
 import qualified Data.ByteString as BS
+import qualified Data.Text       as T
 
 data LightJson c
-  = LightJsonString String
+  = LightJsonString Text
   | LightJsonNumber BS.ByteString
-  | LightJsonObject [(String, c)]
+  | LightJsonObject [(Text, c)]
   | LightJsonArray [c]
   | LightJsonBool Bool
   | LightJsonNull
-  | LightJsonError String
+  | LightJsonError Text
   deriving Show
 
 instance Eq (LightJson c) where
@@ -38,7 +40,7 @@ instance Eq (LightJson c) where
   (==)  LightJsonNull       LightJsonNull      = True
   (==)  _                   _                  = False
 
-data LightJsonField c = LightJsonField String (LightJson c)
+data LightJsonField c = LightJsonField Text (LightJson c)
 
 class LightJsonAt a where
   lightJsonAt :: a -> LightJson a
@@ -55,8 +57,8 @@ instance LightJsonAt c => Pretty (LightJson c) where
     LightJsonArray vs   -> hEncloseSep (text "[") (text "]") (text ",") ((pretty . lightJsonAt) `map` vs)
     LightJsonBool w     -> red (text (show w))
     LightJsonNull       -> text "null"
-    LightJsonError s    -> text "<error " <> text s <> text ">"
-    where toLightJsonField :: (String, LightJson c) -> LightJsonField c
+    LightJsonError s    -> text "<error " <> text (T.unpack s) <> text ">"
+    where toLightJsonField :: (Text, LightJson c) -> LightJsonField c
           toLightJsonField (k, v) = LightJsonField k v
 
 instance Pretty (Micro (LightJson c)) where
@@ -68,9 +70,12 @@ instance Pretty (Micro (LightJson c)) where
   pretty (Micro (LightJsonArray _  )) = text "[..]"
   pretty (Micro (LightJsonBool w   )) = red (text (show w))
   pretty (Micro  LightJsonNull      ) = text "null"
-  pretty (Micro (LightJsonError s  )) = text "<error " <> text s <> text ">"
+  pretty (Micro (LightJsonError s  )) = text "<error " <> text (T.unpack s) <> text ">"
 
 instance Pretty (Micro (String, LightJson c)) where
+  pretty (Micro (fieldName, jpv)) = red (text (show fieldName)) <> text ": " <> pretty (Micro jpv)
+
+instance Pretty (Micro (Text, LightJson c)) where
   pretty (Micro (fieldName, jpv)) = red (text (show fieldName)) <> text ": " <> pretty (Micro jpv)
 
 instance LightJsonAt c => Pretty (Mini (LightJson c)) where
@@ -88,9 +93,12 @@ instance LightJsonAt c => Pretty (Mini (LightJson c)) where
     Mini (LightJsonArray _    )                       -> text "[]"
     Mini (LightJsonBool w     ) -> red (text (show w))
     Mini  LightJsonNull         -> text "null"
-    Mini (LightJsonError s    ) -> text "<error " <> text s <> text ">"
+    Mini (LightJsonError s    ) -> text "<error " <> text (T.unpack s) <> text ">"
 
 instance LightJsonAt c => Pretty (Mini (String, LightJson c)) where
+  pretty (Mini (fieldName, jpv)) = text (show fieldName) <> text ": " <> pretty (Mini jpv)
+
+instance LightJsonAt c => Pretty (Mini (Text, LightJson c)) where
   pretty (Mini (fieldName, jpv)) = text (show fieldName) <> text ": " <> pretty (Mini jpv)
 
 instance LightJsonAt c => Pretty (MQuery (LightJson c)) where
