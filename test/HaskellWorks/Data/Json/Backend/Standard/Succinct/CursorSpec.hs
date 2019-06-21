@@ -11,15 +11,9 @@
 
 module HaskellWorks.Data.Json.Backend.Standard.Succinct.CursorSpec(spec) where
 
-import Data.Word
-import HaskellWorks.Data.BalancedParens.Simple
-import HaskellWorks.Data.Json.Backend.Standard.Cursor
 import HaskellWorks.Data.Json.Backend.Standard.Succinct.GenCursorTest
-import HaskellWorks.Data.RankSelect.Poppy512
 import Test.Hspec
 
-import qualified Data.ByteString                              as BS
-import qualified Data.Vector.Storable                         as DVS
 import qualified HaskellWorks.Data.Json.Backend.Standard.Fast as FAST
 import qualified HaskellWorks.Data.Json.Backend.Standard.Slow as SLOW
 
@@ -29,5 +23,5 @@ import qualified HaskellWorks.Data.Json.Backend.Standard.Slow as SLOW
 
 spec :: Spec
 spec = describe "HaskellWorks.Data.Json.Succinct.CursorSpec" $ do
-  genTest "DVS.Vector Word64" (SLOW.makeCursor :: String -> JsonCursor BS.ByteString (DVS.Vector Word64) (SimpleBalancedParens (DVS.Vector Word64)))
-  genTest "Poppy512"          (FAST.makeCursor :: String -> JsonCursor BS.ByteString Poppy512 (SimpleBalancedParens (DVS.Vector Word64)))
+  genTest "DVS.Vector Word64" SLOW.fromString
+  genTest "Poppy512"          FAST.fromString

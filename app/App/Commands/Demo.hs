@@ -12,11 +12,11 @@ import Control.Lens
 import Control.Monad
 import Control.Monad.ST
 import Data.Generics.Product.Any
-import Data.Semigroup                                      ((<>))
+import Data.Semigroup                                         ((<>))
 import Data.Word
 import Foreign.ForeignPtr
 import HaskellWorks.Data.BalancedParens.Simple
-import HaskellWorks.Data.Json.Backend.Standard.Cursor
+import HaskellWorks.Data.Json.Backend.Standard.Cursor.Generic
 import HaskellWorks.Data.Json.Backend.Standard.Load.Cursor
 import HaskellWorks.Data.Json.LightJson
 import HaskellWorks.Data.Json.Query
@@ -24,7 +24,7 @@ import HaskellWorks.Data.MQuery
 import HaskellWorks.Data.MQuery.Micro
 import HaskellWorks.Data.RankSelect.CsPoppy
 import HaskellWorks.Data.Vector.AsVector8
-import Options.Applicative                                 hiding (columns)
+import Options.Applicative                                    hiding (columns)
 
 import qualified App.Commands.Types                         as Z
 import qualified Data.ByteString                            as BS
@@ -77,14 +77,13 @@ runDemo opts = do
       case S.makeStandardJsonIbBps (LBS.resegmentPadded 512 (LBS.fromStrict bs)) of
         Right ibBps -> do
           let (!ib, !bp) = constructUnzipN size ibBps
-          let !cursor = JsonCursor bs (makeCsPoppy ib) (SimpleBalancedParens bp) 1
+          let !cursor = GenericCursor bs (makeCsPoppy ib) (SimpleBalancedParens bp) 1
           let !json = lightJsonAt cursor
           let q = MQuery (DL.singleton json)
 
           putPretty $ q >>= (entry >=> named "meta" >=> entry >=> named "view" >=> entry >=> named "columns" >=> item >=> entry >=> named "id") & count
         Left msg -> IO.hPutStrLn IO.stderr $ "Unable to create semi-index: " <> show msg
     m -> IO.hPutStrLn IO.stderr $ "Unrecognised method: " <> show m
-
 
 optsDemo :: Parser Z.DemoOptions
 optsDemo = Z.DemoOptions

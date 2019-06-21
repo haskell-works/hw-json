@@ -14,7 +14,7 @@ module HaskellWorks.Data.Json.ValueSpec (spec) where
 import Control.Monad
 import HaskellWorks.Data.BalancedParens.BalancedParens
 import HaskellWorks.Data.Bits.BitWise
-import HaskellWorks.Data.Json.Backend.Standard.Cursor
+import HaskellWorks.Data.Json.Backend.Standard.Cursor.Generic
 import HaskellWorks.Data.Json.DecodeError
 import HaskellWorks.Data.Json.Internal.Index
 import HaskellWorks.Data.Json.Value
@@ -39,8 +39,8 @@ ns = TC.nextSibling
 
 spec :: Spec
 spec = describe "HaskellWorks.Data.Json.ValueSpec" $ do
-  genSpec "DVS.Vector Word64" SLOW.makeCursor
-  genSpec "Poppy512"          FAST.makeCursor
+  genSpec "DVS.Vector Word64" SLOW.fromString
+  genSpec "Poppy512"          FAST.fromString
 
 jsonValueVia  ::
   ( BalancedParens u
@@ -48,7 +48,7 @@ jsonValueVia  ::
   , Rank1 u
   , Select1 t
   , TestBit u)
-  => Maybe (JsonCursor BS.ByteString t u) -> Either DecodeError JsonValue
+  => Maybe (GenericCursor BS.ByteString t u) -> Either DecodeError JsonValue
 jsonValueVia mk = case mk of
   Just k  -> (jsonIndexAt >=> jsonValueAt) k
   Nothing -> Left (DecodeError "No such element")
@@ -63,7 +63,7 @@ genSpec :: forall t u.
   , Rank1             u
   , BalancedParens    u
   , TestBit           u)
-  => String -> (String -> JsonCursor BS.ByteString t u) -> SpecWith ()
+  => String -> (String -> GenericCursor BS.ByteString t u) -> SpecWith ()
 genSpec t makeCursor = do
   describe ("Json cursor of type " ++ t) $ do
     let forJson s f = describe ("of value " ++ show s) (f (makeCursor s))
@@ -107,7 +107,7 @@ genSpec t makeCursor = do
                     \            \"dimensions\": [500, 600.01e-02, true, false, null] \
                     \        } \
                     \    } \
-                    \}" :: JsonCursor BS.ByteString t u
+                    \}" :: GenericCursor BS.ByteString t u
       it "can navigate down and forwards" $ requireTest $ do
         let array   = JsonArray [JsonNumber 500, JsonNumber 600.01e-02, JsonBool True, JsonBool False, JsonNull] :: JsonValue
         let object1 = JsonObject ([("name", JsonString "main_window"), ("dimensions", array)]) :: JsonValue

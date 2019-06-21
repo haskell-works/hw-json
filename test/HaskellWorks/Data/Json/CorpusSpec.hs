@@ -15,7 +15,7 @@ module HaskellWorks.Data.Json.CorpusSpec(spec) where
 import Control.Monad.IO.Class
 import HaskellWorks.Data.BalancedParens.Simple
 import HaskellWorks.Data.Bits.FromBitTextByteString
-import HaskellWorks.Data.Json.Backend.Standard.Cursor
+import HaskellWorks.Data.Json.Backend.Standard.Cursor.Generic
 import HaskellWorks.Hspec.Hedgehog
 import Hedgehog
 import Test.Hspec
@@ -35,7 +35,7 @@ spec = describe "HaskellWorks.Data.Json.Corpus" $ do
     inInterestBalancedParensBS  <- liftIO $ BS.readFile "corpus/5000B.json.bp.idx"
     let inInterestBits            = fromBitTextByteString inInterestBitsBS
     let inInterestBalancedParens  = fromBitTextByteString inInterestBalancedParensBS
-    let !cursor = SLOW.makeCursor inJsonBS
+    let !cursor = SLOW.fromByteString inJsonBS
     let text                    = cursorText      cursor
     let ib                      = interests       cursor
     let SimpleBalancedParens bp = balancedParens  cursor
@@ -48,7 +48,7 @@ spec = describe "HaskellWorks.Data.Json.Corpus" $ do
     inInterestBalancedParensBS  <- liftIO $ BS.readFile "corpus/issue-0001.json.bp.idx"
     let inInterestBits            = fromBitTextByteString inInterestBitsBS
     let inInterestBalancedParens  = fromBitTextByteString inInterestBalancedParensBS
-    let !cursor = SLOW.makeCursor inJsonBS
+    let !cursor = SLOW.fromByteString inJsonBS
     let text                    = cursorText      cursor
     let ib                      = interests       cursor
     let SimpleBalancedParens bp = balancedParens  cursor

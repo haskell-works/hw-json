@@ -110,6 +110,10 @@ library
       HaskellWorks.Data.Json.Backend.Simple.SemiIndex
       HaskellWorks.Data.Json.Backend.Simple.Value
       HaskellWorks.Data.Json.Backend.Standard.Cursor
+      HaskellWorks.Data.Json.Backend.Standard.Cursor.Fast
+      HaskellWorks.Data.Json.Backend.Standard.Cursor.Generic
+      HaskellWorks.Data.Json.Backend.Standard.Cursor.Slow
+      HaskellWorks.Data.Json.Backend.Standard.Cursor.Specific
       HaskellWorks.Data.Json.Backend.Standard.Fast
       HaskellWorks.Data.Json.Backend.Standard.Index
       HaskellWorks.Data.Json.Backend.Standard.Load.Cursor

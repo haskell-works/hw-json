@@ -18,7 +18,6 @@ import HaskellWorks.Hspec.Hedgehog
 import Hedgehog
 import Test.Hspec
 
-import qualified Data.ByteString                              as BS
 import qualified HaskellWorks.Data.Json.Backend.Simple.Cursor as Z
 import qualified HaskellWorks.Data.Json.Backend.Simple.Fast   as FAST
 import qualified HaskellWorks.Data.Json.Backend.Simple.Value  as V
@@ -35,7 +34,7 @@ spec :: Spec
 spec = describe "HaskellWorks.Data.Json.Backend.Simple.CursorSpec" $ do
   describe "Json cursor" $ do
     describe "For sample Json" $ do
-      let k = FAST.makeCursor ("[[11],[22]]" :: BS.ByteString)
+      let k = FAST.fromByteString "[[11],[22]]"
       -- [  [  1  1 ]  ,  [  2  2 ]  ]
       -- (( ((      )) )( ((      )) ))
       it "can navigate" $ requireTest $ do
