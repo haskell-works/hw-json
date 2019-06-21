@@ -56,7 +56,7 @@ common hw-hspec-hedgehog    { build-depends: hw-hspec-hedgehog    >= 0.1.0.4    
 common hw-json-simd         { build-depends: hw-json-simd         >= 0.1.0.2    && < 0.2    }
 common hw-mquery            { build-depends: hw-mquery            >= 0.2.0.0    && < 0.3    }
 common hw-parser            { build-depends: hw-parser            >= 0.1        && < 0.2    }
-common hw-prim              { build-depends: hw-prim              >= 0.6.2.21   && < 0.7    }
+common hw-prim              { build-depends: hw-prim              >= 0.6.2.28   && < 0.7    }
 common hw-rankselect        { build-depends: hw-rankselect        >= 0.13       && < 0.14   }
 common hw-rankselect-base   { build-depends: hw-rankselect-base   >= 0.3.2.1    && < 0.4    }
 common hw-simd              { build-depends: hw-simd              >= 0.1.1.2    && < 0.2    }
@@ -110,6 +110,10 @@ library
       HaskellWorks.Data.Json.Backend.Simple.SemiIndex
       HaskellWorks.Data.Json.Backend.Simple.Value
       HaskellWorks.Data.Json.Backend.Standard.Cursor
+      HaskellWorks.Data.Json.Backend.Standard.Cursor.Fast
+      HaskellWorks.Data.Json.Backend.Standard.Cursor.Generic
+      HaskellWorks.Data.Json.Backend.Standard.Cursor.Slow
+      HaskellWorks.Data.Json.Backend.Standard.Cursor.Specific
       HaskellWorks.Data.Json.Backend.Standard.Fast
       HaskellWorks.Data.Json.Backend.Standard.Index
       HaskellWorks.Data.Json.Backend.Standard.Load.Cursor

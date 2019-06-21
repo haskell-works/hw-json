@@ -2,26 +2,24 @@
 {-# LANGUAGE TypeSynonymInstances #-}
 
 module HaskellWorks.Data.Json.Backend.Standard.Slow
-  ( makeCursor
+  ( fromByteString
+  , fromForeignRegion
+  , fromString
   ) where
 
-import Data.Word
 import Foreign.ForeignPtr
-import HaskellWorks.Data.FromForeignRegion
-import HaskellWorks.Data.Json.Backend.Standard.Cursor
+import HaskellWorks.Data.Json.Backend.Standard.Cursor.Generic
+import HaskellWorks.Data.Json.Backend.Standard.Cursor.Slow
 
 import qualified Data.ByteString                                       as BS
 import qualified Data.ByteString.Char8                                 as BSC
 import qualified Data.ByteString.Internal                              as BSI
-import qualified Data.Vector.Storable                                  as DVS
 import qualified HaskellWorks.Data.BalancedParens                      as BP
+import qualified HaskellWorks.Data.FromForeignRegion                   as F
 import qualified HaskellWorks.Data.Json.Internal.Backend.Standard.IbBp as J
 
-class MakeCursor a where
-  makeCursor :: a -> JsonCursor BS.ByteString (DVS.Vector Word64) (BP.SimpleBalancedParens (DVS.Vector Word64))
-
-instance MakeCursor BS.ByteString where
-  makeCursor bs = JsonCursor
+fromByteString :: BS.ByteString -> Cursor
+fromByteString bs = GenericCursor
     { cursorText      = bs
     , interests       = ib
     , balancedParens  = BP.SimpleBalancedParens bp
@@ -29,8 +27,8 @@ instance MakeCursor BS.ByteString where
     }
     where J.IbBp ib bp = J.toIbBp bs
 
-instance MakeCursor String where
-  makeCursor = makeCursor . BSC.pack
+fromForeignRegion :: F.ForeignRegion -> Cursor
+fromForeignRegion (fptr, offset, size) = fromByteString (BSI.fromForeignPtr (castForeignPtr fptr) offset size)
 
-instance MakeCursor ForeignRegion where
-  makeCursor (fptr, offset, size) = makeCursor (BSI.fromForeignPtr (castForeignPtr fptr) offset size)
+fromString :: String -> Cursor
+fromString = fromByteString . BSC.pack

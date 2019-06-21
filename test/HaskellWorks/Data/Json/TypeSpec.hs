@@ -14,7 +14,7 @@ module HaskellWorks.Data.Json.TypeSpec (spec) where
 import Control.Monad
 import HaskellWorks.Data.BalancedParens.BalancedParens
 import HaskellWorks.Data.Bits.BitWise
-import HaskellWorks.Data.Json.Backend.Standard.Cursor
+import HaskellWorks.Data.Json.Backend.Standard.Cursor.Generic
 import HaskellWorks.Data.Json.Type
 import HaskellWorks.Data.RankSelect.Base.Rank0
 import HaskellWorks.Data.RankSelect.Base.Rank1
@@ -37,8 +37,8 @@ ns = TC.nextSibling
 
 spec :: Spec
 spec = describe "HaskellWorks.Data.Json.Succinct.CursorSpec" $ do
-  genSpec "DVS.Vector Word64" SLOW.makeCursor
-  genSpec "Poppy512"          FAST.makeCursor
+  genSpec "DVS.Vector Word64" SLOW.fromString
+  genSpec "Poppy512"          FAST.fromString
 
 genSpec :: forall t u.
   ( Eq                t
@@ -50,7 +50,7 @@ genSpec :: forall t u.
   , Rank1             u
   , BalancedParens    u
   , TestBit           u)
-  => String -> (String -> JsonCursor BS.ByteString t u) -> SpecWith ()
+  => String -> (String -> GenericCursor BS.ByteString t u) -> SpecWith ()
 genSpec t makeCursor = do
   describe ("Json cursor of type " ++ t) $ do
     let forJson s f = describe ("of value " ++ show s) (f (makeCursor s))
@@ -95,7 +95,7 @@ genSpec t makeCursor = do
                     \            \"dimensions\": [500, 600.01e-02, true, false, null] \
                     \        } \
                     \    } \
-                    \}" :: JsonCursor BS.ByteString t u
+                    \}" :: GenericCursor BS.ByteString t u
       it "can navigate down and forwards" $ requireTest $ do
         (                                                                      jsonTypeAt) cursor === Just JsonTypeObject
         (fc                                                                >=> jsonTypeAt) cursor === Just JsonTypeString

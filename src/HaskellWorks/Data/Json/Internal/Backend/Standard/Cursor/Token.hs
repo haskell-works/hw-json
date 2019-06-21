@@ -6,7 +6,7 @@ module HaskellWorks.Data.Json.Internal.Backend.Standard.Cursor.Token
 import Data.ByteString.Internal                                        as BSI
 import HaskellWorks.Data.Bits.BitWise
 import HaskellWorks.Data.Drop
-import HaskellWorks.Data.Json.Backend.Standard.Cursor
+import HaskellWorks.Data.Json.Backend.Standard.Cursor.Generic
 import HaskellWorks.Data.Json.Internal.Backend.Standard.Token.Tokenize
 import HaskellWorks.Data.Positioning
 import HaskellWorks.Data.RankSelect.Base.Rank1
@@ -15,7 +15,7 @@ import Prelude                                                         hiding (d
 
 import qualified Data.Attoparsec.ByteString.Char8 as ABC
 
-jsonTokenAt :: (Rank1 w, Select1 v, TestBit w) => JsonCursor ByteString v w -> Maybe (JsonToken String Double)
+jsonTokenAt :: (Rank1 w, Select1 v, TestBit w) => GenericCursor ByteString v w -> Maybe (JsonToken String Double)
 jsonTokenAt k = if balancedParens k .?. lastPositionOf (cursorRank k)
   then case ABC.parse parseJsonToken (drop (toCount (jsonCursorPos k)) (cursorText k)) of
     ABC.Fail    {}  -> error "Failed to parse token in cursor"

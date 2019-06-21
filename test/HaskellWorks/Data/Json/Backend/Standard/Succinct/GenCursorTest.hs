@@ -14,7 +14,7 @@ module HaskellWorks.Data.Json.Backend.Standard.Succinct.GenCursorTest(genTest) w
 import Control.Monad
 import HaskellWorks.Data.BalancedParens.BalancedParens
 import HaskellWorks.Data.Bits.BitWise
-import HaskellWorks.Data.Json.Backend.Standard.Cursor
+import HaskellWorks.Data.Json.Backend.Standard.Cursor.Generic
 import HaskellWorks.Data.Json.Internal.Backend.Standard.Cursor.Token
 import HaskellWorks.Data.Json.Internal.Index
 import HaskellWorks.Data.Json.Internal.Token
@@ -47,7 +47,7 @@ genTest :: forall t u.
   , Rank1             u
   , BalancedParens    u
   , TestBit           u)
-  => String -> (String -> JsonCursor BS.ByteString t u) -> SpecWith ()
+  => String -> (String -> GenericCursor BS.ByteString t u) -> SpecWith ()
 genTest t mkCursor = do
   describe ("Json cursor of type " ++ t) $ do
     describe "For empty json array" $ do

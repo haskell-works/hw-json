@@ -58,8 +58,8 @@ makeBenchMakeCursor = do
   let files = ("corpus/bench/" ++) <$> (".json" `isSuffixOf`) `filter` entries
   benchmarks <- forM files $ \file -> return
     [ env (setupEnvJson file) $ \bs -> bgroup file
-      [ bench "Run slow make cursor" (whnf SLOW.makeCursor bs)
-      , bench "Run fast make cursor" (whnf FAST.makeCursor bs)
+      [ bench "Run slow make cursor" (whnf SLOW.fromByteString bs)
+      , bench "Run fast make cursor" (whnf FAST.fromByteString bs)
       ]
     ]
 
