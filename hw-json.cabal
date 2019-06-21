@@ -137,6 +137,7 @@ library
       HaskellWorks.Data.Json.Internal.CharLike
       HaskellWorks.Data.Json.Internal.Doc
       HaskellWorks.Data.Json.Internal.Index
+      HaskellWorks.Data.Json.Internal.Orphans
       HaskellWorks.Data.Json.Internal.PartialIndex
       HaskellWorks.Data.Json.Internal.Slurp
       HaskellWorks.Data.Json.Internal.Token
