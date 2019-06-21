@@ -62,10 +62,10 @@ jsonPartialValueString pjv = case pjv of
 
 instance JsonPartialValueAt JsonPartialIndex where
   jsonPartialJsonValueAt i = case i of
-    JsonPartialIndexString s  -> case ABC.parse parseJsonString s of
+    JsonPartialIndexString s  -> case ABC.parse parseJsonText s of
       ABC.Fail    {}  -> JsonPartialError ("Invalid string: '" <> T.pack (show (BS.take 20 s)) <> "...'")
       ABC.Partial _   -> JsonPartialError "Unexpected end of string"
-      ABC.Done    _ r -> JsonPartialString (T.pack r) -- TODO optimise
+      ABC.Done    _ r -> JsonPartialString r -- TODO optimise
     JsonPartialIndexNumber s  -> case ABC.parse ABC.rational s of
       ABC.Fail    {}    -> JsonPartialError ("Invalid number: '" <> T.pack (show (BS.take 20 s)) <> "...'")
       ABC.Partial f     -> case f " " of
@@ -78,10 +78,10 @@ instance JsonPartialValueAt JsonPartialIndex where
     JsonPartialIndexBool    v  -> JsonPartialBool v
     JsonPartialIndexNull       -> JsonPartialNull
     JsonPartialIndexError s    -> JsonPartialError (T.pack s) -- TODO optimise
-    where parseString bs = case ABC.parse parseJsonString bs of
+    where parseString bs = case ABC.parse parseJsonText bs of
             ABC.Fail    {}  -> JsonPartialError ("Invalid field: '" <> T.pack (show (BS.take 20 bs)) <> "...'")
             ABC.Partial _   -> JsonPartialError "Unexpected end of field"
-            ABC.Done    _ s -> JsonPartialString (T.pack s) -- TODO optimise
+            ABC.Done    _ s -> JsonPartialString s -- TODO optimise
 
 toJsonPartialField :: (Text, JsonPartialValue) -> JsonPartialField
 toJsonPartialField (k, v) = JsonPartialField k v

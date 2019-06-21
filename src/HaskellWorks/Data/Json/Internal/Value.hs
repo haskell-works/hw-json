@@ -8,10 +8,10 @@
 module HaskellWorks.Data.Json.Internal.Value where
 
 import Control.Applicative
-import Data.Bits
+import Data.Aeson.Parser.Internal (jstring)
 import Data.Char
-import Data.String
-import HaskellWorks.Data.Parser as P
+import Data.Text                  (Text)
+import HaskellWorks.Data.Parser   as P
 
 import qualified Data.Attoparsec.ByteString.Char8 as ABC
 import qualified Data.Attoparsec.Types            as T
@@ -34,29 +34,5 @@ parseHexDigitAlphaUpper = do
 parseHexDigit :: P.Parser t u => T.Parser t Int
 parseHexDigit = parseHexDigitNumeric <|> parseHexDigitAlphaLower <|> parseHexDigitAlphaUpper
 
-parseJsonString :: (P.Parser t u, IsString t) => T.Parser t String
-parseJsonString = do
-  _ <- string "\""
-  value <- many (verbatimChar <|> escapedChar <|> escapedCode)
-  _ <- string "\""
-  return value
-  where
-    verbatimChar  = satisfyChar (ABC.notInClass "\"\\") <?> "invalid string character"
-    escapedChar   = do
-      _ <- string "\\"
-      (   char '"'  >> return '"'  ) <|>
-        ( char 'b'  >> return '\b' ) <|>
-        ( char 'n'  >> return '\n' ) <|>
-        ( char 'f'  >> return '\f' ) <|>
-        ( char 'r'  >> return '\r' ) <|>
-        ( char 't'  >> return '\t' ) <|>
-        ( char '\\' >> return '\\' ) <|>
-        ( char '\'' >> return '\'' ) <|>
-        ( char '/'  >> return '/'  )
-    escapedCode   = do
-      _ <- string "\\u"
-      a <- parseHexDigit
-      b <- parseHexDigit
-      c <- parseHexDigit
-      d <- parseHexDigit
-      return $ chr $ a `shift` 24 .|. b `shift` 16 .|. c `shift` 8 .|. d
+parseJsonText :: ABC.Parser Text
+parseJsonText = jstring
