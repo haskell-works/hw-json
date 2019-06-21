@@ -15,16 +15,16 @@ import HaskellWorks.Data.Json.Backend.Standard.Load.Raw
 import HaskellWorks.Data.RankSelect.CsPoppy
 import HaskellWorks.Data.RankSelect.Poppy512
 
-import qualified Data.ByteString                              as BS
-import qualified Data.ByteString.Internal                     as BSI
-import qualified Data.Vector.Storable                         as DVS
-import qualified HaskellWorks.Data.ByteString                 as BS
-import qualified HaskellWorks.Data.Json.Backend.Standard.Slow as SLOW
+import qualified Data.ByteString.Internal                            as BSI
+import qualified Data.Vector.Storable                                as DVS
+import qualified HaskellWorks.Data.ByteString                        as BS
+import qualified HaskellWorks.Data.Json.Backend.Standard.Cursor.Fast as FAST
+import qualified HaskellWorks.Data.Json.Backend.Standard.Fast        as FAST
 
-loadCursor :: String -> IO (GenericCursor BS.ByteString (DVS.Vector Word64) (SimpleBalancedParens (DVS.Vector Word64)))
+loadCursor :: String -> IO FAST.Cursor
 loadCursor path = do
   bs <- BS.mmap path
-  let !cursor = SLOW.fromByteString bs
+  let !cursor = FAST.fromByteString bs
   return cursor
 
 loadCursorWithIndex :: String -> IO (GenericCursor BSI.ByteString (DVS.Vector Word64) (SimpleBalancedParens (DVS.Vector Word64)))
