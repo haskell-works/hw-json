@@ -10,7 +10,7 @@ module HaskellWorks.Data.Json.Backend.Standard.Fast
 import Foreign.ForeignPtr
 import HaskellWorks.Data.Json.Backend.Standard.Cursor.Fast
 import HaskellWorks.Data.Json.Backend.Standard.Cursor.Generic
-import HaskellWorks.Data.RankSelect.Poppy512
+import HaskellWorks.Data.RankSelect.CsPoppy
 
 import qualified Data.ByteString                                       as BS
 import qualified Data.ByteString.Char8                                 as BSC
@@ -22,7 +22,7 @@ import qualified HaskellWorks.Data.Json.Internal.Backend.Standard.IbBp as J
 fromByteString :: BS.ByteString -> Cursor
 fromByteString bs = GenericCursor
   { cursorText      = bs
-  , interests       = makePoppy512 ib
+  , interests       = makeCsPoppy ib
   , balancedParens  = BP.SimpleBalancedParens bp
   , cursorRank      = 1
   }
