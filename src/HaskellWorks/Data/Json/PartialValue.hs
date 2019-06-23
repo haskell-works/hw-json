@@ -22,9 +22,12 @@ module HaskellWorks.Data.Json.PartialValue
   ) where
 
 import Control.Arrow
-import Data.Text                                    (Text)
+import Data.String
+import Data.Text                                              (Text)
+import HaskellWorks.Data.Bits.BitWise
+import HaskellWorks.Data.Json.Backend.Standard.Cursor.Generic
 import HaskellWorks.Data.Json.Internal.Doc
-import HaskellWorks.Data.Json.Internal.Orphans      ()
+import HaskellWorks.Data.Json.Internal.Orphans                ()
 import HaskellWorks.Data.Json.Internal.PartialIndex
 import HaskellWorks.Data.Json.Internal.Value
 import HaskellWorks.Data.MQuery
@@ -33,12 +36,17 @@ import HaskellWorks.Data.MQuery.Entry
 import HaskellWorks.Data.MQuery.Micro
 import HaskellWorks.Data.MQuery.Mini
 import HaskellWorks.Data.MQuery.Row
-import Text.PrettyPrint.ANSI.Leijen                 hiding ((<$>))
+import HaskellWorks.Data.RankSelect.Base.Rank0
+import HaskellWorks.Data.RankSelect.Base.Rank1
+import HaskellWorks.Data.RankSelect.Base.Select1
+import Prelude                                                hiding (drop)
+import Text.PrettyPrint.ANSI.Leijen                           hiding ((<$>))
 
 import qualified Data.Attoparsec.ByteString.Char8 as ABC
 import qualified Data.ByteString                  as BS
 import qualified Data.DList                       as DL
 import qualified Data.Text                        as T
+import qualified HaskellWorks.Data.BalancedParens as BP
 
 data JsonPartialValue
   = JsonPartialString Text
@@ -142,6 +150,9 @@ instance Pretty (MQuery JsonPartialValue) where
 
 instance Pretty (MQuery (Entry Text JsonPartialValue)) where
   pretty (MQuery das) = pretty (Row 120 das)
+
+instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => JsonPartialValueAt (GenericCursor BS.ByteString v w) where
+  jsonPartialJsonValueAt = jsonPartialJsonValueAt . jsonPartialIndexAt
 
 hasKV :: Text -> JsonPartialValue -> JsonPartialValue -> MQuery JsonPartialValue
 hasKV k v (JsonPartialObject xs) = if (k, v) `elem` xs then MQuery (DL.singleton (JsonPartialObject xs)) else MQuery DL.empty

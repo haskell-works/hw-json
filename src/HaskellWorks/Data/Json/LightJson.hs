@@ -1,3 +1,4 @@
+{-# LANGUAGE BangPatterns          #-}
 {-# LANGUAGE FlexibleContexts      #-}
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE InstanceSigs          #-}
@@ -8,20 +9,35 @@
 module HaskellWorks.Data.Json.LightJson where
 
 import Control.Arrow
+import Control.Monad
 import Data.String
-import Data.Text                            (Text)
+import Data.Text                                              (Text)
+import HaskellWorks.Data.Bits.BitWise
+import HaskellWorks.Data.Drop
+import HaskellWorks.Data.Json.Backend.Standard.Cursor.Generic
+import HaskellWorks.Data.Json.Internal.CharLike
 import HaskellWorks.Data.Json.Internal.Doc
+import HaskellWorks.Data.Json.Internal.Slurp
 import HaskellWorks.Data.MQuery
 import HaskellWorks.Data.MQuery.AtLeastSize
 import HaskellWorks.Data.MQuery.Entry
 import HaskellWorks.Data.MQuery.Micro
 import HaskellWorks.Data.MQuery.Mini
 import HaskellWorks.Data.MQuery.Row
-import Prelude                              hiding (drop)
+import HaskellWorks.Data.Positioning
+import HaskellWorks.Data.RankSelect.Base.Rank0
+import HaskellWorks.Data.RankSelect.Base.Rank1
+import HaskellWorks.Data.RankSelect.Base.Select1
+import HaskellWorks.Data.TreeCursor
+import HaskellWorks.Data.Uncons
+import Prelude                                                hiding (drop)
+import Prelude                                                hiding (drop)
 import Text.PrettyPrint.ANSI.Leijen
 
-import qualified Data.ByteString as BS
-import qualified Data.Text       as T
+import qualified Data.ByteString                  as BS
+import qualified Data.List                        as L
+import qualified Data.Text                        as T
+import qualified HaskellWorks.Data.BalancedParens as BP
 
 data LightJson c
   = LightJsonString Text
@@ -106,3 +122,27 @@ instance LightJsonAt c => Pretty (MQuery (LightJson c)) where
 
 instance LightJsonAt c => Pretty (MQuery (Entry String (LightJson c))) where
   pretty (MQuery das) = pretty (Row 120 das)
+
+instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => LightJsonAt (GenericCursor BS.ByteString v w) where
+  lightJsonAt k = case uncons remainder of
+    Just (!c, _) | isLeadingDigit2 c -> LightJsonNumber  (slurpNumber remainder)
+    Just (!c, _) | isQuotDbl c       -> LightJsonString  (slurpString remainder)
+    Just (!c, _) | isChar_t c        -> LightJsonBool    True
+    Just (!c, _) | isChar_f c        -> LightJsonBool    False
+    Just (!c, _) | isChar_n c        -> LightJsonNull
+    Just (!c, _) | isBraceLeft c     -> LightJsonObject (mapValuesFrom   (firstChild k))
+    Just (!c, _) | isBracketLeft c   -> LightJsonArray  (arrayValuesFrom (firstChild k))
+    Just _                           -> LightJsonError "Invalid Json Type"
+    Nothing                          -> LightJsonError "End of data"
+    where ik                = interests k
+          bpk               = balancedParens k
+          p                 = lastPositionOf (select1 ik (rank1 bpk (cursorRank k)))
+          remainder         = drop (toCount p) (cursorText k)
+          arrayValuesFrom   = L.unfoldr (fmap (id &&& nextSibling))
+          mapValuesFrom j   = pairwise (arrayValuesFrom j) >>= asField
+          pairwise (a:b:rs) = (a, b) : pairwise rs
+          pairwise _        = []
+          asField (a, b)    = case lightJsonAt a of
+                                LightJsonString s -> [(s, b)]
+                                _                 -> []
+
