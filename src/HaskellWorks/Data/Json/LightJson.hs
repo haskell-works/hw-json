@@ -126,7 +126,7 @@ instance LightJsonAt c => Pretty (MQuery (Entry String (LightJson c))) where
 instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => LightJsonAt (GenericCursor BS.ByteString v w) where
   lightJsonAt k = case uncons remainder of
     Just (!c, _) | isLeadingDigit2 c -> LightJsonNumber  (slurpNumber remainder)
-    Just (!c, _) | isQuotDbl c       -> LightJsonString  (slurpString remainder)
+    Just (!c, _) | isQuotDbl c       -> LightJsonString  (slurpText   remainder)
     Just (!c, _) | isChar_t c        -> LightJsonBool    True
     Just (!c, _) | isChar_f c        -> LightJsonBool    False
     Just (!c, _) | isChar_n c        -> LightJsonNull
@@ -145,4 +145,3 @@ instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => LightJ
           asField (a, b)    = case lightJsonAt a of
                                 LightJsonString s -> [(s, b)]
                                 _                 -> []
-

@@ -1,6 +1,10 @@
 {-# LANGUAGE BangPatterns #-}
 
-module HaskellWorks.Data.Json.Internal.Slurp where
+module HaskellWorks.Data.Json.Internal.Slurp
+  ( JsonState(..)
+  , slurpText
+  , slurpNumber
+  ) where
 
 import Data.String
 import Data.Text
@@ -21,8 +25,8 @@ data JsonState
   | InNumber
   | InIdent
 
-slurpString :: BS.ByteString -> Text
-slurpString bs = T.pack $ L.unfoldr genString (InJson, BSC.unpack bs) -- TODO optimise
+slurpText :: BS.ByteString -> Text
+slurpText bs = T.pack $ L.unfoldr genString (InJson, BSC.unpack bs) -- TODO optimise
   where genString :: (JsonState, String) -> Maybe (Char, (JsonState, String))
         genString (InJson, ds) = case ds of
           (e:es) | e == '"' -> genString  (InString , es)
