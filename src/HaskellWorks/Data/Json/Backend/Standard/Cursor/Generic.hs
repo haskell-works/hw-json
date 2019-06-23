@@ -11,26 +11,13 @@ module HaskellWorks.Data.Json.Backend.Standard.Cursor.Generic
   , jsonCursorPos
   ) where
 
-import Control.Arrow
-import Control.Monad
-import Data.Char
-import Data.String
-import Data.Word8
-import HaskellWorks.Data.Bits.BitWise
-import HaskellWorks.Data.Drop
-import HaskellWorks.Data.Json.Internal.CharLike
-import HaskellWorks.Data.Json.Internal.Slurp
-import HaskellWorks.Data.Json.Internal.Word8
 import HaskellWorks.Data.Positioning
 import HaskellWorks.Data.RankSelect.Base.Rank0
 import HaskellWorks.Data.RankSelect.Base.Rank1
 import HaskellWorks.Data.RankSelect.Base.Select1
 import HaskellWorks.Data.TreeCursor
-import HaskellWorks.Data.Uncons
 import Prelude                                   hiding (drop)
 
-import qualified Data.ByteString                  as BS
-import qualified Data.List                        as L
 import qualified HaskellWorks.Data.BalancedParens as BP
 
 data GenericCursor t v w = GenericCursor
