@@ -38,7 +38,7 @@ ns = TC.nextSibling
 spec :: Spec
 spec = describe "HaskellWorks.Data.Json.Succinct.CursorSpec" $ do
   genSpec "DVS.Vector Word64" SLOW.fromString
-  genSpec "Poppy512"          FAST.fromString
+  genSpec "CsPoppy"           FAST.fromString
 
 genSpec :: forall t u.
   ( Eq                t

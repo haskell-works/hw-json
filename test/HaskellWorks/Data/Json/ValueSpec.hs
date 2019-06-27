@@ -40,7 +40,7 @@ ns = TC.nextSibling
 spec :: Spec
 spec = describe "HaskellWorks.Data.Json.ValueSpec" $ do
   genSpec "DVS.Vector Word64" SLOW.fromString
-  genSpec "Poppy512"          FAST.fromString
+  genSpec "CsPoppy"           FAST.fromString
 
 jsonValueVia  ::
   ( BalancedParens u

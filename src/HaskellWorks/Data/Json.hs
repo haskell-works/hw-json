@@ -1,8 +1,3 @@
--- |
--- Copyright: 2016 John Ky
--- License: MIT
---
--- Json
 module HaskellWorks.Data.Json
     ( module X
     ) where

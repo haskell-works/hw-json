@@ -24,4 +24,4 @@ import qualified HaskellWorks.Data.Json.Backend.Standard.Slow as SLOW
 spec :: Spec
 spec = describe "HaskellWorks.Data.Json.Succinct.CursorSpec" $ do
   genTest "DVS.Vector Word64" SLOW.fromString
-  genTest "Poppy512"          FAST.fromString
+  genTest "CsPoppy"           FAST.fromString
