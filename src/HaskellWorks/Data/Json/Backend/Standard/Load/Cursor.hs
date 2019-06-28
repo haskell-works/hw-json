@@ -4,7 +4,6 @@ module HaskellWorks.Data.Json.Backend.Standard.Load.Cursor
   ( loadCursor
   , loadCursorWithIndex
   , loadCursorWithCsPoppyIndex
-  , loadCursorWithCsPoppyIndex
   , loadCursorWithCsPoppyIndex2
   ) where
 
@@ -12,7 +11,6 @@ import Data.Word
 import HaskellWorks.Data.BalancedParens.Simple
 import HaskellWorks.Data.Json.Backend.Standard.Cursor.Generic
 import HaskellWorks.Data.Json.Backend.Standard.Load.Raw
-import HaskellWorks.Data.RankSelect.CsPoppy
 import HaskellWorks.Data.RankSelect.CsPoppy
 
 import qualified Data.ByteString.Internal                            as BSI
