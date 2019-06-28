@@ -16,8 +16,6 @@ import HaskellWorks.Data.Json.Internal.PartialIndex
 import HaskellWorks.Data.Json.PartialValue
 import HaskellWorks.Data.RankSelect.CsPoppy
 
-import qualified Data.ByteString.Internal as BSI
-
 loadPartialWithIndex :: String -> IO JsonPartialValue
 loadPartialWithIndex filename = do
   (jsonBS, jsonIb, jsonBp) <- loadRawWithIndex filename
