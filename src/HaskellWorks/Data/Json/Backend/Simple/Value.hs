@@ -25,7 +25,7 @@ data JsonValues
   | JsonObject [(String, JsonValue)]
   deriving (Eq, Show)
 
-snippetPos :: JsonCursor BS.ByteString CsPoppy (RMM.RangeMinMax (DVS.Vector Word64)) -> (Count, Count)
+snippetPos :: JsonCursor BS.ByteString CsPoppy (RMM.RangeMinMax CsPoppy) -> (Count, Count)
 snippetPos k = (kpa, kpz)
   where kpa   = select1 kib kta + km
         kpz   = select1 kib ktz - km
@@ -39,6 +39,6 @@ snippetPos k = (kpa, kpz)
         ktz   = ksz `div` 2
         km    = ksa `mod` 2
 
-snippet :: JsonCursor BS.ByteString CsPoppy (RMM.RangeMinMax (DVS.Vector Word64)) -> BS.ByteString
+snippet :: JsonCursor BS.ByteString CsPoppy (RMM.RangeMinMax CsPoppy) -> BS.ByteString
 snippet k = let (a, z) = snippetPos k in BS.take (fromIntegral (z - a + 1)) (BS.drop (fromIntegral (a - 1)) kt)
   where kt    = cursorText k
