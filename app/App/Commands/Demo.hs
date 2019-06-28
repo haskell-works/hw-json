@@ -15,7 +15,6 @@ import Data.Generics.Product.Any
 import Data.Semigroup                                         ((<>))
 import Data.Word
 import Foreign.ForeignPtr
-import HaskellWorks.Data.BalancedParens.Simple
 import HaskellWorks.Data.Json.Backend.Standard.Cursor.Generic
 import HaskellWorks.Data.Json.Backend.Standard.Load.Cursor
 import HaskellWorks.Data.Json.LightJson
@@ -26,18 +25,19 @@ import HaskellWorks.Data.RankSelect.CsPoppy
 import HaskellWorks.Data.Vector.AsVector8
 import Options.Applicative                                    hiding (columns)
 
-import qualified App.Commands.Types                         as Z
-import qualified Data.ByteString                            as BS
-import qualified Data.ByteString.Internal                   as BSI
-import qualified Data.ByteString.Lazy                       as LBS
-import qualified Data.DList                                 as DL
-import qualified Data.Vector.Storable                       as DVS
-import qualified Data.Vector.Storable.Mutable               as DVSM
-import qualified HaskellWorks.Data.ByteString.Lazy          as LBS
-import qualified HaskellWorks.Data.Json.Simd.Index.Standard as S
-import qualified Options.Applicative                        as OA
-import qualified System.IO                                  as IO
-import qualified System.IO.MMap                             as IO
+import qualified App.Commands.Types                           as Z
+import qualified Data.ByteString                              as BS
+import qualified Data.ByteString.Internal                     as BSI
+import qualified Data.ByteString.Lazy                         as LBS
+import qualified Data.DList                                   as DL
+import qualified Data.Vector.Storable                         as DVS
+import qualified Data.Vector.Storable.Mutable                 as DVSM
+import qualified HaskellWorks.Data.BalancedParens.RangeMinMax as RMM
+import qualified HaskellWorks.Data.ByteString.Lazy            as LBS
+import qualified HaskellWorks.Data.Json.Simd.Index.Standard   as S
+import qualified Options.Applicative                          as OA
+import qualified System.IO                                    as IO
+import qualified System.IO.MMap                               as IO
 
 constructUnzipN :: Int -> [(BS.ByteString, BS.ByteString)] -> (DVS.Vector Word64, DVS.Vector Word64)
 constructUnzipN nBytes xs = (DVS.unsafeCast ibv, DVS.unsafeCast bpv)
@@ -77,7 +77,7 @@ runDemo opts = do
       case S.makeStandardJsonIbBps (LBS.resegmentPadded 512 (LBS.fromStrict bs)) of
         Right ibBps -> do
           let (!ib, !bp) = constructUnzipN size ibBps
-          let !cursor = GenericCursor bs (makeCsPoppy ib) (SimpleBalancedParens bp) 1
+          let !cursor = GenericCursor bs (makeCsPoppy ib) (RMM.mkRangeMinMax bp) 1
           let !json = lightJsonAt cursor
           let q = MQuery (DL.singleton json)
 

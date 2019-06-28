@@ -27,6 +27,7 @@ import qualified Data.ByteString.Internal                        as BSI
 import qualified Data.Vector.Storable                            as DVS
 import qualified Foreign.ForeignPtr                              as F
 import qualified HaskellWorks.Data.BalancedParens                as BP
+import qualified HaskellWorks.Data.BalancedParens.RangeMinMax    as RMM
 import qualified HaskellWorks.Data.Json.Backend.Simple.SemiIndex as SI
 
 data JsonCursor t v w = JsonCursor
@@ -46,11 +47,11 @@ instance FromByteString (JsonCursor BS.ByteString (DVS.Vector Word64) (BP.Simple
     }
     where SI.SemiIndex _ ib bp = SI.buildSemiIndex bs
 
-instance FromByteString (JsonCursor BS.ByteString CsPoppy (BP.SimpleBalancedParens (DVS.Vector Word64))) where
+instance FromByteString (JsonCursor BS.ByteString CsPoppy (RMM.RangeMinMax (DVS.Vector Word64))) where
   fromByteString bs = JsonCursor
     { cursorText      = bs
     , interests       = makeCsPoppy ib
-    , balancedParens  = BP.SimpleBalancedParens bp
+    , balancedParens  = RMM.mkRangeMinMax bp
     , cursorRank      = 1
     }
     where SI.SemiIndex _ ib bp = SI.buildSemiIndex bs
@@ -58,13 +59,13 @@ instance FromByteString (JsonCursor BS.ByteString CsPoppy (BP.SimpleBalancedPare
 instance FromForeignRegion (JsonCursor BS.ByteString (DVS.Vector Word64) (BP.SimpleBalancedParens (DVS.Vector Word64))) where
   fromForeignRegion (fptr, offset, size) = fromByteString (BSI.fromForeignPtr (F.castForeignPtr fptr) offset size)
 
-instance FromForeignRegion (JsonCursor BS.ByteString CsPoppy (BP.SimpleBalancedParens (DVS.Vector Word64))) where
+instance FromForeignRegion (JsonCursor BS.ByteString CsPoppy (RMM.RangeMinMax (DVS.Vector Word64))) where
   fromForeignRegion (fptr, offset, size) = fromByteString (BSI.fromForeignPtr (F.castForeignPtr fptr) offset size)
 
 instance IsString (JsonCursor BS.ByteString (DVS.Vector Word64) (BP.SimpleBalancedParens (DVS.Vector Word64))) where
   fromString = fromByteString . BSC.pack
 
-instance IsString (JsonCursor BS.ByteString CsPoppy (BP.SimpleBalancedParens (DVS.Vector Word64))) where
+instance IsString (JsonCursor BS.ByteString CsPoppy (RMM.RangeMinMax (DVS.Vector Word64))) where
   fromString = fromByteString . BSC.pack
 
 instance (BP.BalancedParens u, Rank1 u, Rank0 u) => TreeCursor (JsonCursor t v u) where
