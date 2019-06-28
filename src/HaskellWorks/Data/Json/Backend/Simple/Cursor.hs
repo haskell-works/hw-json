@@ -17,7 +17,7 @@ import HaskellWorks.Data.Positioning
 import HaskellWorks.Data.RankSelect.Base.Rank0
 import HaskellWorks.Data.RankSelect.Base.Rank1
 import HaskellWorks.Data.RankSelect.Base.Select1
-import HaskellWorks.Data.RankSelect.Poppy512
+import HaskellWorks.Data.RankSelect.CsPoppy
 import HaskellWorks.Data.TreeCursor
 import Prelude                                   hiding (drop)
 
@@ -46,10 +46,10 @@ instance FromByteString (JsonCursor BS.ByteString (DVS.Vector Word64) (BP.Simple
     }
     where SI.SemiIndex _ ib bp = SI.buildSemiIndex bs
 
-instance FromByteString (JsonCursor BS.ByteString Poppy512 (BP.SimpleBalancedParens (DVS.Vector Word64))) where
+instance FromByteString (JsonCursor BS.ByteString CsPoppy (BP.SimpleBalancedParens (DVS.Vector Word64))) where
   fromByteString bs = JsonCursor
     { cursorText      = bs
-    , interests       = makePoppy512 ib
+    , interests       = makeCsPoppy ib
     , balancedParens  = BP.SimpleBalancedParens bp
     , cursorRank      = 1
     }
@@ -58,13 +58,13 @@ instance FromByteString (JsonCursor BS.ByteString Poppy512 (BP.SimpleBalancedPar
 instance FromForeignRegion (JsonCursor BS.ByteString (DVS.Vector Word64) (BP.SimpleBalancedParens (DVS.Vector Word64))) where
   fromForeignRegion (fptr, offset, size) = fromByteString (BSI.fromForeignPtr (F.castForeignPtr fptr) offset size)
 
-instance FromForeignRegion (JsonCursor BS.ByteString Poppy512 (BP.SimpleBalancedParens (DVS.Vector Word64))) where
+instance FromForeignRegion (JsonCursor BS.ByteString CsPoppy (BP.SimpleBalancedParens (DVS.Vector Word64))) where
   fromForeignRegion (fptr, offset, size) = fromByteString (BSI.fromForeignPtr (F.castForeignPtr fptr) offset size)
 
 instance IsString (JsonCursor BS.ByteString (DVS.Vector Word64) (BP.SimpleBalancedParens (DVS.Vector Word64))) where
   fromString = fromByteString . BSC.pack
 
-instance IsString (JsonCursor BS.ByteString Poppy512 (BP.SimpleBalancedParens (DVS.Vector Word64))) where
+instance IsString (JsonCursor BS.ByteString CsPoppy (BP.SimpleBalancedParens (DVS.Vector Word64))) where
   fromString = fromByteString . BSC.pack
 
 instance (BP.BalancedParens u, Rank1 u, Rank0 u) => TreeCursor (JsonCursor t v u) where

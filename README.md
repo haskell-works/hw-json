@@ -80,7 +80,7 @@ import HaskellWorks.Data.Json.Internal.Token.Types
 import HaskellWorks.Data.RankSelect.Base.Rank0
 import HaskellWorks.Data.RankSelect.Base.Rank1
 import HaskellWorks.Data.RankSelect.Base.Select1
-import HaskellWorks.Data.RankSelect.Poppy512
+import HaskellWorks.Data.RankSelect.CsPoppy
 import System.IO.MMap
 
 import qualified Data.ByteString                                as BS

@@ -5,7 +5,7 @@ import Data.Word
 import HaskellWorks.Data.Json.Backend.Simple.Cursor
 import HaskellWorks.Data.Positioning
 import HaskellWorks.Data.RankSelect.Base.Select1
-import HaskellWorks.Data.RankSelect.Poppy512
+import HaskellWorks.Data.RankSelect.CsPoppy
 
 import qualified Data.ByteString                  as BS
 import qualified Data.Vector.Storable             as DVS
@@ -24,7 +24,7 @@ data JsonValues
   | JsonObject [(String, JsonValue)]
   deriving (Eq, Show)
 
-snippetPos :: JsonCursor BS.ByteString Poppy512 (BP.SimpleBalancedParens (DVS.Vector Word64)) -> (Count, Count)
+snippetPos :: JsonCursor BS.ByteString CsPoppy (BP.SimpleBalancedParens (DVS.Vector Word64)) -> (Count, Count)
 snippetPos k = (kpa, kpz)
   where kpa   = select1 kib kta + km
         kpz   = select1 kib ktz - km
@@ -38,6 +38,6 @@ snippetPos k = (kpa, kpz)
         ktz   = ksz `div` 2
         km    = ksa `mod` 2
 
-snippet :: JsonCursor BS.ByteString Poppy512 (BP.SimpleBalancedParens (DVS.Vector Word64)) -> BS.ByteString
+snippet :: JsonCursor BS.ByteString CsPoppy (BP.SimpleBalancedParens (DVS.Vector Word64)) -> BS.ByteString
 snippet k = let (a, z) = snippetPos k in BS.take (fromIntegral (z - a + 1)) (BS.drop (fromIntegral (a - 1)) kt)
   where kt    = cursorText k
