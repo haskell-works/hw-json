@@ -2,10 +2,12 @@
 {-# LANGUAGE DuplicateRecordFields #-}
 
 module App.Commands.Types
-  ( CreateIndexOptions(..)
+  ( CountOptions(..)
+  , CreateIndexOptions(..)
   , DemoOptions(..)
   ) where
 
+import Data.Text    (Text)
 import GHC.Generics
 
 data CreateIndexOptions = CreateIndexOptions
@@ -19,4 +21,11 @@ data CreateIndexOptions = CreateIndexOptions
 data DemoOptions = DemoOptions
   { filePath :: FilePath
   , method   :: FilePath
+  } deriving (Eq, Show, Generic)
+
+data CountOptions = CountOptions
+  { inputFile  :: FilePath
+  , ibIndex    :: FilePath
+  , bpIndex    :: FilePath
+  , expression :: Text
   } deriving (Eq, Show, Generic)
