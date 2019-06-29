@@ -166,6 +166,7 @@ executable hw-json
           , mmap
           , optparse-applicative
           , semigroups
+          , text
           , vector
   main-is:            Main.hs
   hs-source-dirs:     app
@@ -174,6 +175,7 @@ executable hw-json
   other-modules:
       App.Commands
       App.Commands.CreateIndex
+      App.Commands.Count
       App.Commands.Demo
       App.Commands.Types
 

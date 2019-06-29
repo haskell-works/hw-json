@@ -15,7 +15,6 @@ import HaskellWorks.Data.RankSelect.CsPoppy
 import qualified Data.ByteString                                       as BS
 import qualified Data.ByteString.Char8                                 as BSC
 import qualified Data.ByteString.Internal                              as BSI
-import qualified HaskellWorks.Data.BalancedParens                      as BP
 import qualified HaskellWorks.Data.BalancedParens.RangeMin             as RM
 import qualified HaskellWorks.Data.FromForeignRegion                   as F
 import qualified HaskellWorks.Data.Json.Internal.Backend.Standard.IbBp as J
