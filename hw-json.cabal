@@ -37,36 +37,37 @@ flag sse42
   manual:       False
   default:      False
 
-common base                 { build-depends: base                 >= 4          && < 5      }
+common base                     { build-depends: base                     >= 4          && < 5      }
 
-common ansi-wl-pprint       { build-depends: ansi-wl-pprint       >= 0.6.8.2    && < 0.7    }
-common array                { build-depends: array                >= 0.5        && < 0.6    }
-common attoparsec           { build-depends: attoparsec           >= 0.13       && < 0.14   }
-common bits-extra           { build-depends: bits-extra           >= 0.0.1.3    && < 0.1    }
-common bytestring           { build-depends: bytestring           >= 0.10.6     && < 0.11   }
-common criterion            { build-depends: criterion            >= 1.4        && < 1.6    }
-common directory            { build-depends: directory            >= 1.3        && < 1.4    }
-common dlist                { build-depends: dlist                >= 0.8        && < 0.9    }
-common generic-lens         { build-depends: generic-lens         >= 1.1.0.0    && < 1.2    }
-common hedgehog             { build-depends: hedgehog             >= 0.6        && < 1.1    }
-common hspec                { build-depends: hspec                >= 2.4        && < 3      }
-common hw-balancedparens    { build-depends: hw-balancedparens    >= 0.3.0.0    && < 0.4    }
-common hw-bits              { build-depends: hw-bits              >= 0.7.0.5    && < 0.8    }
-common hw-hspec-hedgehog    { build-depends: hw-hspec-hedgehog    >= 0.1.0.4    && < 0.2    }
-common hw-json-simd         { build-depends: hw-json-simd         >= 0.1.0.2    && < 0.2    }
-common hw-mquery            { build-depends: hw-mquery            >= 0.2.0.0    && < 0.3    }
-common hw-parser            { build-depends: hw-parser            >= 0.1        && < 0.2    }
-common hw-prim              { build-depends: hw-prim              >= 0.6.2.28   && < 0.7    }
-common hw-rankselect        { build-depends: hw-rankselect        >= 0.13       && < 0.14   }
-common hw-rankselect-base   { build-depends: hw-rankselect-base   >= 0.3.2.1    && < 0.4    }
-common hw-simd              { build-depends: hw-simd              >= 0.1.1.2    && < 0.2    }
-common lens                 { build-depends: lens                 >= 4          && < 5      }
-common mmap                 { build-depends: mmap                 >= 0.5        && < 0.6    }
-common optparse-applicative { build-depends: optparse-applicative >= 0.14       && < 0.15   }
-common text                 { build-depends: text                 >= 1.2        && < 1.3    }
-common transformers         { build-depends: transformers         >= 0.4        && < 0.6    }
-common vector               { build-depends: vector               >= 0.12       && < 0.13   }
-common word8                { build-depends: word8                >= 0.1        && < 0.2    }
+common ansi-wl-pprint           { build-depends: ansi-wl-pprint           >= 0.6.8.2    && < 0.7    }
+common array                    { build-depends: array                    >= 0.5        && < 0.6    }
+common attoparsec               { build-depends: attoparsec               >= 0.13       && < 0.14   }
+common bits-extra               { build-depends: bits-extra               >= 0.0.1.3    && < 0.1    }
+common bytestring               { build-depends: bytestring               >= 0.10.6     && < 0.11   }
+common criterion                { build-depends: criterion                >= 1.4        && < 1.6    }
+common directory                { build-depends: directory                >= 1.3        && < 1.4    }
+common dlist                    { build-depends: dlist                    >= 0.8        && < 0.9    }
+common generic-lens             { build-depends: generic-lens             >= 1.1.0.0    && < 1.2    }
+common hedgehog                 { build-depends: hedgehog                 >= 0.6        && < 1.1    }
+common hspec                    { build-depends: hspec                    >= 2.4        && < 3      }
+common hw-balancedparens        { build-depends: hw-balancedparens        >= 0.3.0.0    && < 0.4    }
+common hw-bits                  { build-depends: hw-bits                  >= 0.7.0.5    && < 0.8    }
+common hw-hspec-hedgehog        { build-depends: hw-hspec-hedgehog        >= 0.1.0.4    && < 0.2    }
+common hw-json-simd             { build-depends: hw-json-simd             >= 0.1.0.2    && < 0.2    }
+common hw-json-standard-cursor  { build-depends: hw-json-standard-cursor  >= 0.1.0.0    && < 0.2    }
+common hw-mquery                { build-depends: hw-mquery                >= 0.2.0.0    && < 0.3    }
+common hw-parser                { build-depends: hw-parser                >= 0.1        && < 0.2    }
+common hw-prim                  { build-depends: hw-prim                  >= 0.6.2.28   && < 0.7    }
+common hw-rankselect            { build-depends: hw-rankselect            >= 0.13       && < 0.14   }
+common hw-rankselect-base       { build-depends: hw-rankselect-base       >= 0.3.2.1    && < 0.4    }
+common hw-simd                  { build-depends: hw-simd                  >= 0.1.1.2    && < 0.2    }
+common lens                     { build-depends: lens                     >= 4          && < 5      }
+common mmap                     { build-depends: mmap                     >= 0.5        && < 0.6    }
+common optparse-applicative     { build-depends: optparse-applicative     >= 0.14       && < 0.15   }
+common text                     { build-depends: text                     >= 1.2        && < 1.3    }
+common transformers             { build-depends: transformers             >= 0.4        && < 0.6    }
+common vector                   { build-depends: vector                   >= 0.12       && < 0.13   }
+common word8                    { build-depends: word8                    >= 0.1        && < 0.2    }
 
 common semigroups   { if impl(ghc <  8    ) { build-depends: semigroups     >= 0.16     && < 0.19 } }
 
@@ -97,39 +98,6 @@ library hw-json-simple-cursor
                         HaskellWorks.Data.Json.Simple.Cursor.Internal.ToIbBp
                         HaskellWorks.Data.Json.Simple.Cursor.Internal.Word8
 
-library hw-json-standard-cursor
-  import:   base, config
-          , array
-          , bits-extra
-          , bytestring
-          , hw-balancedparens
-          , hw-bits
-          , hw-prim
-          , hw-rankselect
-          , hw-rankselect-base
-          , mmap
-          , vector
-          , word8
-  hs-source-dirs:       hw-json-standard-cursor
-  exposed-modules:      HaskellWorks.Data.Json.Standard.Cursor
-                        HaskellWorks.Data.Json.Standard.Cursor.Fast
-                        HaskellWorks.Data.Json.Standard.Cursor.Generic
-                        HaskellWorks.Data.Json.Standard.Cursor.Index
-                        HaskellWorks.Data.Json.Standard.Cursor.Internal.Blank
-                        HaskellWorks.Data.Json.Standard.Cursor.Internal.BlankedJson
-                        HaskellWorks.Data.Json.Standard.Cursor.Internal.IbBp
-                        HaskellWorks.Data.Json.Standard.Cursor.Internal.MakeIndex
-                        HaskellWorks.Data.Json.Standard.Cursor.Internal.StateMachine
-                        HaskellWorks.Data.Json.Standard.Cursor.Internal.ToBalancedParens64
-                        HaskellWorks.Data.Json.Standard.Cursor.Internal.ToInterestBits64
-                        HaskellWorks.Data.Json.Standard.Cursor.Internal.Word8
-                        HaskellWorks.Data.Json.Standard.Cursor.Load.Cursor
-                        HaskellWorks.Data.Json.Standard.Cursor.Load.Raw
-                        HaskellWorks.Data.Json.Standard.Cursor.SemiIndex
-                        HaskellWorks.Data.Json.Standard.Cursor.Slow
-                        HaskellWorks.Data.Json.Standard.Cursor.Specific
-                        HaskellWorks.Data.Json.Standard.Cursor.Type
-
 library
   import:   base, config
           , ansi-wl-pprint
@@ -139,6 +107,7 @@ library
           , dlist
           , hw-balancedparens
           , hw-bits
+          , hw-json-standard-cursor
           , hw-mquery
           , hw-parser
           , hw-prim
@@ -154,7 +123,6 @@ library
   other-modules:        Paths_hw_json
   autogen-modules:      Paths_hw_json
   build-depends:        hw-json-simple-cursor
-                      , hw-json-standard-cursor
   exposed-modules:
       HaskellWorks.Data.Json.DecodeError
       HaskellWorks.Data.Json.FromValue
