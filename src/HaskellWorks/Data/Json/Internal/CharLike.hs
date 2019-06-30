@@ -2,7 +2,7 @@ module HaskellWorks.Data.Json.Internal.CharLike where
 
 import Data.Word
 import Data.Word8
-import HaskellWorks.Data.Json.Internal.Word8
+import HaskellWorks.Data.Json.Standard.Cursor.Internal.Word8
 
 class JsonCharLike c where
   isLeadingDigit2 :: c -> Bool

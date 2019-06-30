@@ -14,15 +14,15 @@ import Control.Monad
 import Data.String
 import HaskellWorks.Data.Bits.BitWise
 import HaskellWorks.Data.Drop
-import HaskellWorks.Data.Json.Backend.Standard.Cursor.Generic
 import HaskellWorks.Data.Json.Internal.CharLike
+import HaskellWorks.Data.Json.Standard.Cursor.Generic
 import HaskellWorks.Data.Positioning
 import HaskellWorks.Data.RankSelect.Base.Rank0
 import HaskellWorks.Data.RankSelect.Base.Rank1
 import HaskellWorks.Data.RankSelect.Base.Select1
 import HaskellWorks.Data.TreeCursor
 import HaskellWorks.Data.Uncons
-import Prelude                                                hiding (drop)
+import Prelude                                        hiding (drop)
 
 import qualified Data.ByteString                  as BS
 import qualified Data.List                        as L

@@ -11,13 +11,13 @@ module HaskellWorks.Data.Json.LightJson where
 import Control.Arrow
 import Control.Monad
 import Data.String
-import Data.Text                                              (Text)
+import Data.Text                                      (Text)
 import HaskellWorks.Data.Bits.BitWise
 import HaskellWorks.Data.Drop
-import HaskellWorks.Data.Json.Backend.Standard.Cursor.Generic
 import HaskellWorks.Data.Json.Internal.CharLike
 import HaskellWorks.Data.Json.Internal.Doc
 import HaskellWorks.Data.Json.Internal.Slurp
+import HaskellWorks.Data.Json.Standard.Cursor.Generic
 import HaskellWorks.Data.MQuery
 import HaskellWorks.Data.MQuery.AtLeastSize
 import HaskellWorks.Data.MQuery.Entry
@@ -30,8 +30,8 @@ import HaskellWorks.Data.RankSelect.Base.Rank1
 import HaskellWorks.Data.RankSelect.Base.Select1
 import HaskellWorks.Data.TreeCursor
 import HaskellWorks.Data.Uncons
-import Prelude                                                hiding (drop)
-import Prelude                                                hiding (drop)
+import Prelude                                        hiding (drop)
+import Prelude                                        hiding (drop)
 import Text.PrettyPrint.ANSI.Leijen
 
 import qualified Data.ByteString                  as BS

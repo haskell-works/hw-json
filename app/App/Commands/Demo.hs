@@ -12,18 +12,18 @@ import Control.Lens
 import Control.Monad
 import Control.Monad.ST
 import Data.Generics.Product.Any
-import Data.Semigroup                                         ((<>))
+import Data.Semigroup                                     ((<>))
 import Data.Word
 import Foreign.ForeignPtr
-import HaskellWorks.Data.Json.Backend.Standard.Cursor.Generic
-import HaskellWorks.Data.Json.Backend.Standard.Load.Cursor
 import HaskellWorks.Data.Json.LightJson
 import HaskellWorks.Data.Json.Query
+import HaskellWorks.Data.Json.Standard.Cursor.Generic
+import HaskellWorks.Data.Json.Standard.Cursor.Load.Cursor
 import HaskellWorks.Data.MQuery
 import HaskellWorks.Data.MQuery.Micro
 import HaskellWorks.Data.RankSelect.CsPoppy
 import HaskellWorks.Data.Vector.AsVector8
-import Options.Applicative                                    hiding (columns)
+import Options.Applicative                                hiding (columns)
 
 import qualified App.Commands.Types                         as Z
 import qualified Data.ByteString                            as BS

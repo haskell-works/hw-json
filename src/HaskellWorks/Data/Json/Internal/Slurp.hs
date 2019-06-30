@@ -10,8 +10,8 @@ import Data.String
 import Data.Text
 import Data.Word
 import Data.Word8
-import HaskellWorks.Data.Json.Internal.Word8
-import Prelude                               hiding (drop)
+import HaskellWorks.Data.Json.Standard.Cursor.Internal.Word8
+import Prelude                                               hiding (drop)
 
 import qualified Data.ByteString       as BS
 import qualified Data.ByteString.Char8 as BSC
