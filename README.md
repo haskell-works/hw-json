@@ -155,3 +155,4 @@ putPretty $ q >>= (item >=> entry >=> named "acquisition" >=> having (entry >=> 
 ## Special mentions
 
 * [Sydney Paper Club](http://www.meetup.com/Sydney-Paper-Club/)
+
