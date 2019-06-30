@@ -79,7 +79,25 @@ common config
     ghc-options: -mbmi2 -msse4.2
     cpp-options: -DBMI2_ENABLED
 
-library hw-json-cursor
+library hw-json-simple-cursor
+  import:   base, config
+          , bytestring
+          , hw-balancedparens
+          , hw-bits
+          , hw-prim
+          , hw-rankselect
+          , hw-rankselect-base
+          , vector
+          , word8
+  hs-source-dirs:       hw-json-simple-cursor
+  exposed-modules:      HaskellWorks.Data.Json.Simple.Cursor
+                        HaskellWorks.Data.Json.Simple.Cursor.Fast
+                        HaskellWorks.Data.Json.Simple.Cursor.SemiIndex
+                        HaskellWorks.Data.Json.Simple.Cursor.Internal.IbBp
+                        HaskellWorks.Data.Json.Simple.Cursor.Internal.ToIbBp
+                        HaskellWorks.Data.Json.Simple.Cursor.Internal.Word8
+
+library hw-json-standard-cursor
   import:   base, config
           , array
           , bits-extra
@@ -92,37 +110,29 @@ library hw-json-cursor
           , mmap
           , vector
           , word8
-  hs-source-dirs:       hw-json-cursor
-  exposed-modules:      HaskellWorks.Data.Json.Backend.Simple.Cursor
-                        HaskellWorks.Data.Json.Backend.Simple.Fast
-                        HaskellWorks.Data.Json.Backend.Simple.SemiIndex
-                        HaskellWorks.Data.Json.Backend.Standard.Cursor
-                        HaskellWorks.Data.Json.Backend.Standard.Cursor.Fast
-                        HaskellWorks.Data.Json.Backend.Standard.Cursor.Generic
-                        HaskellWorks.Data.Json.Backend.Standard.Cursor.Slow
-                        HaskellWorks.Data.Json.Backend.Standard.Cursor.Specific
-                        HaskellWorks.Data.Json.Backend.Standard.Fast
-                        HaskellWorks.Data.Json.Backend.Standard.Index
-                        HaskellWorks.Data.Json.Backend.Standard.Load.Cursor
-                        HaskellWorks.Data.Json.Backend.Standard.Load.Raw
-                        HaskellWorks.Data.Json.Backend.Standard.SemiIndex
-                        HaskellWorks.Data.Json.Backend.Standard.Slow
-                        HaskellWorks.Data.Json.Internal.Backend.Simple.IbBp
-                        HaskellWorks.Data.Json.Internal.Backend.Simple.ToIbBp
-                        HaskellWorks.Data.Json.Internal.Backend.Standard.Blank
-                        HaskellWorks.Data.Json.Internal.Backend.Standard.BlankedJson
-                        HaskellWorks.Data.Json.Internal.Backend.Standard.IbBp
-                        HaskellWorks.Data.Json.Internal.Backend.Standard.MakeIndex
-                        HaskellWorks.Data.Json.Internal.Backend.Standard.StateMachine
-                        HaskellWorks.Data.Json.Internal.Backend.Standard.ToBalancedParens64
-                        HaskellWorks.Data.Json.Internal.Backend.Standard.ToInterestBits64
-                        HaskellWorks.Data.Json.Internal.Word8
-                        HaskellWorks.Data.Json.Type
+  hs-source-dirs:       hw-json-standard-cursor
+  exposed-modules:      HaskellWorks.Data.Json.Standard.Cursor
+                        HaskellWorks.Data.Json.Standard.Cursor.Fast
+                        HaskellWorks.Data.Json.Standard.Cursor.Generic
+                        HaskellWorks.Data.Json.Standard.Cursor.Index
+                        HaskellWorks.Data.Json.Standard.Cursor.Internal.Blank
+                        HaskellWorks.Data.Json.Standard.Cursor.Internal.BlankedJson
+                        HaskellWorks.Data.Json.Standard.Cursor.Internal.IbBp
+                        HaskellWorks.Data.Json.Standard.Cursor.Internal.MakeIndex
+                        HaskellWorks.Data.Json.Standard.Cursor.Internal.StateMachine
+                        HaskellWorks.Data.Json.Standard.Cursor.Internal.ToBalancedParens64
+                        HaskellWorks.Data.Json.Standard.Cursor.Internal.ToInterestBits64
+                        HaskellWorks.Data.Json.Standard.Cursor.Internal.Word8
+                        HaskellWorks.Data.Json.Standard.Cursor.Load.Cursor
+                        HaskellWorks.Data.Json.Standard.Cursor.Load.Raw
+                        HaskellWorks.Data.Json.Standard.Cursor.SemiIndex
+                        HaskellWorks.Data.Json.Standard.Cursor.Slow
+                        HaskellWorks.Data.Json.Standard.Cursor.Specific
+                        HaskellWorks.Data.Json.Standard.Cursor.Type
 
 library
   import:   base, config
           , ansi-wl-pprint
-          , array
           , attoparsec
           , bits-extra
           , bytestring
@@ -143,15 +153,13 @@ library
   hs-source-dirs:       src
   other-modules:        Paths_hw_json
   autogen-modules:      Paths_hw_json
-  build-depends:        hw-json-cursor
+  build-depends:        hw-json-simple-cursor
+                      , hw-json-standard-cursor
   exposed-modules:
-      HaskellWorks.Data.Json
-      HaskellWorks.Data.Json.Backend.Simple.Value
-      HaskellWorks.Data.Json.Backend.Standard.Load.Partial
       HaskellWorks.Data.Json.DecodeError
       HaskellWorks.Data.Json.FromValue
-      HaskellWorks.Data.Json.Internal.Backend.Standard.Cursor.Token
-      HaskellWorks.Data.Json.Internal.Backend.Standard.Token.Tokenize
+      HaskellWorks.Data.Json.Internal.Standard.Cursor.Token
+      HaskellWorks.Data.Json.Internal.Standard.Token.Tokenize
       HaskellWorks.Data.Json.Internal.CharLike
       HaskellWorks.Data.Json.Internal.Doc
       HaskellWorks.Data.Json.Internal.Index
@@ -165,33 +173,33 @@ library
       HaskellWorks.Data.Json.LightJson
       HaskellWorks.Data.Json.PartialValue
       HaskellWorks.Data.Json.Query
+      HaskellWorks.Data.Json.Simple.Value
+      HaskellWorks.Data.Json.Standard.Load.Partial
       HaskellWorks.Data.Json.Value
   reexported-modules:
-      HaskellWorks.Data.Json.Backend.Simple.Cursor
-    , HaskellWorks.Data.Json.Backend.Simple.Fast
-    , HaskellWorks.Data.Json.Backend.Simple.SemiIndex
-    , HaskellWorks.Data.Json.Backend.Standard.Cursor
-    , HaskellWorks.Data.Json.Backend.Standard.Cursor.Fast
-    , HaskellWorks.Data.Json.Backend.Standard.Cursor.Generic
-    , HaskellWorks.Data.Json.Backend.Standard.Cursor.Slow
-    , HaskellWorks.Data.Json.Backend.Standard.Cursor.Specific
-    , HaskellWorks.Data.Json.Backend.Standard.Fast
-    , HaskellWorks.Data.Json.Backend.Standard.Index
-    , HaskellWorks.Data.Json.Backend.Standard.Load.Cursor
-    , HaskellWorks.Data.Json.Backend.Standard.Load.Raw
-    , HaskellWorks.Data.Json.Backend.Standard.SemiIndex
-    , HaskellWorks.Data.Json.Backend.Standard.Slow
-    , HaskellWorks.Data.Json.Internal.Backend.Simple.IbBp
-    , HaskellWorks.Data.Json.Internal.Backend.Simple.ToIbBp
-    , HaskellWorks.Data.Json.Internal.Backend.Standard.Blank
-    , HaskellWorks.Data.Json.Internal.Backend.Standard.BlankedJson
-    , HaskellWorks.Data.Json.Internal.Backend.Standard.IbBp
-    , HaskellWorks.Data.Json.Internal.Backend.Standard.MakeIndex
-    , HaskellWorks.Data.Json.Internal.Backend.Standard.StateMachine
-    , HaskellWorks.Data.Json.Internal.Backend.Standard.ToBalancedParens64
-    , HaskellWorks.Data.Json.Internal.Backend.Standard.ToInterestBits64
-    , HaskellWorks.Data.Json.Internal.Word8
-    , HaskellWorks.Data.Json.Type
+      HaskellWorks.Data.Json.Simple.Cursor
+    , HaskellWorks.Data.Json.Simple.Cursor.Fast
+    , HaskellWorks.Data.Json.Simple.Cursor.SemiIndex
+    , HaskellWorks.Data.Json.Simple.Cursor.Internal.IbBp
+    , HaskellWorks.Data.Json.Simple.Cursor.Internal.ToIbBp
+    , HaskellWorks.Data.Json.Standard.Cursor
+    , HaskellWorks.Data.Json.Standard.Cursor.Fast
+    , HaskellWorks.Data.Json.Standard.Cursor.Generic
+    , HaskellWorks.Data.Json.Standard.Cursor.Index
+    , HaskellWorks.Data.Json.Standard.Cursor.Internal.Blank
+    , HaskellWorks.Data.Json.Standard.Cursor.Internal.BlankedJson
+    , HaskellWorks.Data.Json.Standard.Cursor.Internal.IbBp
+    , HaskellWorks.Data.Json.Standard.Cursor.Internal.MakeIndex
+    , HaskellWorks.Data.Json.Standard.Cursor.Internal.StateMachine
+    , HaskellWorks.Data.Json.Standard.Cursor.Internal.ToBalancedParens64
+    , HaskellWorks.Data.Json.Standard.Cursor.Internal.ToInterestBits64
+    , HaskellWorks.Data.Json.Standard.Cursor.Internal.Word8
+    , HaskellWorks.Data.Json.Standard.Cursor.Load.Cursor
+    , HaskellWorks.Data.Json.Standard.Cursor.Load.Raw
+    , HaskellWorks.Data.Json.Standard.Cursor.SemiIndex
+    , HaskellWorks.Data.Json.Standard.Cursor.Slow
+    , HaskellWorks.Data.Json.Standard.Cursor.Specific
+    , HaskellWorks.Data.Json.Standard.Cursor.Type
 
 executable hw-json
   import:   base, config
@@ -242,14 +250,13 @@ test-suite hw-json-test
   ghc-options:        -threaded -rtsopts -with-rtsopts=-N
   build-tools:        hspec-discover
   other-modules:
-      HaskellWorks.Data.Json.Backend.Simple.CursorSpec
-      HaskellWorks.Data.Json.Backend.Standard.Succinct.Cursor.BalancedParensSpec
-      HaskellWorks.Data.Json.Backend.Standard.Succinct.Cursor.InterestBitsSpec
-      HaskellWorks.Data.Json.Backend.Standard.Succinct.CursorSpec
-      HaskellWorks.Data.Json.Backend.Standard.Succinct.GenCursorTest
-      HaskellWorks.Data.Json.CorpusSpec
-      HaskellWorks.Data.Json.Internal.BlankSpec
-      HaskellWorks.Data.Json.Succinct.Cursor.BalancedParensSpec
+      HaskellWorks.Data.Json.Simple.CursorSpec
+      HaskellWorks.Data.Json.Standard.CorpusSpec
+      HaskellWorks.Data.Json.Standard.Cursor.BalancedParensSpec
+      HaskellWorks.Data.Json.Standard.Cursor.InterestBitsSpec
+      HaskellWorks.Data.Json.Standard.Cursor.Internal.BlankSpec
+      HaskellWorks.Data.Json.Standard.CursorSpec
+      HaskellWorks.Data.Json.Standard.GenCursorTest
       HaskellWorks.Data.Json.Token.TokenizeSpec
       HaskellWorks.Data.Json.TypeSpec
       HaskellWorks.Data.Json.ValueSpec

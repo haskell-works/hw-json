@@ -16,22 +16,22 @@ import Data.Word
 import Foreign
 import Options.Applicative       hiding (columns)
 
-import qualified App.Commands.Types                                                  as Z
-import qualified Data.ByteString                                                     as BS
-import qualified Data.ByteString.Internal                                            as BSI
-import qualified Data.ByteString.Lazy                                                as LBS
-import qualified HaskellWorks.Data.ByteString                                        as BS
-import qualified HaskellWorks.Data.ByteString.Lazy                                   as LBS
-import qualified HaskellWorks.Data.Json.Backend.Simple.SemiIndex                     as SISI
-import qualified HaskellWorks.Data.Json.Backend.Standard.SemiIndex                   as STSI
-import qualified HaskellWorks.Data.Json.Internal.Backend.Standard.Blank              as J
-import qualified HaskellWorks.Data.Json.Internal.Backend.Standard.BlankedJson        as J
-import qualified HaskellWorks.Data.Json.Internal.Backend.Standard.MakeIndex          as J
-import qualified HaskellWorks.Data.Json.Internal.Backend.Standard.ToBalancedParens64 as J
-import qualified HaskellWorks.Data.Json.Simd.Index.Standard                          as STSI
-import qualified System.Exit                                                         as IO
-import qualified System.IO                                                           as IO
-import qualified System.IO.MMap                                                      as IO
+import qualified App.Commands.Types                                                 as Z
+import qualified Data.ByteString                                                    as BS
+import qualified Data.ByteString.Internal                                           as BSI
+import qualified Data.ByteString.Lazy                                               as LBS
+import qualified HaskellWorks.Data.ByteString                                       as BS
+import qualified HaskellWorks.Data.ByteString.Lazy                                  as LBS
+import qualified HaskellWorks.Data.Json.Simd.Index.Standard                         as STSI
+import qualified HaskellWorks.Data.Json.Simple.Cursor.SemiIndex                     as SISI
+import qualified HaskellWorks.Data.Json.Standard.Cursor.Internal.Blank              as J
+import qualified HaskellWorks.Data.Json.Standard.Cursor.Internal.BlankedJson        as J
+import qualified HaskellWorks.Data.Json.Standard.Cursor.Internal.MakeIndex          as J
+import qualified HaskellWorks.Data.Json.Standard.Cursor.Internal.ToBalancedParens64 as J
+import qualified HaskellWorks.Data.Json.Standard.Cursor.SemiIndex                   as STSI
+import qualified System.Exit                                                        as IO
+import qualified System.IO                                                          as IO
+import qualified System.IO.MMap                                                     as IO
 
 {-# ANN module ("HLint: ignore Reduce duplication"  :: String) #-}
 {-# ANN module ("HLint: ignore Redundant do"        :: String) #-}

@@ -2,8 +2,8 @@
 
 module HaskellWorks.Data.Json.Token.TokenizeSpec (spec) where
 
-import Data.ByteString                                                 (ByteString)
-import HaskellWorks.Data.Json.Internal.Backend.Standard.Token.Tokenize
+import Data.ByteString                                         (ByteString)
+import HaskellWorks.Data.Json.Internal.Standard.Token.Tokenize
 import HaskellWorks.Hspec.Hedgehog
 import Hedgehog
 import Test.Hspec

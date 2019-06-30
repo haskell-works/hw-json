@@ -6,18 +6,18 @@ module Main where
 import Control.Monad
 import Criterion.Main
 import Data.List
-import Data.Semigroup                                             ((<>))
+import Data.Semigroup                                            ((<>))
 import Data.Word
 import Foreign
-import HaskellWorks.Data.Json.Internal.Backend.Standard.Blank
-import HaskellWorks.Data.Json.Internal.Backend.Standard.MakeIndex
+import HaskellWorks.Data.Json.Standard.Cursor.Internal.Blank
+import HaskellWorks.Data.Json.Standard.Cursor.Internal.MakeIndex
 import System.IO.MMap
 
-import qualified Data.ByteString                              as BS
-import qualified Data.ByteString.Internal                     as BSI
-import qualified HaskellWorks.Data.Json.Backend.Standard.Fast as FAST
-import qualified HaskellWorks.Data.Json.Backend.Standard.Slow as SLOW
-import qualified System.Directory                             as IO
+import qualified Data.ByteString                             as BS
+import qualified Data.ByteString.Internal                    as BSI
+import qualified HaskellWorks.Data.Json.Standard.Cursor.Fast as FAST
+import qualified HaskellWorks.Data.Json.Standard.Cursor.Slow as SLOW
+import qualified System.Directory                            as IO
 
 setupEnvJson :: FilePath -> IO BS.ByteString
 setupEnvJson filepath = do

@@ -2,7 +2,7 @@ module HaskellWorks.Data.Json.Internal.Word64 where
 
 import Data.Word
 
-import qualified HaskellWorks.Data.Json.Internal.Word8 as W8
+import qualified HaskellWorks.Data.Json.Standard.Cursor.Internal.Word8 as W8
 
 doubleQuote :: Word64
 doubleQuote = 0x0101010101010101 * fromIntegral W8.doubleQuote

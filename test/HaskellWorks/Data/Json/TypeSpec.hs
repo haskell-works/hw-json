@@ -14,8 +14,8 @@ module HaskellWorks.Data.Json.TypeSpec (spec) where
 import Control.Monad
 import HaskellWorks.Data.BalancedParens.BalancedParens
 import HaskellWorks.Data.Bits.BitWise
-import HaskellWorks.Data.Json.Backend.Standard.Cursor.Generic
-import HaskellWorks.Data.Json.Type
+import HaskellWorks.Data.Json.Standard.Cursor.Generic
+import HaskellWorks.Data.Json.Standard.Cursor.Type
 import HaskellWorks.Data.RankSelect.Base.Rank0
 import HaskellWorks.Data.RankSelect.Base.Rank1
 import HaskellWorks.Data.RankSelect.Base.Select1
@@ -23,10 +23,10 @@ import HaskellWorks.Hspec.Hedgehog
 import Hedgehog
 import Test.Hspec
 
-import qualified Data.ByteString                              as BS
-import qualified HaskellWorks.Data.Json.Backend.Standard.Fast as FAST
-import qualified HaskellWorks.Data.Json.Backend.Standard.Slow as SLOW
-import qualified HaskellWorks.Data.TreeCursor                 as TC
+import qualified Data.ByteString                             as BS
+import qualified HaskellWorks.Data.Json.Standard.Cursor.Fast as FAST
+import qualified HaskellWorks.Data.Json.Standard.Cursor.Slow as SLOW
+import qualified HaskellWorks.Data.TreeCursor                as TC
 
 {-# ANN module ("HLint: ignore Redundant do"        :: String) #-}
 {-# ANN module ("HLint: ignore Reduce duplication"  :: String) #-}

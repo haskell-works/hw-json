@@ -23,13 +23,13 @@ module HaskellWorks.Data.Json.PartialValue
 
 import Control.Arrow
 import Data.String
-import Data.Text                                              (Text)
+import Data.Text                                      (Text)
 import HaskellWorks.Data.Bits.BitWise
-import HaskellWorks.Data.Json.Backend.Standard.Cursor.Generic
 import HaskellWorks.Data.Json.Internal.Doc
-import HaskellWorks.Data.Json.Internal.Orphans                ()
+import HaskellWorks.Data.Json.Internal.Orphans        ()
 import HaskellWorks.Data.Json.Internal.PartialIndex
 import HaskellWorks.Data.Json.Internal.Value
+import HaskellWorks.Data.Json.Standard.Cursor.Generic
 import HaskellWorks.Data.MQuery
 import HaskellWorks.Data.MQuery.AtLeastSize
 import HaskellWorks.Data.MQuery.Entry
@@ -39,8 +39,8 @@ import HaskellWorks.Data.MQuery.Row
 import HaskellWorks.Data.RankSelect.Base.Rank0
 import HaskellWorks.Data.RankSelect.Base.Rank1
 import HaskellWorks.Data.RankSelect.Base.Select1
-import Prelude                                                hiding (drop)
-import Text.PrettyPrint.ANSI.Leijen                           hiding ((<$>))
+import Prelude                                        hiding (drop)
+import Text.PrettyPrint.ANSI.Leijen                   hiding ((<$>))
 
 import qualified Data.Attoparsec.ByteString.Char8 as ABC
 import qualified Data.ByteString                  as BS
