@@ -150,24 +150,6 @@ library
     , HaskellWorks.Data.Json.Simple.Cursor.SemiIndex
     , HaskellWorks.Data.Json.Simple.Cursor.Internal.IbBp
     , HaskellWorks.Data.Json.Simple.Cursor.Internal.ToIbBp
-    , HaskellWorks.Data.Json.Standard.Cursor
-    , HaskellWorks.Data.Json.Standard.Cursor.Fast
-    , HaskellWorks.Data.Json.Standard.Cursor.Generic
-    , HaskellWorks.Data.Json.Standard.Cursor.Index
-    , HaskellWorks.Data.Json.Standard.Cursor.Internal.Blank
-    , HaskellWorks.Data.Json.Standard.Cursor.Internal.BlankedJson
-    , HaskellWorks.Data.Json.Standard.Cursor.Internal.IbBp
-    , HaskellWorks.Data.Json.Standard.Cursor.Internal.MakeIndex
-    , HaskellWorks.Data.Json.Standard.Cursor.Internal.StateMachine
-    , HaskellWorks.Data.Json.Standard.Cursor.Internal.ToBalancedParens64
-    , HaskellWorks.Data.Json.Standard.Cursor.Internal.ToInterestBits64
-    , HaskellWorks.Data.Json.Standard.Cursor.Internal.Word8
-    , HaskellWorks.Data.Json.Standard.Cursor.Load.Cursor
-    , HaskellWorks.Data.Json.Standard.Cursor.Load.Raw
-    , HaskellWorks.Data.Json.Standard.Cursor.SemiIndex
-    , HaskellWorks.Data.Json.Standard.Cursor.Slow
-    , HaskellWorks.Data.Json.Standard.Cursor.Specific
-    , HaskellWorks.Data.Json.Standard.Cursor.Type
 
 executable hw-json
   import:   base, config
@@ -176,6 +158,7 @@ executable hw-json
           , generic-lens
           , hw-balancedparens
           , hw-json-simd
+          , hw-json-standard-cursor
           , hw-mquery
           , hw-prim
           , hw-rankselect
@@ -206,6 +189,7 @@ test-suite hw-json-test
           , hw-balancedparens
           , hw-bits
           , hw-hspec-hedgehog
+          , hw-json-standard-cursor
           , hw-prim
           , hw-rankselect
           , hw-rankselect-base
@@ -219,10 +203,6 @@ test-suite hw-json-test
   build-tools:        hspec-discover
   other-modules:
       HaskellWorks.Data.Json.Simple.CursorSpec
-      HaskellWorks.Data.Json.Standard.CorpusSpec
-      HaskellWorks.Data.Json.Standard.Cursor.BalancedParensSpec
-      HaskellWorks.Data.Json.Standard.Cursor.InterestBitsSpec
-      HaskellWorks.Data.Json.Standard.Cursor.Internal.BlankSpec
       HaskellWorks.Data.Json.Standard.CursorSpec
       HaskellWorks.Data.Json.Standard.GenCursorTest
       HaskellWorks.Data.Json.Token.TokenizeSpec
@@ -235,6 +215,7 @@ benchmark bench
           , bytestring
           , criterion
           , directory
+          , hw-json-standard-cursor
           , mmap
           , semigroups
   type:               exitcode-stdio-1.0
