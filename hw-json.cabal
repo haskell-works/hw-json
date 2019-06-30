@@ -54,7 +54,8 @@ common hw-balancedparens        { build-depends: hw-balancedparens        >= 0.3
 common hw-bits                  { build-depends: hw-bits                  >= 0.7.0.5    && < 0.8    }
 common hw-hspec-hedgehog        { build-depends: hw-hspec-hedgehog        >= 0.1.0.4    && < 0.2    }
 common hw-json-simd             { build-depends: hw-json-simd             >= 0.1.0.2    && < 0.2    }
-common hw-json-standard-cursor  { build-depends: hw-json-standard-cursor  >= 0.1.0.0    && < 0.2    }
+common hw-json-simple-cursor    { build-depends: hw-json-simple-cursor    >= 0.1.0.1    && < 0.2    }
+common hw-json-standard-cursor  { build-depends: hw-json-standard-cursor  >= 0.1.0.1    && < 0.2    }
 common hw-mquery                { build-depends: hw-mquery                >= 0.2.0.0    && < 0.3    }
 common hw-parser                { build-depends: hw-parser                >= 0.1        && < 0.2    }
 common hw-prim                  { build-depends: hw-prim                  >= 0.6.2.28   && < 0.7    }
@@ -80,24 +81,6 @@ common config
     ghc-options: -mbmi2 -msse4.2
     cpp-options: -DBMI2_ENABLED
 
-library hw-json-simple-cursor
-  import:   base, config
-          , bytestring
-          , hw-balancedparens
-          , hw-bits
-          , hw-prim
-          , hw-rankselect
-          , hw-rankselect-base
-          , vector
-          , word8
-  hs-source-dirs:       hw-json-simple-cursor
-  exposed-modules:      HaskellWorks.Data.Json.Simple.Cursor
-                        HaskellWorks.Data.Json.Simple.Cursor.Fast
-                        HaskellWorks.Data.Json.Simple.Cursor.SemiIndex
-                        HaskellWorks.Data.Json.Simple.Cursor.Internal.IbBp
-                        HaskellWorks.Data.Json.Simple.Cursor.Internal.ToIbBp
-                        HaskellWorks.Data.Json.Simple.Cursor.Internal.Word8
-
 library
   import:   base, config
           , ansi-wl-pprint
@@ -107,6 +90,7 @@ library
           , dlist
           , hw-balancedparens
           , hw-bits
+          , hw-json-simple-cursor
           , hw-json-standard-cursor
           , hw-mquery
           , hw-parser
@@ -122,7 +106,6 @@ library
   hs-source-dirs:       src
   other-modules:        Paths_hw_json
   autogen-modules:      Paths_hw_json
-  build-depends:        hw-json-simple-cursor
   exposed-modules:
       HaskellWorks.Data.Json.DecodeError
       HaskellWorks.Data.Json.FromValue
@@ -144,12 +127,6 @@ library
       HaskellWorks.Data.Json.Simple.Value
       HaskellWorks.Data.Json.Standard.Load.Partial
       HaskellWorks.Data.Json.Value
-  reexported-modules:
-      HaskellWorks.Data.Json.Simple.Cursor
-    , HaskellWorks.Data.Json.Simple.Cursor.Fast
-    , HaskellWorks.Data.Json.Simple.Cursor.SemiIndex
-    , HaskellWorks.Data.Json.Simple.Cursor.Internal.IbBp
-    , HaskellWorks.Data.Json.Simple.Cursor.Internal.ToIbBp
 
 executable hw-json
   import:   base, config
@@ -158,6 +135,7 @@ executable hw-json
           , generic-lens
           , hw-balancedparens
           , hw-json-simd
+          , hw-json-simple-cursor
           , hw-json-standard-cursor
           , hw-mquery
           , hw-prim
@@ -189,6 +167,7 @@ test-suite hw-json-test
           , hw-balancedparens
           , hw-bits
           , hw-hspec-hedgehog
+          , hw-json-simple-cursor
           , hw-json-standard-cursor
           , hw-prim
           , hw-rankselect
