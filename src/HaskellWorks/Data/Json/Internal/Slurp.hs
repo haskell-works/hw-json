@@ -13,10 +13,12 @@ import Data.Word8
 import HaskellWorks.Data.Json.Standard.Cursor.Internal.Word8
 import Prelude                                               hiding (drop)
 
-import qualified Data.ByteString       as BS
-import qualified Data.ByteString.Char8 as BSC
-import qualified Data.List             as L
-import qualified Data.Text             as T
+import qualified Data.Aeson.Parser.Internal as AP
+import qualified Data.Attoparsec.ByteString as PBS
+import qualified Data.ByteString            as BS
+import qualified Data.ByteString.Char8      as BSC
+import qualified Data.List                  as L
+import qualified Data.Text                  as T
 
 data JsonState
   = Escaped
@@ -25,22 +27,10 @@ data JsonState
   | InNumber
   | InIdent
 
-slurpText :: BS.ByteString -> Text
-slurpText bs = T.pack $ L.unfoldr genString (InJson, BSC.unpack bs) -- TODO optimise
-  where genString :: (JsonState, String) -> Maybe (Char, (JsonState, String))
-        genString (InJson, ds) = case ds of
-          (e:es) | e == '"' -> genString  (InString , es)
-          (_:es)            -> genString  (InJson   , es)
-          _                 -> Nothing
-        genString (InString, ds) = case ds of
-          (e:es) | e == '\\' -> genString  (Escaped  , es)
-          (e:_ ) | e == '"'  -> Nothing
-          (e:es)             -> Just (e,   (InString , es))
-          _                  -> Nothing
-        genString (Escaped, ds) = case ds of
-          (_:es) -> Just ('.', (InString , es))
-          _      -> Nothing
-        genString (_, _) = Nothing
+slurpText :: BS.ByteString -> Either Text Text
+slurpText bs = case PBS.parseOnly AP.jstring bs of
+  Right t -> Right t
+  Left e  -> Left (T.pack e)
 
 slurpNumber :: BS.ByteString -> BS.ByteString
 slurpNumber bs = let (!cs, _) = BS.unfoldrN (BS.length bs) genNumber (InJson, bs) in cs
