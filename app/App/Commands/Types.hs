@@ -5,6 +5,7 @@ module App.Commands.Types
   ( CountOptions(..)
   , CreateIndexOptions(..)
   , DemoOptions(..)
+  , FileIndexes(..)
   ) where
 
 import Data.Text    (Text)
@@ -25,7 +26,11 @@ data DemoOptions = DemoOptions
 
 data CountOptions = CountOptions
   { inputFile  :: FilePath
-  , ibIndex    :: FilePath
-  , bpIndex    :: FilePath
+  , indexes    :: Maybe FileIndexes
   , expression :: Text
+  } deriving (Eq, Show, Generic)
+
+data FileIndexes = FileIndexes
+  { ibIndex :: FilePath
+  , bpIndex :: FilePath
   } deriving (Eq, Show, Generic)
