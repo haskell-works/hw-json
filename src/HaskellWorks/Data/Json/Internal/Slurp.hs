@@ -6,7 +6,6 @@ module HaskellWorks.Data.Json.Internal.Slurp
   , slurpNumber
   ) where
 
-import Data.String
 import Data.Text
 import Data.Word
 import Data.Word8
@@ -16,8 +15,6 @@ import Prelude                                               hiding (drop)
 import qualified Data.Aeson.Parser.Internal as AP
 import qualified Data.Attoparsec.ByteString as PBS
 import qualified Data.ByteString            as BS
-import qualified Data.ByteString.Char8      as BSC
-import qualified Data.List                  as L
 import qualified Data.Text                  as T
 
 data JsonState
