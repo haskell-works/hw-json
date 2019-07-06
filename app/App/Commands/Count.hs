@@ -59,11 +59,8 @@ runCount opts = do
 
       return $ GenericCursor jsonBs (makeCsPoppy jsonIb) (RM.mkRangeMin (makeCsPoppy jsonBp)) 1
     Nothing -> do
-      IO.putStrLn "Running"
       let !ibip = JCF.simdToIbBp jsonBs
-      let !_ = A1.makeCsPoppyIndex (IBBP.ib ibip)
       let !c    = JCF.fromBsIbBp jsonBs ibip
-      IO.putStrLn "Created cursor"
       return c
 
   let q = MQuery (DL.fromList $ fmap lightJsonAt (siblings cursor))
