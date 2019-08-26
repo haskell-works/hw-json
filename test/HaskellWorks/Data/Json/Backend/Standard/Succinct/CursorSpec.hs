@@ -7,7 +7,7 @@
 {-# LANGUAGE OverloadedStrings         #-}
 {-# LANGUAGE ScopedTypeVariables       #-}
 
-{-# OPTIONS_GHC -fno-warn-missing-signatures #-}
+{-# OPTIONS_GHC -fno-warn-missing-signatures -dshow-passes #-}
 
 module HaskellWorks.Data.Json.Backend.Standard.Succinct.CursorSpec(spec) where
 
