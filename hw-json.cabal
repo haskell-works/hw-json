@@ -9,7 +9,7 @@ homepage:       http://github.com/haskell-works/hw-json#readme
 bug-reports:    https://github.com/haskell-works/hw-json/issues
 author:         John Ky
 maintainer:     newhoggy@gmail.com
-copyright:      2016 - 2019 John Ky
+copyright:      2016-2019 John Ky
 license:        BSD-3-Clause
 license-file:   LICENSE
 build-type:     Simple
