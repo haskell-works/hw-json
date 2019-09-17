@@ -23,17 +23,14 @@ import HaskellWorks.Data.RankSelect.CsPoppy1
 import HaskellWorks.Data.TreeCursor
 import Options.Applicative                            hiding (columns)
 
-import qualified App.Commands.Types                                   as Z
-import qualified Data.ByteString                                      as BS
-import qualified Data.ByteString.Internal                             as BSI
-import qualified Data.DList                                           as DL
-import qualified Data.Vector.Storable                                 as DVS
-import qualified HaskellWorks.Data.BalancedParens.RangeMin            as RM
-import qualified HaskellWorks.Data.Json.Standard.Cursor.Fast          as JCF
-import qualified HaskellWorks.Data.Json.Standard.Cursor.Internal.IbBp as IBBP
-import qualified HaskellWorks.Data.RankSelect.CsPoppy.Internal.Alpha1 as A1
-import qualified System.IO                                            as IO
-import qualified System.IO.MMap                                       as IO
+import qualified App.Commands.Types                          as Z
+import qualified Data.ByteString                             as BS
+import qualified Data.ByteString.Internal                    as BSI
+import qualified Data.DList                                  as DL
+import qualified Data.Vector.Storable                        as DVS
+import qualified HaskellWorks.Data.BalancedParens.RangeMin   as RM
+import qualified HaskellWorks.Data.Json.Standard.Cursor.Fast as JCF
+import qualified System.IO.MMap                              as IO
 
 siblings :: GenericCursor BSI.ByteString CsPoppy1 (RM.RangeMin CsPoppy1) -> [GenericCursor BSI.ByteString CsPoppy1 (RM.RangeMin CsPoppy1)]
 siblings c = c:cs

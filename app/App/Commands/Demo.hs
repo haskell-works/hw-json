@@ -10,7 +10,6 @@ module App.Commands.Demo
 
 import Control.Lens
 import Control.Monad
-import Control.Monad.ST
 import Data.Generics.Product.Any
 import Data.Semigroup                                     ((<>))
 import Data.Word
