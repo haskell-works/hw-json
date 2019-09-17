@@ -1,0 +1,12 @@
+cradle:
+  direct:
+    arguments:
+      - -Wincomplete-patterns
+      - -Wincomplete-record-updates
+      - -Wincomplete-uni-patterns
+      - -Wname-shadowing
+      - -Worphans
+      - -Wredundant-constraints
+      - -Wunused-binds
+      - -Wunused-imports
+      - -Wunused-matches
