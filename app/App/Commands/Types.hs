@@ -2,7 +2,8 @@
 {-# LANGUAGE DuplicateRecordFields #-}
 
 module App.Commands.Types
-  ( CountOptions(..)
+  ( CountAesonOptions(..)
+  , CountOptions(..)
   , CreateIndexOptions(..)
   , DemoOptions(..)
   , FileIndexes(..)
@@ -27,6 +28,11 @@ data DemoOptions = DemoOptions
 data CountOptions = CountOptions
   { inputFile  :: FilePath
   , indexes    :: Maybe FileIndexes
+  , expression :: Text
+  } deriving (Eq, Show, Generic)
+
+data CountAesonOptions = CountAesonOptions
+  { inputFile  :: FilePath
   , expression :: Text
   } deriving (Eq, Show, Generic)
 

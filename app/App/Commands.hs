@@ -1,6 +1,7 @@
 module App.Commands where
 
 import App.Commands.Count
+import App.Commands.CountAeson
 import App.Commands.CreateIndex
 import App.Commands.Demo
 import Data.Semigroup           ((<>))
@@ -14,4 +15,5 @@ commandsGeneral = subparser $ mempty
   <>  commandGroup "Commands:"
   <>  cmdCreateIndex
   <>  cmdCount
+  <>  cmdCountAeson
   <>  cmdDemo
