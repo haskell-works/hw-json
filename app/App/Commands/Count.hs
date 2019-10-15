@@ -88,7 +88,7 @@ optsCount = Z.CountOptions
         <>  metavar "FILE"
         )
   <*> optional optsFileIndex
-  <*> option auto
+  <*> strOption
         (   long "expression"
         <>  help "JSON expression"
         <>  metavar "EXPRESSION"

@@ -69,6 +69,7 @@ common optparse-applicative     { build-depends: optparse-applicative     >= 0.1
 common scientific               { build-depends: scientific               >= 0.3.6.2    && < 0.4    }
 common text                     { build-depends: text                     >= 1.2        && < 1.3    }
 common transformers             { build-depends: transformers             >= 0.4        && < 0.6    }
+common unordered-containers     { build-depends: unordered-containers     >= 0.2        && < 0.3    }
 common vector                   { build-depends: vector                   >= 0.12       && < 0.13   }
 common word8                    { build-depends: word8                    >= 0.1        && < 0.2    }
 
@@ -132,6 +133,7 @@ library
 
 executable hw-json
   import:               base, config
+                      , aeson
                       , bytestring
                       , dlist
                       , generic-lens
@@ -148,6 +150,7 @@ executable hw-json
                       , optparse-applicative
                       , semigroups
                       , text
+                      , unordered-containers
                       , vector
   main-is:              Main.hs
   hs-source-dirs:       app
@@ -156,6 +159,7 @@ executable hw-json
   other-modules:        App.Commands
                         App.Commands.CreateIndex
                         App.Commands.Count
+                        App.Commands.CountAeson
                         App.Commands.Demo
                         App.Commands.Types
 
