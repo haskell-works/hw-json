@@ -53,14 +53,15 @@ import Data.Word                                                      --       9
 import HaskellWorks.Data.BalancedParens.Simple                        --       97
 import HaskellWorks.Data.Bits.BitShown                                --       98
 import HaskellWorks.Data.FromForeignRegion                            --       99
-import HaskellWorks.Data.Json.Backend.Standard.Cursor                 --      106
+import HaskellWorks.Data.Json.Standard.Cursor.Generic                 --       99
 import System.IO.MMap                                                 --      109
 import qualified Data.ByteString                              as BS   --      110
 import qualified Data.Vector.Storable                         as DVS  --      111
 import qualified HaskellWorks.Data.ByteString                 as BS   --      112
-import qualified HaskellWorks.Data.Json.Backend.Standard.Fast as FAST --      114
-bs <- BS.mmap "../corpus/bench/hospitalisation.json"                  --      115
-let !cursor = FAST.makeCursor bs                                      --      203
+import qualified HaskellWorks.Data.Json.Standard.Cursor.Fast  as JCF  --      115
+jsonBs <- BS.mmap "corpus/bench/hospitalisation.json"                 --      115
+let !ibip = JCF.simdToIbBp jsonBs                                     --      115
+let !c    = JCF.fromBsIbBp jsonBs ibip                                --      115
 ```
 
 ## Examples
@@ -75,7 +76,7 @@ import HaskellWorks.Data.BalancedParens.Simple
 import HaskellWorks.Data.Bits.BitShow
 import HaskellWorks.Data.Bits.BitShown
 import HaskellWorks.Data.FromForeignRegion
-import HaskellWorks.Data.Json.Backend.Standard.Cursor
+import HaskellWorks.Data.Json.Standard.Cursor.Generic
 import HaskellWorks.Data.Json.Internal.Token.Types
 import HaskellWorks.Data.RankSelect.Base.Rank0
 import HaskellWorks.Data.RankSelect.Base.Rank1
@@ -85,16 +86,17 @@ import System.IO.MMap
 
 import qualified Data.ByteString                                as BS
 import qualified Data.Vector.Storable                           as DVS
-import qualified HaskellWorks.Data.Json.Backend.Standard.Cursor as C
-import qualified HaskellWorks.Data.Json.Backend.Standard.Fast   as FAST
+import qualified HaskellWorks.Data.Json.Standard.Cursor.Generic as C
+import qualified HaskellWorks.Data.Json.Standard.Cursor.Fast    as JCF
 import qualified HaskellWorks.Data.TreeCursor                   as TC
 
 let fc = TC.firstChild
 let ns = TC.nextSibling
 let pn = TC.parent
 let ss = TC.subtreeSize
-let cursor = FAST.makeCursor "[null, {\"field\": 1}]"
-cursor
+let jsonBs  = "[null, {\"field\": 1}]" :: BS.ByteString
+let ibip    = JCF.simdToIbBp jsonBs                                     --      115
+let cursor  = JCF.fromBsIbBp jsonBs ibip                                --      115
 fc cursor
 (fc >=> ns) cursor
 ```
@@ -105,9 +107,9 @@ fc cursor
 import Control.Monad
 import Data.Function
 import Data.List
-import HaskellWorks.Data.Json.Backend.Standard.Load.Cursor
-import HaskellWorks.Data.Json.Backend.Standard.Load.Partial
-import HaskellWorks.Data.Json.Backend.Standard.Load.Raw
+import HaskellWorks.Data.Json.Standard.Cursor.Generic
+import HaskellWorks.Data.Json.Standard.Load.Partial
+import HaskellWorks.Data.Json.Standard.Cursor.Load.Cursor
 import HaskellWorks.Data.Json.PartialValue
 import HaskellWorks.Data.MQuery
 import HaskellWorks.Data.MQuery.Micro
@@ -115,10 +117,10 @@ import HaskellWorks.Data.MQuery.Row
 
 import qualified Data.DList as DL
 
-!cursor <- loadPartial "../corpus/bench/78mb.json"
-!cursor <- loadCursorWithIndex "../corpus/bench/78mb.json"
-!cursor <- loadCursor "../corpus/bench/78mb.json"
-!cursor <- loadCursorWithCsPoppyIndex "../corpus/bench/78mb.json"
+!cursor <- loadPartial "corpus/bench/78mb.json"
+!cursor <- loadCursorWithIndex "corpus/bench/78mb.json"
+!cursor <- loadCursor "corpus/bench/78mb.json"
+!cursor <- loadCursorWithCsPoppyIndex "corpus/bench/78mb.json"
 let !json = jsonPartialJsonValueAt cursor
 let q = MQuery (DL.singleton json)
 
