@@ -34,12 +34,11 @@ For an example, see [`app/Main.hs`](../master/app/Main.hs)
 ```haskell
 -- CMD                                                     -- Mem (MB)
 ---------------------------------------------------------- -- --------
-import Control.DeepSeq                                     --       94
-import Data.Aeson                                          --      100
-import qualified Data.ByteString.Lazy as BSL               --      104
-bs <- BSL.readFile "../corpus/bench/hospitalisation.json"  --      105
-let !x = deepseq bs bs                                     --      146
-let !y = decode json78m :: Maybe Value                     --      669
+import Control.DeepSeq                                     --      345
+import Data.Aeson                                          --      371
+import qualified Data.ByteString.Lazy as BSL               --      376
+!bs <- BSL.readFile "corpus/bench/hospitalisation.json"    --      380
+let !y = decode bs :: Maybe Value                          --      928
 ```
 
 ### Parsing large Json files in Haskell with hw-json
@@ -47,21 +46,12 @@ let !y = decode json78m :: Maybe Value                     --      669
 ```haskell
 -- CMD                                                                -- Mem (MB)
 --------------------------------------------------------------------- -- --------
-import Foreign                                                        --       93
-import Control.Monad                                                  --       95
-import Data.Word                                                      --       96
-import HaskellWorks.Data.BalancedParens.Simple                        --       97
-import HaskellWorks.Data.Bits.BitShown                                --       98
-import HaskellWorks.Data.FromForeignRegion                            --       99
-import HaskellWorks.Data.Json.Standard.Cursor.Generic                 --       99
-import System.IO.MMap                                                 --      109
-import qualified Data.ByteString                              as BS   --      110
-import qualified Data.Vector.Storable                         as DVS  --      111
-import qualified HaskellWorks.Data.ByteString                 as BS   --      112
-import qualified HaskellWorks.Data.Json.Standard.Cursor.Fast  as JCF  --      115
-jsonBs <- BS.mmap "corpus/bench/hospitalisation.json"                 --      115
-let !ibip = JCF.simdToIbBp jsonBs                                     --      115
-let !c    = JCF.fromBsIbBp jsonBs ibip                                --      115
+import qualified HaskellWorks.Data.ByteString                as BS    --      351
+import qualified HaskellWorks.Data.Json.Standard.Cursor.Fast as JCF   --      353
+
+!jsonBs <- BS.mmap "corpus/bench/hospitalisation.json"                --      355
+let !ibip = JCF.simdToIbBp jsonBs                                     --      358
+let !c    = JCF.fromBsIbBp jsonBs ibip                                --      495
 ```
 
 ## Examples
@@ -95,8 +85,8 @@ let ns = TC.nextSibling
 let pn = TC.parent
 let ss = TC.subtreeSize
 let jsonBs  = "[null, {\"field\": 1}]" :: BS.ByteString
-let ibip    = JCF.simdToIbBp jsonBs                                     --      115
-let cursor  = JCF.fromBsIbBp jsonBs ibip                                --      115
+let ibip    = JCF.simdToIbBp jsonBs
+let cursor  = JCF.fromBsIbBp jsonBs ibip
 fc cursor
 (fc >=> ns) cursor
 ```
