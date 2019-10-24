@@ -1,4 +1,5 @@
 # hw-json
+
 [![master](https://circleci.com/gh/haskell-works/hw-json/tree/master.svg?style=svg)](https://circleci.com/gh/haskell-works/hw-json/tree/master)
 
 `hw-json` is a succinct JSON parsing library.
@@ -36,8 +37,8 @@ For an example, see [`app/Main.hs`](../master/app/Main.hs)
 ---------------------------------------------------------- -- --------
 import Control.DeepSeq                                     --      345
 import Data.Aeson                                          --      371
-import qualified Data.ByteString.Lazy as BSL               --      376
-!bs <- BSL.readFile "corpus/bench/hospitalisation.json"    --      380
+import qualified Data.ByteString.Lazy as LBS               --      376
+!bs <- LBS.readFile "corpus/bench/hospitalisation.json"    --      380
 let !y = decode bs :: Maybe Value                          --      928
 ```
 
@@ -60,25 +61,10 @@ let !c    = JCF.fromBsIbBp jsonBs ibip                                --      49
 
 ```haskell
 import Control.Monad
-import Data.String
-import Data.Word
-import HaskellWorks.Data.BalancedParens.Simple
-import HaskellWorks.Data.Bits.BitShow
-import HaskellWorks.Data.Bits.BitShown
-import HaskellWorks.Data.FromForeignRegion
-import HaskellWorks.Data.Json.Standard.Cursor.Generic
-import HaskellWorks.Data.Json.Internal.Token.Types
-import HaskellWorks.Data.RankSelect.Base.Rank0
-import HaskellWorks.Data.RankSelect.Base.Rank1
-import HaskellWorks.Data.RankSelect.Base.Select1
-import HaskellWorks.Data.RankSelect.CsPoppy
-import System.IO.MMap
 
-import qualified Data.ByteString                                as BS
-import qualified Data.Vector.Storable                           as DVS
-import qualified HaskellWorks.Data.Json.Standard.Cursor.Generic as C
-import qualified HaskellWorks.Data.Json.Standard.Cursor.Fast    as JCF
-import qualified HaskellWorks.Data.TreeCursor                   as TC
+import qualified Data.ByteString                             as BS
+import qualified HaskellWorks.Data.Json.Standard.Cursor.Fast as JCF
+import qualified HaskellWorks.Data.TreeCursor                as TC
 
 let fc = TC.firstChild
 let ns = TC.nextSibling
@@ -97,13 +83,11 @@ fc cursor
 import Control.Monad
 import Data.Function
 import Data.List
-import HaskellWorks.Data.Json.Standard.Cursor.Generic
-import HaskellWorks.Data.Json.Standard.Load.Partial
-import HaskellWorks.Data.Json.Standard.Cursor.Load.Cursor
 import HaskellWorks.Data.Json.PartialValue
+import HaskellWorks.Data.Json.Standard.Cursor.Load.Cursor
+import HaskellWorks.Data.Json.Standard.Load.Partial
 import HaskellWorks.Data.MQuery
 import HaskellWorks.Data.MQuery.Micro
-import HaskellWorks.Data.MQuery.Row
 
 import qualified Data.DList as DL
 
