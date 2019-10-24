@@ -48,6 +48,8 @@ common bytestring               { build-depends: bytestring               >= 0.1
 common criterion                { build-depends: criterion                >= 1.4        && < 1.6    }
 common directory                { build-depends: directory                >= 1.3        && < 1.4    }
 common dlist                    { build-depends: dlist                    >= 0.8        && < 0.9    }
+common doctest                  { build-depends: doctest                  >= 0.16.2     && < 0.17   }
+common doctest-discover         { build-depends: doctest-discover         >= 0.2        && < 0.3    }
 common generic-lens             { build-depends: generic-lens             >= 1.2.0.1    && < 1.3    }
 common hedgehog                 { build-depends: hedgehog                 >= 0.6        && < 1.1    }
 common hspec                    { build-depends: hspec                    >= 2.4        && < 3      }
@@ -83,6 +85,9 @@ common config
   if flag(bmi2) && impl(ghc >= 8.4.1)
     ghc-options:        -mbmi2 -msse4.2
     cpp-options:        -DBMI2_ENABLED
+
+common hw-json
+  build-depends:        hw-json
 
 library
   import:               base, config
@@ -138,6 +143,7 @@ executable hw-json
                       , dlist
                       , generic-lens
                       , hw-balancedparens
+                      , hw-json
                       , hw-json-simd
                       , hw-json-simple-cursor
                       , hw-json-standard-cursor
@@ -155,7 +161,6 @@ executable hw-json
   main-is:              Main.hs
   hs-source-dirs:       app
   ghc-options:          -threaded -rtsopts -with-rtsopts=-N
-  build-depends:        hw-json
   other-modules:        App.Commands
                         App.Commands.CreateIndex
                         App.Commands.Count
@@ -173,6 +178,7 @@ test-suite hw-json-test
                       , hw-balancedparens
                       , hw-bits
                       , hw-hspec-hedgehog
+                      , hw-json
                       , hw-json-simple-cursor
                       , hw-json-standard-cursor
                       , hw-prim
@@ -184,7 +190,6 @@ test-suite hw-json-test
                       , vector
   type:                 exitcode-stdio-1.0
   main-is:              Spec.hs
-  build-depends:        hw-json
   hs-source-dirs:       test
   ghc-options:          -threaded -rtsopts -with-rtsopts=-N
   build-tool-depends:   hspec-discover:hspec-discover
@@ -202,11 +207,22 @@ benchmark bench
                       , bytestring
                       , criterion
                       , directory
+                      , hw-json
                       , hw-json-standard-cursor
                       , mmap
                       , semigroups
   type:                 exitcode-stdio-1.0
   main-is:              Main.hs
   hs-source-dirs:       bench
-  build-depends:        hw-json
   other-modules:        Paths_hw_json
+
+test-suite hw-json-doctest
+  import:               base, config
+                      , doctest
+                      , doctest-discover
+  default-language:     Haskell2010
+  type:                 exitcode-stdio-1.0
+  ghc-options:          -threaded
+  main-is:              DoctestDriver.hs
+  HS-Source-Dirs:       doctest
+  build-tool-depends:   doctest-discover:doctest-discover
