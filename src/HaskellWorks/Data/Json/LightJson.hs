@@ -33,10 +33,12 @@ import HaskellWorks.Data.Uncons
 import Prelude                                        hiding (drop)
 import Text.PrettyPrint.ANSI.Leijen
 
-import qualified Data.ByteString                  as BS
-import qualified Data.List                        as L
-import qualified Data.Text                        as T
-import qualified HaskellWorks.Data.BalancedParens as BP
+import qualified Data.ByteString                      as BS
+import qualified Data.ByteString.Unsafe               as BSU
+import qualified Data.List                            as L
+import qualified Data.Text                            as T
+import qualified HaskellWorks.Data.BalancedParens     as BP
+import qualified HaskellWorks.Data.Json.Simple.Cursor as JSC
 
 data LightJson c
   = LightJsonString Text
@@ -48,11 +50,14 @@ data LightJson c
   | LightJsonError Text
   deriving Show
 
-instance Eq (LightJson c) where
+instance LightJsonAt c => Eq (LightJson c) where
   (==) (LightJsonString a) (LightJsonString b) = a == b
   (==) (LightJsonNumber a) (LightJsonNumber b) = a == b
   (==) (LightJsonBool   a) (LightJsonBool   b) = a == b
+  (==) (LightJsonObject a) (LightJsonObject b) = fmap (fmap lightJsonAt) a == fmap (fmap lightJsonAt) b
+  (==) (LightJsonArray  a) (LightJsonArray  b) = fmap lightJsonAt a == fmap lightJsonAt b
   (==)  LightJsonNull       LightJsonNull      = True
+  (==) (LightJsonError  a) (LightJsonError  b) = a == b
   (==)  _                   _                  = False
 
 data LightJsonField c = LightJsonField Text (LightJson c)
@@ -144,3 +149,21 @@ instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => LightJ
           asField (a, b)    = case lightJsonAt a of
                                 LightJsonString s -> [(s, b)]
                                 _                 -> []
+
+instance (BP.BalancedParens w, Rank0 w, Rank1 w, Select1 v, TestBit w) => LightJsonAt (JSC.JsonCursor BS.ByteString v w) where
+  lightJsonAt k = if kra `mod` 2 == 1
+    then let i = fromIntegral (kpa - 1) :: Int in
+      if i < BS.length kt
+        then case BSU.unsafeIndex kt i of
+          91  -> LightJsonArray  []
+          123 -> LightJsonObject []
+          _   -> LightJsonError "Invalid collection character"
+        else LightJsonError "Index out of bounds"
+    else LightJsonError "Unaligned cursor"
+    where kpa   = select1 kib kta + km
+          kib   = JSC.interests k
+          kra   = JSC.cursorRank k
+          ksa   = kra + 1
+          kta   = ksa `div` 2
+          km    = ksa `mod` 2
+          kt    = JSC.cursorText k

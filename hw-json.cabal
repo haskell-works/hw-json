@@ -220,6 +220,7 @@ test-suite hw-json-doctest
   import:               base, config
                       , doctest
                       , doctest-discover
+                      , hw-json
   default-language:     Haskell2010
   type:                 exitcode-stdio-1.0
   ghc-options:          -threaded
