@@ -200,7 +200,6 @@ test-suite hw-json-test
                         HaskellWorks.Data.Json.Token.TokenizeSpec
                         HaskellWorks.Data.Json.TypeSpec
                         HaskellWorks.Data.Json.ValueSpec
-                        Paths_hw_json
 
 benchmark bench
   import:               base, config
@@ -214,7 +213,6 @@ benchmark bench
   type:                 exitcode-stdio-1.0
   main-is:              Main.hs
   hs-source-dirs:       bench
-  other-modules:        Paths_hw_json
 
 test-suite hw-json-doctest
   import:               base, config
