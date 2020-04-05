@@ -9,7 +9,6 @@ module App.Commands.CountAeson
 
 import Control.Lens
 import Data.Generics.Product.Any
-import Data.Semigroup            ((<>))
 import Options.Applicative       hiding (columns)
 
 import qualified App.Commands.Types   as Z

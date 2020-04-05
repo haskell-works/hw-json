@@ -2,7 +2,6 @@ module Main where
 
 import App.Commands
 import Control.Monad
-import Data.Semigroup      ((<>))
 import Options.Applicative
 
 main :: IO ()

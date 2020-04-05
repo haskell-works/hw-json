@@ -4,7 +4,6 @@ import App.Commands.Count
 import App.Commands.CountAeson
 import App.Commands.CreateIndex
 import App.Commands.Demo
-import Data.Semigroup           ((<>))
 import Options.Applicative
 
 commands :: Parser (IO ())
