@@ -11,7 +11,6 @@ import Control.Lens
 import Control.Monad
 import Data.Generics.Product.Any
 import Data.Maybe
-import Data.Semigroup            ((<>))
 import Data.Word
 import Foreign
 import Options.Applicative       hiding (columns)

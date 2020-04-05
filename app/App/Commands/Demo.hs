@@ -11,7 +11,6 @@ module App.Commands.Demo
 import Control.Lens
 import Control.Monad
 import Data.Generics.Product.Any
-import Data.Semigroup                                     ((<>))
 import Data.Word
 import Foreign.ForeignPtr
 import HaskellWorks.Data.Json.LightJson
