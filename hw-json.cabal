@@ -209,14 +209,14 @@ benchmark bench
   main-is:              Main.hs
   hs-source-dirs:       bench
 
-test-suite hw-json-doctest
+test-suite doctest
   import:               base, config
                       , doctest
                       , doctest-discover
                       , hw-json
   default-language:     Haskell2010
   type:                 exitcode-stdio-1.0
-  ghc-options:          -threaded
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
   main-is:              DoctestDriver.hs
   HS-Source-Dirs:       doctest
   build-tool-depends:   doctest-discover:doctest-discover
