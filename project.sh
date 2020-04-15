@@ -26,6 +26,7 @@ cabal-test() {
   cabal v2-test \
     --enable-tests \
     --test-show-details=direct \
+    --test-options='+RTS -g1' \
     $CABAL_FLAGS "$@"
 }
 
