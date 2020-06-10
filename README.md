@@ -11,8 +11,18 @@ For an example, see [`app/Main.hs`](../master/app/Main.hs)
 ## Prerequisites
 
 * `cabal` version `2.2` or later
+* Depending on your use case you may need additional package dependencies.  These can be found in the library dependencies of the examples
+  library component in the cabal file.
 
 ## Memory benchmark
+
+If you need a repl to run any of the Haskell examples in this README, please run the command:
+
+```bash
+cabal v2-repl lib:examples
+```
+
+For rexamples these examples are also found in Haskell modules under the `examples` directory.
 
 ### Parsing large Json files in Scala with Argonaut
 

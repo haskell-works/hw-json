@@ -169,6 +169,7 @@ test-suite hw-json-test
                       , aeson
                       , attoparsec
                       , bytestring
+                      , dlist
                       , hedgehog
                       , hspec
                       , hw-balancedparens
@@ -177,6 +178,7 @@ test-suite hw-json-test
                       , hw-json
                       , hw-json-simple-cursor
                       , hw-json-standard-cursor
+                      , hw-mquery
                       , hw-prim
                       , hw-rankselect
                       , hw-rankselect-base
@@ -196,6 +198,21 @@ test-suite hw-json-test
                         HaskellWorks.Data.Json.Token.TokenizeSpec
                         HaskellWorks.Data.Json.TypeSpec
                         HaskellWorks.Data.Json.ValueSpec
+
+library examples
+  import:               base, config
+                      , aeson
+                      , bytestring
+                      , dlist
+                      , hw-json
+                      , hw-json-standard-cursor
+                      , hw-mquery
+                      , hw-prim
+  hs-source-dirs:       examples
+  other-modules:        Example1
+                        Example2
+                        Example3
+                        Example4
 
 benchmark bench
   import:               base, config
