@@ -169,6 +169,7 @@ test-suite hw-json-test
                       , aeson
                       , attoparsec
                       , bytestring
+                      , dlist
                       , hedgehog
                       , hspec
                       , hw-balancedparens
@@ -177,6 +178,7 @@ test-suite hw-json-test
                       , hw-json
                       , hw-json-simple-cursor
                       , hw-json-standard-cursor
+                      , hw-mquery
                       , hw-prim
                       , hw-rankselect
                       , hw-rankselect-base
@@ -190,6 +192,10 @@ test-suite hw-json-test
   ghc-options:          -threaded -rtsopts -with-rtsopts=-N
   build-tool-depends:   hspec-discover:hspec-discover
   other-modules:        HaskellWorks.Data.Json.LightJsonSpec
+                        HaskellWorks.Data.Json.Readme.Example1
+                        HaskellWorks.Data.Json.Readme.Example2
+                        HaskellWorks.Data.Json.Readme.Example3
+                        HaskellWorks.Data.Json.Readme.Example4
                         HaskellWorks.Data.Json.Simple.CursorSpec
                         HaskellWorks.Data.Json.Standard.CursorSpec
                         HaskellWorks.Data.Json.Standard.GenCursorTest
