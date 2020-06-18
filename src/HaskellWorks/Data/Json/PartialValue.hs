@@ -48,6 +48,19 @@ import qualified Data.DList                       as DL
 import qualified Data.Text                        as T
 import qualified HaskellWorks.Data.BalancedParens as BP
 
+-- | Partial JSON type.
+--
+-- This data type has an additional 'JsonPartialError' data constructor to indicate parsing
+-- errors.  This allows parsing to be more lazy because parsing errors may now be expressed
+-- anywhere in the parsed document so the parser no longer needs to make a verdict about whether
+-- there are any parsing errors in the entire document.
+--
+-- See 'jsonPartialJsonValueAt' on how to parse JSON text into this datatype.
+--
+-- Although this data type allows for lazier parsing it doesn't allow for sub-trees to be
+-- garbage collected if a reference to an ancestor node is held.  To avoid holding onto
+-- sub-trees that are no longer needed without having to drop references to ancestors use
+-- 'HaskellWorks.Data.Json.LightJson.LightJson' instead.
 data JsonPartialValue
   = JsonPartialString Text
   | JsonPartialNumber Double
@@ -59,6 +72,15 @@ data JsonPartialValue
   deriving (Eq, Show, Ord)
 
 class JsonPartialValueAt a where
+  -- | Get a JSON partial value from another type
+  --
+  -- This function can always "succeed" because the data type it returns allows for the document value
+  -- to contain an arbitrary number of errors.  This means errors can be reported in document nodes
+  -- as parsing occurs lazily.
+  --
+  -- There are garbage collection implementations you may want to consider.  If you would like to be
+  -- able to hold onto ancestor nodes and still be able to garbage collect visited sub-trees, then
+  -- consider using 'HaskellWorks.Data.Json.LightJson.lightJsonAt' instead.
   jsonPartialJsonValueAt :: a -> JsonPartialValue
 
 data JsonPartialField = JsonPartialField Text JsonPartialValue
