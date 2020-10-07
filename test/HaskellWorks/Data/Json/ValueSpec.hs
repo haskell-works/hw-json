@@ -54,11 +54,7 @@ jsonValueVia mk = case mk of
   Nothing -> Left (DecodeError "No such element")
 
 genSpec :: forall t u.
-  ( Eq                t
-  , Show              t
-  , Select1           t
-  , Eq                u
-  , Show              u
+  ( Select1           t
   , Rank0             u
   , Rank1             u
   , BalancedParens    u
