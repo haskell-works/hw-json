@@ -2,7 +2,6 @@
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE OverloadedStrings     #-}
-{-# LANGUAGE TypeSynonymInstances  #-}
 
 module HaskellWorks.Data.Json.Internal.Standard.Token.Tokenize
     ( IsChar(..)
@@ -24,6 +23,8 @@ import qualified Data.Attoparsec.Combinator       as AC
 import qualified Data.Attoparsec.Types            as T
 import qualified Data.ByteString                  as BS
 import qualified HaskellWorks.Data.Parser         as P
+
+{- HLINT ignore "Reduce duplication" -}
 
 hexDigitNumeric :: P.Parser t u => T.Parser t Int
 hexDigitNumeric = do

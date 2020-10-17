@@ -1,7 +1,5 @@
-{-# LANGUAGE ExplicitForAll            #-}
 {-# LANGUAGE FlexibleContexts          #-}
 {-# LANGUAGE FlexibleInstances         #-}
-{-# LANGUAGE InstanceSigs              #-}
 {-# LANGUAGE MultiParamTypeClasses     #-}
 {-# LANGUAGE NoMonomorphismRestriction #-}
 {-# LANGUAGE OverloadedStrings         #-}
@@ -24,9 +22,9 @@ import qualified HaskellWorks.Data.Json.Simple.Cursor.Fast as FAST
 import qualified HaskellWorks.Data.Json.Simple.Value       as V
 import qualified HaskellWorks.Data.TreeCursor              as TC
 
-{-# ANN module ("HLint: ignore Redundant do"        :: String) #-}
-{-# ANN module ("HLint: ignore Reduce duplication"  :: String) #-}
-{-# ANN module ("HLint: ignore Redundant bracket"   :: String) #-}
+{- HLINT ignore "Reduce duplication" -}
+{- HLINT ignore "Redundant bracket"  -}
+{- HLINT ignore "Redundant do"       -}
 
 fc = TC.firstChild
 ns = TC.nextSibling

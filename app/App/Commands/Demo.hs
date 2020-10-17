@@ -34,6 +34,8 @@ import qualified Options.Applicative                        as OA
 import qualified System.IO                                  as IO
 import qualified System.IO.MMap                             as IO
 
+{- HLINT ignore "Reduce duplication" -}
+
 runDemo :: Z.DemoOptions -> IO ()
 runDemo opts = do
   let filePath = opts ^. the @"filePath"

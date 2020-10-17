@@ -10,7 +10,7 @@ import Test.Hspec
 
 import qualified Data.Attoparsec.ByteString.Char8 as BC
 
-{-# ANN module ("HLint: ignore Redundant do"        :: String) #-}
+{- HLINT ignore "Redundant do"       -}
 
 parseJsonToken' :: ByteString -> Either String (JsonToken String Double)
 parseJsonToken' = BC.parseOnly parseJsonToken

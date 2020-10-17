@@ -18,6 +18,8 @@ import HaskellWorks.Data.MQuery.Micro
 
 import qualified Data.DList as DL
 
+{- HLINT ignore "Reduce duplication" -}
+
 example :: IO ()
 example = do
   !cursor <- loadPartial "corpus/bench/78mb.json"
