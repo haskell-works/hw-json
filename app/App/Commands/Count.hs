@@ -32,10 +32,7 @@ import qualified HaskellWorks.Data.Json.Standard.Cursor.Fast as JCF
 import qualified System.IO.MMap                              as IO
 
 siblings :: GenericCursor BSI.ByteString CsPoppy1 (RM.RangeMin CsPoppy1) -> [GenericCursor BSI.ByteString CsPoppy1 (RM.RangeMin CsPoppy1)]
-siblings c = c:cs
-  where cs = case nextSibling c of
-          Just d  -> siblings d
-          Nothing -> []
+siblings c = c:maybe [] siblings (nextSibling c)
 
 runCount :: Z.CountOptions -> IO ()
 runCount opts = do

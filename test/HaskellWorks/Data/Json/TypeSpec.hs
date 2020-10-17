@@ -1,7 +1,5 @@
-{-# LANGUAGE ExplicitForAll            #-}
 {-# LANGUAGE FlexibleContexts          #-}
 {-# LANGUAGE FlexibleInstances         #-}
-{-# LANGUAGE InstanceSigs              #-}
 {-# LANGUAGE MultiParamTypeClasses     #-}
 {-# LANGUAGE NoMonomorphismRestriction #-}
 {-# LANGUAGE OverloadedStrings         #-}
@@ -28,9 +26,9 @@ import qualified HaskellWorks.Data.Json.Standard.Cursor.Fast as FAST
 import qualified HaskellWorks.Data.Json.Standard.Cursor.Slow as SLOW
 import qualified HaskellWorks.Data.TreeCursor                as TC
 
-{-# ANN module ("HLint: ignore Redundant do"        :: String) #-}
-{-# ANN module ("HLint: ignore Reduce duplication"  :: String) #-}
-{-# ANN module ("HLint: ignore Redundant bracket"   :: String) #-}
+{- HLINT ignore "Reduce duplication" -}
+{- HLINT ignore "Redundant bracket"  -}
+{- HLINT ignore "Redundant do"       -}
 
 fc = TC.firstChild
 ns = TC.nextSibling
@@ -41,11 +39,7 @@ spec = describe "HaskellWorks.Data.Json.Succinct.CursorSpec" $ do
   genSpec "CsPoppy"           FAST.fromString
 
 genSpec :: forall t u.
-  ( Eq                t
-  , Show              t
-  , Select1           t
-  , Eq                u
-  , Show              u
+  ( Select1           t
   , Rank0             u
   , Rank1             u
   , BalancedParens    u

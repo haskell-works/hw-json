@@ -1,33 +1,85 @@
-# This is a basic workflow to help you get started with Actions
+name: Haskell
 
-name: CI
+defaults:
+  run:
+    shell: bash
 
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+on: [push]
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    strategy:
+      fail-fast: false
+      matrix:
+        ghc: ["8.8.4", "8.6.5", "8.8.3", "8.10.2"]
+        os: [ubuntu-latest]
+
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+        with:
+          submodules: true
+      - uses: actions/setup-haskell@v1
+        id: setup-haskell
+        with:
+          ghc-version: ${{ matrix.ghc }}
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+      - name: Configure
+        run: cabal configure --write-ghc-environment-files=ghc8.4.4+
 
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+      - name: Restore cabal cache
+        uses: haskell-works/cabal-cache-action@v1
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          BINARY_CACHE_REGION: ${{ secrets.BINARY_CACHE_REGION }}
+          BINARY_CACHE_THREADS: ${{ secrets.BINARY_CACHE_THREADS }}
+          BINARY_CACHE_URI: ${{ secrets.BINARY_CACHE_URI }}
+        with:
+          args: |
+            sync-from-archive \
+              --threads       "$BINARY_CACHE_THREADS" \
+              --archive-uri   "$BINARY_CACHE_URI" \
+              --region        "$BINARY_CACHE_REGION" \
+              --store-path    "${{ steps.setup-haskell.outputs.cabal-store }}"
+
+      - name: Build
+        run: cabal build all
+
+      - name: Save cabal cache
+        uses: haskell-works/cabal-cache-action@v1
+        if: ${{ always() }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          BINARY_CACHE_REGION: ${{ secrets.BINARY_CACHE_REGION }}
+          BINARY_CACHE_THREADS: ${{ secrets.BINARY_CACHE_THREADS }}
+          BINARY_CACHE_URI: ${{ secrets.BINARY_CACHE_URI }}
+        with:
+          args: |
+            sync-to-archive \
+              --threads       "$BINARY_CACHE_THREADS" \
+              --archive-uri   "$BINARY_CACHE_URI" \
+              --region        "$BINARY_CACHE_REGION" \
+              --store-path    "${{ steps.setup-haskell.outputs.cabal-store }}"
+
+      - name: Build
+        run: cabal test all --test-show-details=direct
+
+      - name: Save cabal cache
+        uses: haskell-works/cabal-cache-action@v1
+        if: ${{ always() }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          BINARY_CACHE_REGION: ${{ secrets.BINARY_CACHE_REGION }}
+          BINARY_CACHE_THREADS: ${{ secrets.BINARY_CACHE_THREADS }}
+          BINARY_CACHE_URI: ${{ secrets.BINARY_CACHE_URI }}
+        with:
+          args: |
+            sync-to-archive \
+              --threads       "$BINARY_CACHE_THREADS" \
+              --archive-uri   "$BINARY_CACHE_URI" \
+              --region        "$BINARY_CACHE_REGION" \
+              --store-path    "${{ steps.setup-haskell.outputs.cabal-store }}"
