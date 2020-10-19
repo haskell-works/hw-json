@@ -83,3 +83,13 @@ jobs:
               --archive-uri   "$BINARY_CACHE_URI" \
               --region        "$BINARY_CACHE_REGION" \
               --store-path    "${{ steps.setup-haskell.outputs.cabal-store }}"
+
+      - name: Tag release
+        run: |
+          package_version="$(cat *.cabal | grep '^version:' | cut -d : -f 2 | xargs)"
+          if git rev-parse "v${package_verison}" >/dev/null 2>&1; then
+            echo "Tag already exists: v${package_verison}"
+          else
+            git tag "v${package_verison}"
+            git push origin "v${package_verison}"
+          fi
