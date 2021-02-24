@@ -1,20 +1,19 @@
 cabal-version:  2.2
 
-name:           hw-json-demo
-version:        1.0.0.0
-synopsis:       Memory efficient JSON parser
-description:    Memory efficient JSON parser. Please see README.md
-category:       Data
-homepage:       http://github.com/haskell-works/hw-json-demo#readme
-bug-reports:    https://github.com/haskell-works/hw-json-demo/issues
-author:         John Ky
-maintainer:     newhoggy@gmail.com
-copyright:      2016 - 2019 John Ky
-license:        BSD-3-Clause
-license-file:   LICENSE
-build-type:     Simple
-extra-source-files:
-    README.md
+name:                 hw-json-demo
+version:              1.0.0.0
+synopsis:             Memory efficient JSON parser
+description:          Memory efficient JSON parser. Please see README.md
+category:             Data
+homepage:             http://github.com/haskell-works/hw-json-demo#readme
+bug-reports:          https://github.com/haskell-works/hw-json-demo/issues
+author:               John Ky
+maintainer:           newhoggy@gmail.com
+copyright:            2016 - 2019 John Ky
+license:              BSD-3-Clause
+license-file:         LICENSE
+build-type:           Simple
+extra-source-files:   README.md
 
 source-repository head
   type: git
@@ -62,22 +61,21 @@ common config
     cpp-options: -DBMI2_ENABLED
 
 library
-  import:   base, config
-          , aeson
-          , bytestring
-          , deepseq
-          , dlist
-          , hw-balancedparens
-          , hw-bits
-          , hw-mquery
-          , hw-json
-          , hw-json-simd
-          , hw-prim
-          , hw-rankselect
-          , hw-rankselect-base
-          , mmap
-          , vector
-  hs-source-dirs:   src
-  ghc-options:      -O2 -msse4.2
-  other-modules:    Paths_hw_json_demo
-  autogen-modules:  Paths_hw_json_demo
+  import:             base, config
+                    , aeson
+                    , bytestring
+                    , deepseq
+                    , dlist
+                    , hw-balancedparens
+                    , hw-bits
+                    , hw-mquery
+                    , hw-json
+                    , hw-json-simd
+                    , hw-prim
+                    , hw-rankselect
+                    , hw-rankselect-base
+                    , mmap
+                    , vector
+  ghc-options:        -O2 -msse4.2
+  other-modules:      Paths_hw_json_demo
+  autogen-modules:    Paths_hw_json_demo
