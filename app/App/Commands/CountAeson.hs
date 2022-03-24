@@ -13,6 +13,8 @@ import Options.Applicative       hiding (columns)
 
 import qualified App.Commands.Types   as Z
 import qualified Data.Aeson           as J
+import qualified Data.Aeson.Key       as J
+import qualified Data.Aeson.KeyMap    as J
 import qualified Data.ByteString.Lazy as LBS
 import qualified Data.HashMap.Strict  as SHM
 import qualified System.IO            as IO
@@ -27,7 +29,7 @@ runCountAeson opts = do
   let lbsLines = LBS.split 10 lbs
 
   let count :: Int = sum $ flip fmap lbsLines $ \lbsLine -> case J.decode lbsLine of
-        Just (J.Object v) -> if SHM.member expression v then 1 else 0
+        Just (J.Object v) -> if J.member (J.fromText expression) v then 1 else 0
         _                 -> 0
 
   IO.putStrLn $ "Count: " <> show count
