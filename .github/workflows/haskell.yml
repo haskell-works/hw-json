@@ -17,8 +17,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ghc: ["9.0.1", "8.10.7", "8.8.4", "8.6.5"]
-        os: [ubuntu-latest]
+        ghc: ["9.2.2", "9.0.2", "8.10.7", "8.8.4", "8.6.5"]
+        os: [ubuntu-latest, windows-latest]
 
     steps:
       - uses: actions/checkout@v2
@@ -27,7 +27,7 @@ jobs:
         id: setup-haskell
         with:
           ghc-version: ${{ matrix.ghc }}
-          cabal-version: 3.4.0.0
+          cabal-version: 3.6.2.0
 
       - name: Set some window specific things
         if: matrix.os == 'windows-latest'
@@ -36,21 +36,27 @@ jobs:
       - name: Configure project
         run: cabal configure --enable-tests --enable-benchmarks --write-ghc-environment-files=ghc8.4.4+
 
-      - name: Restore cabal cache
-        uses: haskell-works/cabal-cache-action@v1
+      - name: Cabal cache over S3
+        uses: action-works/cabal-cache-s3@v1
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          BINARY_CACHE_REGION: ${{ secrets.BINARY_CACHE_REGION }}
-          BINARY_CACHE_THREADS: ${{ secrets.BINARY_CACHE_THREADS }}
-          BINARY_CACHE_URI: ${{ secrets.BINARY_CACHE_URI }}
         with:
-          args: |
-            sync-from-archive \
-              --threads       "$BINARY_CACHE_THREADS" \
-              --archive-uri   "$BINARY_CACHE_URI" \
-              --region        "$BINARY_CACHE_REGION" \
-              --store-path    "${{ steps.setup-haskell.outputs.cabal-store }}"
+          region: us-west-2
+          dist-dir: dist-newstyle
+          store-path: ${{ steps.setup-haskell.outputs.cabal-store }}
+          threads: 16
+          archive-uri: ${{ secrets.BINARY_CACHE_URI }}
+          skip: "${{ secrets.BINARY_CACHE_URI == '' }}"
+
+      - name: Cabal cache over HTTPS
+        uses: action-works/cabal-cache-s3@v1
+        with:
+          dist-dir: dist-newstyle
+          store-path: ${{ steps.setup-haskell.outputs.cabal-store }}
+          threads: 16
+          archive-uri: https://cache.haskellworks.io/archive
+          skip: "${{ secrets.BINARY_CACHE_URI != '' }}"
 
       - name: Build
         # Try building it twice in case of flakey builds on Windows
@@ -61,23 +67,6 @@ jobs:
       - name: Test
         run: |
           cabal test all --enable-tests --enable-benchmarks --write-ghc-environment-files=ghc8.4.4+
-
-      - name: Save cabal cache
-        uses: haskell-works/cabal-cache-action@v1
-        if: ${{ always() }}
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          BINARY_CACHE_REGION: ${{ secrets.BINARY_CACHE_REGION }}
-          BINARY_CACHE_THREADS: ${{ secrets.BINARY_CACHE_THREADS }}
-          BINARY_CACHE_URI: ${{ secrets.BINARY_CACHE_URI }}
-        with:
-          args: |
-            sync-to-archive \
-              --threads       "$BINARY_CACHE_THREADS" \
-              --archive-uri   "$BINARY_CACHE_URI" \
-              --region        "$BINARY_CACHE_REGION" \
-              --store-path    "${{ steps.setup-haskell.outputs.cabal-store }}"
 
   check:
     needs: build
