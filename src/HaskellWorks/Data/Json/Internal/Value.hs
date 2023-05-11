@@ -58,4 +58,7 @@ parseJsonString = do
       b <- parseHexDigit
       c <- parseHexDigit
       d <- parseHexDigit
-      return $ chr $ a `shift` 24 .|. b `shift` 16 .|. c `shift` 8 .|. d
+      let res =  a `shift` 12 .|. b `shift` 8 .|. c `shift` 4 .|. d
+      return $ if res <= 0x10FFFF
+                then chr res
+                else '�'
