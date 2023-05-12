@@ -104,6 +104,8 @@ genSpec t makeCursor = do
     forJson "[null]" $ \cursor -> do
       it "should have correct value"      $ requireTest $ jsonValueVia (Just cursor) === Right (JsonArray [JsonNull])
       it "should have correct value"      $ requireTest $ jsonValueVia (fc   cursor) === Right  JsonNull
+    forJson "\"codepoint\\u2019s\"" $ \cursor -> do
+      it "should have correct value"      $ requireTest $ jsonValueVia (Just cursor) === Right (JsonString "codepoint’s")
     forJson "[null, {\"field\": 1}]" $ \cursor -> do
       it "cursor can navigate to second child of array" $ requireTest $ do
         jsonValueVia ((fc >=> ns)   cursor) === Right (                     JsonObject [("field", JsonNumber 1)] )
