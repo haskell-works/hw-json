@@ -16,7 +16,6 @@ import qualified Data.Aeson           as J
 import qualified Data.Aeson.Key       as J
 import qualified Data.Aeson.KeyMap    as J
 import qualified Data.ByteString.Lazy as LBS
-import qualified Data.HashMap.Strict  as SHM
 import qualified System.IO            as IO
 
 runCountAeson :: Z.CountAesonOptions -> IO ()

@@ -39,19 +39,20 @@ flag sse42
 
 common base                       { build-depends: base                       >= 4.11       && < 5      }
 
-common aeson                      { build-depends: aeson                      >= 2.0        && < 2.1    }
-common ansi-wl-pprint             { build-depends: ansi-wl-pprint             >= 0.6.8.2    && < 0.7    }
+common aeson                      { build-depends: aeson                      >= 2.0        && < 2.3    }
+common ansi-wl-pprint             { build-depends: ansi-wl-pprint             >= 0.6.8.2    && < 2      }
 common array                      { build-depends: array                      >= 0.5        && < 0.6    }
 common attoparsec                 { build-depends: attoparsec                 >= 0.13       && < 0.15   }
+common attoparsec-aeson           { build-depends: attoparsec-aeson           >= 2          && < 3      }
 common bits-extra                 { build-depends: bits-extra                 >= 0.0.1.3    && < 0.1    }
-common bytestring                 { build-depends: bytestring                 >= 0.10.6     && < 0.12   }
+common bytestring                 { build-depends: bytestring                 >= 0.10.6     && < 0.13   }
 common criterion                  { build-depends: criterion                  >= 1.4        && < 1.7    }
 common directory                  { build-depends: directory                  >= 1.3        && < 1.4    }
 common dlist                      { build-depends: dlist                      >= 0.8        && < 1.1    }
-common doctest                    { build-depends: doctest                    >= 0.16.2     && < 0.21   }
+common doctest                    { build-depends: doctest                    >= 0.16.2     && < 0.23   }
 common doctest-discover           { build-depends: doctest-discover           >= 0.2        && < 0.3    }
 common generic-lens               { build-depends: generic-lens               >= 1.2.0.1    && < 2.3    }
-common hedgehog                   { build-depends: hedgehog                   >= 0.6        && < 1.3    }
+common hedgehog                   { build-depends: hedgehog                   >= 0.6        && < 1.5    }
 common hspec                      { build-depends: hspec                      >= 2.4        && < 3      }
 common hw-balancedparens          { build-depends: hw-balancedparens          >= 0.3.0.0    && < 0.5    }
 common hw-bits                    { build-depends: hw-bits                    >= 0.7.0.5    && < 0.8    }
@@ -67,7 +68,7 @@ common hw-rankselect-base         { build-depends: hw-rankselect-base         >=
 common hw-simd                    { build-depends: hw-simd                    >= 0.1.1.2    && < 0.2    }
 common lens                       { build-depends: lens                       >= 4          && < 6      }
 common mmap                       { build-depends: mmap                       >= 0.5        && < 0.6    }
-common optparse-applicative       { build-depends: optparse-applicative       >= 0.14       && < 0.18   }
+common optparse-applicative       { build-depends: optparse-applicative       >= 0.14       && < 0.19   }
 common scientific                 { build-depends: scientific                 >= 0.3.6.2    && < 0.4    }
 common text                       { build-depends: text                       >= 1.2        && < 3      }
 common transformers               { build-depends: transformers               >= 0.4        && < 0.7    }
@@ -92,6 +93,7 @@ library
                       , aeson
                       , ansi-wl-pprint
                       , attoparsec
+                      , attoparsec-aeson
                       , bits-extra
                       , bytestring
                       , dlist
@@ -106,6 +108,7 @@ library
                       , hw-rankselect-base
                       , hw-simd
                       , mmap
+                      , scientific
                       , text
                       , vector
                       , word8
@@ -114,14 +117,14 @@ library
   autogen-modules:      Paths_hw_json
   exposed-modules:      HaskellWorks.Data.Json.DecodeError
                         HaskellWorks.Data.Json.FromValue
-                        HaskellWorks.Data.Json.Internal.Standard.Cursor.Token
-                        HaskellWorks.Data.Json.Internal.Standard.Token.Tokenize
                         HaskellWorks.Data.Json.Internal.CharLike
                         HaskellWorks.Data.Json.Internal.Doc
                         HaskellWorks.Data.Json.Internal.Index
                         HaskellWorks.Data.Json.Internal.Orphans
                         HaskellWorks.Data.Json.Internal.PartialIndex
                         HaskellWorks.Data.Json.Internal.Slurp
+                        HaskellWorks.Data.Json.Internal.Standard.Cursor.Token
+                        HaskellWorks.Data.Json.Internal.Standard.Token.Tokenize
                         HaskellWorks.Data.Json.Internal.Token
                         HaskellWorks.Data.Json.Internal.Token.Types
                         HaskellWorks.Data.Json.Internal.Value
@@ -168,6 +171,7 @@ test-suite hw-json-test
   import:               base, config
                       , aeson
                       , attoparsec
+                      , attoparsec-aeson
                       , bytestring
                       , dlist
                       , hedgehog

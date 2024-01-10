@@ -12,10 +12,10 @@ import Data.Word8
 import HaskellWorks.Data.Json.Standard.Cursor.Internal.Word8
 import Prelude                                               hiding (drop)
 
-import qualified Data.Aeson.Parser.Internal as AP
-import qualified Data.Attoparsec.ByteString as PBS
-import qualified Data.ByteString            as BS
-import qualified Data.Text                  as T
+import qualified Data.Aeson.Parser.Internal  as AP
+import qualified Data.Attoparsec.ByteString  as PBS
+import qualified Data.ByteString             as BS
+import qualified Data.Text                   as T
 
 data JsonState
   = Escaped
