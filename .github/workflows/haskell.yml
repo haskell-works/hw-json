@@ -21,7 +21,7 @@ jobs:
         os: [ubuntu-latest, macOS-latest, windows-latest]
         exclude:
         - os: windows-latest
-          ghc: "9.4.2"
+          ghc: "9.4.8"
 
     env:
       # Modify this value to "invalidate" the cabal cache.

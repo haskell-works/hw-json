@@ -25,14 +25,14 @@ import HaskellWorks.Hspec.Hedgehog
 import Hedgehog
 import Test.Hspec
 
-import qualified Data.Aeson.Parser.Internal                  as AP
-import qualified Data.Attoparsec.ByteString                  as PBS
-import qualified Data.ByteString                             as BS
-import qualified Data.Scientific                             as S
-import qualified Data.Text                                   as T
-import qualified HaskellWorks.Data.Json.Standard.Cursor.Fast as FAST
-import qualified HaskellWorks.Data.Json.Standard.Cursor.Slow as SLOW
-import qualified HaskellWorks.Data.TreeCursor                as TC
+import qualified Data.Aeson.Parser.Internal                   as AP
+import qualified Data.Attoparsec.ByteString                   as PBS
+import qualified Data.ByteString                              as BS
+import qualified Data.Scientific                              as S
+import qualified Data.Text                                    as T
+import qualified HaskellWorks.Data.Json.Standard.Cursor.Fast  as FAST
+import qualified HaskellWorks.Data.Json.Standard.Cursor.Slow  as SLOW
+import qualified HaskellWorks.Data.TreeCursor                 as TC
 
 {- HLINT ignore "Reduce duplication" -}
 {- HLINT ignore "Redundant bracket"  -}
