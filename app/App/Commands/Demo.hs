@@ -1,4 +1,5 @@
 {-# LANGUAGE BangPatterns        #-}
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE DataKinds           #-}
 {-# LANGUAGE OverloadedStrings   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
@@ -29,7 +30,9 @@ import qualified Data.ByteString.Lazy                       as LBS
 import qualified Data.DList                                 as DL
 import qualified HaskellWorks.Data.BalancedParens.RangeMin  as RM
 import qualified HaskellWorks.Data.ByteString.Lazy          as LBS
+#if x86_64_HOST_ARCH
 import qualified HaskellWorks.Data.Json.Simd.Index.Standard as S
+#endif
 import qualified Options.Applicative                        as OA
 import qualified System.IO                                  as IO
 import qualified System.IO.MMap                             as IO
@@ -37,6 +40,7 @@ import qualified System.IO.MMap                             as IO
 {- HLINT ignore "Reduce duplication" -}
 
 runDemo :: Z.DemoOptions -> IO ()
+#if x86_64_HOST_ARCH
 runDemo opts = do
   let filePath = opts ^. the @"filePath"
   case opts ^. the @"method" of
@@ -59,6 +63,9 @@ runDemo opts = do
           putPretty $ q >>= (entry >=> named "meta" >=> entry >=> named "view" >=> entry >=> named "columns" >=> item >=> entry >=> named "id") & count
         Left msg -> IO.hPutStrLn IO.stderr $ "Unable to create semi-index: " <> show msg
     m -> IO.hPutStrLn IO.stderr $ "Unrecognised method: " <> show m
+#else
+runDemo opts = undefined
+#endif
 
 optsDemo :: Parser Z.DemoOptions
 optsDemo = Z.DemoOptions

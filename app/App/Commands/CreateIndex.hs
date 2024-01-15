@@ -1,4 +1,5 @@
 {-# LANGUAGE BangPatterns        #-}
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE DataKinds           #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeApplications    #-}
@@ -21,7 +22,9 @@ import qualified Data.ByteString.Internal                                       
 import qualified Data.ByteString.Lazy                                               as LBS
 import qualified HaskellWorks.Data.ByteString                                       as BS
 import qualified HaskellWorks.Data.ByteString.Lazy                                  as LBS
+#if x86_64_HOST_ARCH
 import qualified HaskellWorks.Data.Json.Simd.Index.Standard                         as STSI
+#endif
 import qualified HaskellWorks.Data.Json.Simple.Cursor.SemiIndex                     as SISI
 import qualified HaskellWorks.Data.Json.Standard.Cursor.Internal.Blank              as J
 import qualified HaskellWorks.Data.Json.Standard.Cursor.Internal.BlankedJson        as J
@@ -36,6 +39,7 @@ import qualified System.IO.MMap                                                 
 {- HLINT ignore "Redundant do"       -}
 
 runCreateIndexStandard :: Z.CreateIndexOptions -> IO ()
+#if x86_64_HOST_ARCH
 runCreateIndexStandard opts = do
   let filePath = opts ^. the @"filePath"
   let outputIbFile = opts ^. the @"outputIbFile" & fromMaybe (filePath <> ".ib.idx")
@@ -80,8 +84,12 @@ runCreateIndexStandard opts = do
     unknown -> do
       IO.hPutStrLn IO.stderr $ "Unknown method " <> show unknown
       IO.exitFailure
+#else
+runCreateIndexStandard opts = undefined
+#endif
 
 runCreateIndexSimple :: Z.CreateIndexOptions -> IO ()
+#if x86_64_HOST_ARCH
 runCreateIndexSimple opts = do
   let filePath = opts ^. the @"filePath"
   let outputIbFile = opts ^. the @"outputIbFile" & fromMaybe (filePath <> ".ib.idx")
@@ -91,6 +99,9 @@ runCreateIndexSimple opts = do
   let SISI.SemiIndex _ ibs bps = SISI.buildSemiIndex bs
   LBS.writeFile outputIbFile (LBS.toLazyByteString ibs)
   LBS.writeFile outputBpFile (LBS.toLazyByteString bps)
+#else
+runCreateIndexSimple opts = undefined
+#endif
 
 runCreateIndex :: Z.CreateIndexOptions -> IO ()
 runCreateIndex opts = case opts ^. the @"backend" of

@@ -1,4 +1,5 @@
 {-# LANGUAGE BangPatterns        #-}
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE DataKinds           #-}
 {-# LANGUAGE OverloadedStrings   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
@@ -35,6 +36,9 @@ siblings :: GenericCursor BSI.ByteString CsPoppy1 (RM.RangeMin CsPoppy1) -> [Gen
 siblings c = c:maybe [] siblings (nextSibling c)
 
 runCount :: Z.CountOptions -> IO ()
+#if aarch64_HOST_ARCH
+runCount = undefined
+#else
 runCount opts = do
   let inputFile   = opts ^. the @"inputFile"
   let expression  = opts ^. the @"expression"
@@ -61,6 +65,7 @@ runCount opts = do
   putPretty $ q >>= (entry >=> named expression) & count
 
   return ()
+#endif
 
 optsFileIndex :: Parser Z.FileIndexes
 optsFileIndex = Z.FileIndexes
