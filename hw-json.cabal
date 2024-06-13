@@ -223,9 +223,14 @@ benchmark bench
                       , bytestring
                       , criterion
                       , directory
+                      , dlist
+                      , generic-lens
                       , hw-json
                       , hw-json-standard-cursor
+                      , hw-prim
                       , mmap
+                      , text
+                      , vector
   type:                 exitcode-stdio-1.0
   main-is:              Main.hs
   hs-source-dirs:       bench
