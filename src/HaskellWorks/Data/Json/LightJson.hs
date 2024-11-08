@@ -31,7 +31,7 @@ import HaskellWorks.Data.RankSelect.Base.Select1
 import HaskellWorks.Data.TreeCursor
 import HaskellWorks.Data.Uncons
 import Prelude                                        hiding (drop)
-import Text.PrettyPrint.ANSI.Leijen
+import Prettyprinter
 
 import qualified Data.ByteString                      as BS
 import qualified Data.ByteString.Unsafe               as BSU

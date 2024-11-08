@@ -12,7 +12,7 @@ maintainer:             newhoggy@gmail.com
 copyright:              2016-2021 John Ky
 license:                BSD-3-Clause
 license-file:           LICENSE
-tested-with:            GHC == 9.2.2, GHC == 9.0.2, GHC == 8.10.7, GHC == 8.8.4, GHC == 8.6.5
+tested-with:            GHC == 9.8.2, GHC == 9.6.6
 build-type:             Simple
 extra-source-files:     README.md
                         corpus/5000B.json
@@ -40,7 +40,6 @@ flag sse42
 common base                       { build-depends: base                       >= 4.11       && < 5      }
 
 common aeson                      { build-depends: aeson                      >= 2.0        && < 2.3    }
-common ansi-wl-pprint             { build-depends: ansi-wl-pprint             >= 0.6.8.2    && < 2      }
 common array                      { build-depends: array                      >= 0.5        && < 0.6    }
 common attoparsec                 { build-depends: attoparsec                 >= 0.13       && < 0.15   }
 common attoparsec-aeson           { build-depends: attoparsec-aeson           >= 2          && < 3      }
@@ -69,6 +68,7 @@ common hw-simd                    { build-depends: hw-simd                    >=
 common lens                       { build-depends: lens                       >= 4          && < 6      }
 common mmap                       { build-depends: mmap                       >= 0.5        && < 0.6    }
 common optparse-applicative       { build-depends: optparse-applicative       >= 0.14       && < 0.19   }
+common prettyprinter              { build-depends: prettyprinter              >= 1          && < 2      }
 common scientific                 { build-depends: scientific                 >= 0.3.6.2    && < 0.4    }
 common text                       { build-depends: text                       >= 1.2        && < 3      }
 common transformers               { build-depends: transformers               >= 0.4        && < 0.7    }
@@ -91,7 +91,6 @@ common hw-json
 library
   import:               base, config
                       , aeson
-                      , ansi-wl-pprint
                       , attoparsec
                       , attoparsec-aeson
                       , bits-extra
@@ -108,6 +107,7 @@ library
                       , hw-rankselect-base
                       , hw-simd
                       , mmap
+                      , prettyprinter
                       , scientific
                       , text
                       , vector
@@ -120,7 +120,6 @@ library
                         HaskellWorks.Data.Json.Internal.CharLike
                         HaskellWorks.Data.Json.Internal.Doc
                         HaskellWorks.Data.Json.Internal.Index
-                        HaskellWorks.Data.Json.Internal.Orphans
                         HaskellWorks.Data.Json.Internal.PartialIndex
                         HaskellWorks.Data.Json.Internal.Slurp
                         HaskellWorks.Data.Json.Internal.Standard.Cursor.Token

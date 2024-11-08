@@ -17,8 +17,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ghc: ["9.8.1", "9.6.3", "9.4.8", "9.2.8", "9.0.2", "8.10.7"]
-        os: [ubuntu-latest, macOS-latest, windows-latest]
+        ghc: ["9.8.2", "9.6.6"]
+        os: [ubuntu-latest, windows-latest]
         exclude:
         - os: windows-latest
           ghc: "9.4.8"
