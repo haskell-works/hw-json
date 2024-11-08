@@ -25,7 +25,6 @@ import Data.String
 import Data.Text                                      (Text)
 import HaskellWorks.Data.Bits.BitWise
 import HaskellWorks.Data.Json.Internal.Doc
-import HaskellWorks.Data.Json.Internal.Orphans        ()
 import HaskellWorks.Data.Json.Internal.PartialIndex
 import HaskellWorks.Data.Json.Internal.Value
 import HaskellWorks.Data.Json.Standard.Cursor.Generic
@@ -39,7 +38,7 @@ import HaskellWorks.Data.RankSelect.Base.Rank0
 import HaskellWorks.Data.RankSelect.Base.Rank1
 import HaskellWorks.Data.RankSelect.Base.Select1
 import Prelude                                        hiding (drop)
-import Text.PrettyPrint.ANSI.Leijen                   hiding ((<$>))
+import Prettyprinter
 
 import qualified Data.Attoparsec.ByteString.Char8 as ABC
 import qualified Data.ByteString                  as BS
@@ -150,10 +149,9 @@ instance Pretty (Mini JsonPartialValue) where
   pretty mjpv = case mjpv of
     Mini (JsonPartialString s   ) -> dullgreen  (text (show s))
     Mini (JsonPartialNumber n   ) -> cyan       (text (show n))
-    Mini (JsonPartialObject []  ) -> text "{}"
     Mini (JsonPartialObject kvs ) -> case kvs of
-      (_:_:_:_:_:_:_:_:_:_:_:_:_) -> text "{" <> prettyKvs kvs <> text ", ..}"
       []                          -> text "{}"
+      (_:_:_:_:_:_:_:_:_:_:_:_:_) -> text "{" <> prettyKvs kvs <> text ", ..}"
       _                           -> text "{" <> prettyKvs kvs <> text "}"
     Mini (JsonPartialArray []   ) -> text "[]"
     Mini (JsonPartialArray vs   ) | vs `atLeastSize` 11 -> text "[" <> nest 2 (prettyVs (Micro `map` take 10 vs)) <> text ", ..]"
