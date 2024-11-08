@@ -56,7 +56,10 @@ common hspec                      { build-depends: hspec                      >=
 common hw-balancedparens          { build-depends: hw-balancedparens          >= 0.3.0.0    && < 0.5    }
 common hw-bits                    { build-depends: hw-bits                    >= 0.7.0.5    && < 0.8    }
 common hw-hspec-hedgehog          { build-depends: hw-hspec-hedgehog          >= 0.1.0.4    && < 0.2    }
-common hw-json-simd               { build-depends: hw-json-simd               >= 0.1.0.2    && < 0.2    }
+common hw-json-simd {
+  if arch(x86_64)
+    build-depends: hw-json-simd               >= 0.1.0.2    && < 0.2
+}
 common hw-json-simple-cursor      { build-depends: hw-json-simple-cursor      >= 0.1.0.1    && < 0.2    }
 common hw-json-standard-cursor    { build-depends: hw-json-standard-cursor    >= 0.2.0.1    && < 0.3    }
 common hw-mquery                  { build-depends: hw-mquery                  >= 0.2.0.0    && < 0.3    }
@@ -64,7 +67,10 @@ common hw-parser                  { build-depends: hw-parser                  >=
 common hw-prim                    { build-depends: hw-prim                    >= 0.6.2.32   && < 0.7    }
 common hw-rankselect              { build-depends: hw-rankselect              >= 0.13       && < 0.14   }
 common hw-rankselect-base         { build-depends: hw-rankselect-base         >= 0.3.2.1    && < 0.4    }
-common hw-simd                    { build-depends: hw-simd                    >= 0.1.1.2    && < 0.2    }
+common hw-simd {
+  if arch(x86_64)
+    build-depends: hw-simd                    >= 0.1.1.2    && < 0.2
+}
 common lens                       { build-depends: lens                       >= 4          && < 6      }
 common mmap                       { build-depends: mmap                       >= 0.5        && < 0.6    }
 common optparse-applicative       { build-depends: optparse-applicative       >= 0.14       && < 0.19   }
