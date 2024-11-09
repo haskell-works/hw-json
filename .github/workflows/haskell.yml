@@ -19,9 +19,11 @@ jobs:
       matrix:
         ghc: ["9.8.2", "9.6.6"]
         os: [ubuntu-latest, windows-latest]
-        exclude:
-        - os: windows-latest
-          ghc: "9.4.8"
+        include:
+          - ghc: "9.8.2"
+            os: windows-latest
+          - ghc: "9.8.2"
+            os: macOS-latest
 
     env:
       # Modify this value to "invalidate" the cabal cache.
