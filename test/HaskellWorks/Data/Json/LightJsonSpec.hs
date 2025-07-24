@@ -6,8 +6,6 @@
 {-# LANGUAGE ScopedTypeVariables       #-}
 {-# LANGUAGE TupleSections             #-}
 
-{-# OPTIONS_GHC -fno-warn-missing-signatures #-}
-
 module HaskellWorks.Data.Json.LightJsonSpec (spec) where
 
 import Control.Monad
@@ -38,7 +36,10 @@ import qualified HaskellWorks.Data.TreeCursor                 as TC
 {- HLINT ignore "Redundant bracket"  -}
 {- HLINT ignore "Redundant do"       -}
 
+fc :: TC.TreeCursor k => k -> Maybe k
 fc = TC.firstChild
+
+ns :: TC.TreeCursor k => k -> Maybe k
 ns = TC.nextSibling
 
 spec :: Spec
@@ -72,11 +73,7 @@ jsonValueVia mk = case mk of
         elements c = jsonValueVia (Just c)
 
 genSpec :: forall t u.
-  ( Eq                t
-  , Show              t
-  , Select1           t
-  , Eq                u
-  , Show              u
+  ( Select1           t
   , Rank0             u
   , Rank1             u
   , BalancedParens    u
@@ -84,7 +81,7 @@ genSpec :: forall t u.
   => String -> (String -> GenericCursor BS.ByteString t u) -> SpecWith ()
 genSpec t makeCursor = do
   describe ("Json cursor of type " ++ t) $ do
-    let forJson s f = describe ("of value " ++ show s) (f (makeCursor s))
+    let forJson s f = describe ("of value " ++ Prelude.show s) (f (makeCursor s))
     forJson "{}" $ \cursor -> do
       it "should have correct value"      $ requireTest $ jsonValueVia (Just cursor) === Right (JsonObject [])
     forJson " {}" $ \cursor -> do

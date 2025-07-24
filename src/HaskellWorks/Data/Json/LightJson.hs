@@ -102,7 +102,6 @@ instance LightJsonAt c => Pretty (Mini (LightJson c)) where
   pretty mjpv = case mjpv of
     Mini (LightJsonString s   ) -> dullgreen  (text (show s))
     Mini (LightJsonNumber n   ) -> cyan       (text (show n))
-    Mini (LightJsonObject []  ) -> text "{}"
     Mini (LightJsonObject kvs ) -> case kvs of
       (_:_:_:_:_:_:_:_:_:_:_:_:_) -> text "{" <> prettyKvs (map (second lightJsonAt) kvs) <> text ", ..}"
       []                          -> text "{}"
