@@ -17,17 +17,22 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ghc: ["9.8.2", "9.6.6"]
+        ghc: ["9.12.2", "9.10.2", "9.8.4", "9.6.7"]
         os: [ubuntu-latest, windows-latest]
-        exclude:
-        - os: windows-latest
-          ghc: "9.4.8"
 
     env:
       # Modify this value to "invalidate" the cabal cache.
       CABAL_CACHE_VERSION: "2024-01-05"
 
     steps:
+      # Select the gcc version to be 12
+      - if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-12 100
+          sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-12 100
+          sudo update-alternatives --set gcc /usr/bin/gcc-12
+          sudo update-alternatives --set g++ /usr/bin/g++-12
+
       - uses: actions/checkout@v2
 
       - uses: haskell-actions/setup@v2
