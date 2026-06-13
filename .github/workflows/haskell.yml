@@ -19,6 +19,15 @@ jobs:
       matrix:
         ghc: ["9.14.1", "9.12.4", "9.10.3", "9.8.4", "9.6.7", "9.4.8"]
         os: [ubuntu-latest, windows-latest]
+        exclude:
+        # GHC 9.14.1 on Windows: ghc-paths' custom Setup is incompatible with
+        # the bundled Cabal 3.16, so the doctest dependency cannot be solved.
+        - os: windows-latest
+          ghc: "9.14.1"
+        # GHC 9.4.8 on Windows: doctest cannot locate the chocolatey-installed
+        # ghc.exe, so the doctest suite fails to run.
+        - os: windows-latest
+          ghc: "9.4.8"
 
     env:
       # Modify this value to "invalidate" the cabal cache.
